@@ -22,5 +22,3 @@ class Flux
 # Mixins can be defined in `mixin.coffee` file.
 Flux.mixins = require './mixin'
 module.exports = Flux
-
-if window? then window.Flux = Flux

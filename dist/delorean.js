@@ -339,9 +339,15 @@ function isUndefined(arg) {
 
 },{}],3:[function(require,module,exports){
 (function() {
-  module.exports = {
+  var DeLorean;
+
+  DeLorean = {
     Flux: require('./flux.coffee')
   };
+
+  if (typeof window !== "undefined" && window !== null) {
+    window.DeLorean = DeLorean;
+  }
 
 }).call(this);
 
@@ -381,10 +387,6 @@ function isUndefined(arg) {
   Flux.mixins = require('./mixin');
 
   module.exports = Flux;
-
-  if (typeof window !== "undefined" && window !== null) {
-    window.Flux = Flux;
-  }
 
 }).call(this);
 

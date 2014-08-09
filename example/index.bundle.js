@@ -2,6 +2,7 @@
 /** @jsx React.DOM */
 
 var React = require('react');
+var Flux = DeLorean.Flux;
 
 /* Generate Generic Store */
 

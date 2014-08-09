@@ -1,4 +1,7 @@
 # Exporting flux as `DeLorean.Flux`
 # This file is the entry point of the library.
-module.exports =
+DeLorean =
   Flux: require './flux.coffee'
+
+if window?
+  window.DeLorean = DeLorean
