@@ -1,5 +1,5 @@
-Store = require './store'
-App = require './app'
+Store = require './store.coffee'
+App = require './app.coffee'
 
 class Flux
 
@@ -20,5 +20,7 @@ class Flux
     app
 
 # Mixins can be defined in `mixin.coffee` file.
-Flux.mixin = require './mixin'
+Flux.mixins = require './mixin'
 module.exports = Flux
+
+if window? then window.Flux = Flux

@@ -2,137 +2,105 @@
 
 DeLorean is a tiny Flux pattern implementation.
 
-## Spec
+## Overview
 
-### JavaScript
-
-```javascript
-/** @jsx React.DOM */
-
+```js
 var Flux = require('delorean').Flux;
+```
 
-///////////////////////////////////////////////////// Global Stores
+### `Flux.createStore`
 
-var MessageStore = Flux.createStore({
+```js
+var TodoStore = Flux.createStore({
 
-  messages: [],
+  todos: [
+    {text: 'hello'},
+    {text: 'world'}
+  ],
 
-  bindActions: function () {
-    this.onAction('message:receive', this.receiveMessage);
-    this.onAction('message:send', this.sendMessage);
+  actions: {
+    'todo:add': 'addTodo',
+    'todo:remove': 'removeTodo'
   },
 
-  receiveMessage: function (message) {
-    this.messages.push({text: message.text, from: message.from, to: 'me'});
+  addTodo: function (todo) {
+    this.todos.push({text: todo.text});
     this.emit('change');
   },
 
-  sendMessage: function (message) {
-    this.messages.push({text: message.text, to: message.to, from: 'me'});
+  removeTodo: function (todoToComplete) {
+    this.todos = this.todos.filter(function (todo) {
+      return todoToComplete.text !== todo.text
+    });
     this.emit('change');
   },
 
   getState: function () {
     return {
-      messages: this.messages
-    };
+      todos: this.todos
+    }
   }
 });
+```
 
-///////////////////////////////////////////// Create app with Actions
+### `Flux.createApp`
 
-var MessagesApp = Flux.createApp({
+```js
+var TodoListApp = Flux.createApp({
+
+  removeTodo: function (todo) {
+    if (confirm('Do you really want to delete this todo?')) {
+      this.dispatch('todo:remove', todo);
+    }
+  },
 
   getStores: function () {
     return {
-      messages: new MessageStore()
-    };
-  },
-
-  sendMessage: function (message) {
-    this.dispatch('message:send', {text: message.text, to: message.to});
-  },
-
-  recieveMessage: function (message) {
-    this.dispatch('message:receive', {text: message.text, from: message.from});
+      todoStore: TodoStore
+    }
   }
+
+});
+```
+
+## Combining to React
+
+### `Flux.mixins.storeListener`
+
+```js
+// Child views don't have to have storeListener.
+
+var TodoItemView = React.createClass({
+
+  render: function (todo) {
+    return <li onClick={this.handleClick}>{this.props.todo.text}</li>
+  },
+
+  handleClick: function () {
+    this.props.app.removeTodo(this.props.todo);
+  }
+
 });
 
-//////////////////////////////////////////////////////////////// View
+var TodoListView = React.createClass({
 
-MessagesView = React.createClass({
+  mixins: [Flux.mixins.storeListener],
 
   render: function () {
-    <div onClick={this.clicked}>Create New</div>
-  },
-
-  clicked: function () {
-    this.app.actions.sendMessage({
-      text: Math.random().toString(), from: 'hehe'
-    });
+    var self = this;
+    return <ul>
+      {this.stores.todoStore.store.todos.map(function (todo) {
+        return <TodoItemView app={self.props.app} todo={todo}></TodoItemView>
+      })}
+    </ul>
   }
+
 });
-
-React.renderComponent(<MessagesView app={MessagesApp} />, document.body);
 ```
 
-### CoffeeScript
+## Todo
 
-```coffeescript
-###* @jsx React.DOM ###
-
-Flux = require 'reflux'
-
-################################################# Global Stores
-
-MessageStore = Flux.createStore
-
-  messages: []
-
-  bindActions: ->
-    @onAction 'message:receive', @receiveMessage
-    @onAction 'message:send', @sendMessage
-
-  receiveMessage: ({text, from})->
-    @messages.push {text, from, to: 'me'}
-    @emit 'change'
-
-  sendMessage: ({text, to})->
-    @messages.push {text, to, from: 'me'}
-    @emit 'change'
-
-  getState: ->
-    messages: @messages
-
-########################################## Create app with Actions
-
-MessagesApp = Flux.createApp
-
-  # Bind stores
-  getStores: ->
-    messages: new MessageStore()
-
-  # sendMessage Action
-  sendMessage: ({text, to})->
-    @dispatch 'message:send', {text, to}
-
-  recieveMessage: ({text, from})->
-    @dispatch 'message:receive', {text, from}
-
-############################################################# View
-
-MessagesView = React.createClass
-
-  render: ->
-    `<div onClick={this.clicked}>Create New</div>`
-
-  clicked: ->
-    @app.actions.sendMessage
-      text: Math.random().toString(), from: 'hehe'
-
-React.renderComponent `<MessagesView app={MessagesApp} />`, document.body
-
-```
+  - Improve Readme.
 
 ## Name
 

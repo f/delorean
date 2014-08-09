@@ -340,19 +340,19 @@ function isUndefined(arg) {
 },{}],3:[function(require,module,exports){
 (function() {
   module.exports = {
-    Flux: require('./flux')
+    Flux: require('./flux.coffee')
   };
 
 }).call(this);
 
-},{"./flux":4}],4:[function(require,module,exports){
+},{"./flux.coffee":4}],4:[function(require,module,exports){
 (function() {
   var App, Flux, Store,
     __hasProp = {}.hasOwnProperty;
 
-  Store = require('./store');
+  Store = require('./store.coffee');
 
-  App = require('./app');
+  App = require('./app.coffee');
 
   Flux = (function() {
     function Flux() {}
@@ -378,18 +378,22 @@ function isUndefined(arg) {
 
   })();
 
-  Flux.mixin = require('./mixin');
+  Flux.mixins = require('./mixin');
 
   module.exports = Flux;
 
+  if (typeof window !== "undefined" && window !== null) {
+    window.Flux = Flux;
+  }
+
 }).call(this);
 
-},{"./app":2,"./mixin":5,"./store":6}],5:[function(require,module,exports){
+},{"./app.coffee":2,"./mixin":5,"./store.coffee":6}],5:[function(require,module,exports){
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
   module.exports = {
-    react: {
+    storeListener: {
       componentDidMount: function() {
         var storeName, _ref, _results;
         _ref = this.stores;

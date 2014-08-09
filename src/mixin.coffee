@@ -1,8 +1,8 @@
 module.exports =
   # It should be inserted to the React components which
   # used in Flux.
-  # Simply `mixin: [Flux.mixin.react]` will work.
-  react:
+  # Simply `mixin: [Flux.mixins.storeListener]` will work.
+  storeListener:
     # After the component mounted, listen changes of the related stores
     componentDidMount: ->
       for own storeName of @stores
