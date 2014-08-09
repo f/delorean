@@ -1,8 +1,8 @@
 {
-  "name": "delorean",
+  "name": "delorean.js",
   "version": "0.0.0",
   "description": "Flux Library",
-  "main": "dist/index.js",
+  "main": "dist/delorean.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -1,0 +1,26 @@
+{
+  "name": "delorean",
+  "version": "0.0.0",
+  "homepage": "https://github.com/f/delorean",
+  "authors": [
+    "f <fka@fatihak.in>"
+  ],
+  "description": "Flux library",
+  "main": "dist/delorean.min.js",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "flux",
+    "delorean",
+    "react"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
