@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>DeLorean.js by f</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>DeLorean.js</h1>
+          <h2>Flux Pattern Implementation for React.js</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/f/delorean/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/f/delorean/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/f/delorean" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p>DeLorean is a tiny Flux pattern implementation.</p>
+
+<h2>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p>You can install <strong>DeLorean</strong> with Bower:</p>
+
+<div class="highlight highlight-bash"><pre>bower install delorean
+</pre></div>
+
+<p>You can also install by NPM to use with <strong>Browserify</strong> <em>(recommended)</em></p>
+
+<div class="highlight highlight-bash"><pre>npm install delorean.js
+</pre></div>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">Flux</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'delorean.js'</span><span class="p">).</span><span class="nx">Flux</span><span class="p">;</span>
+</pre></div>
+
+<h2>
+<a name="stores" class="anchor" href="#stores"><span class="octicon octicon-link"></span></a>Stores</h2>
+
+<blockquote>
+<p>Stores contain the application state and logic. Their role is somewhat similar
+to a model in a traditional MVC, but they manage the state of many objects —
+they are not instances of one object. Nor are they the same as Backbone's
+collections. More than simply managing a collection of ORM-style objects,
+stores manage the application state for a particular domain within the application.</p>
+</blockquote>
+
+<h3>
+<a name="fluxcreatestore" class="anchor" href="#fluxcreatestore"><span class="octicon octicon-link"></span></a><code>Flux.createStore</code>
+</h3>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">TodoStore</span> <span class="o">=</span> <span class="nx">Flux</span><span class="p">.</span><span class="nx">createStore</span><span class="p">({</span>
+
+  <span class="nx">todos</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="nx">text</span><span class="o">:</span> <span class="s1">'hello'</span><span class="p">},</span>
+    <span class="p">{</span><span class="nx">text</span><span class="o">:</span> <span class="s1">'world'</span><span class="p">}</span>
+  <span class="p">],</span>
+
+  <span class="nx">actions</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">'todo:add'</span><span class="o">:</span> <span class="s1">'addTodo'</span><span class="p">,</span>
+    <span class="s1">'todo:remove'</span><span class="o">:</span> <span class="s1">'removeTodo'</span>
+  <span class="p">},</span>
+
+  <span class="nx">addTodo</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="nx">text</span><span class="o">:</span> <span class="nx">todo</span><span class="p">.</span><span class="nx">text</span><span class="p">});</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">'change'</span><span class="p">);</span>
+  <span class="p">},</span>
+
+  <span class="nx">removeTodo</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">todoToComplete</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">todos</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">todoToComplete</span><span class="p">.</span><span class="nx">text</span> <span class="o">!==</span> <span class="nx">todo</span><span class="p">.</span><span class="nx">text</span>
+    <span class="p">});</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">'change'</span><span class="p">);</span>
+  <span class="p">},</span>
+
+  <span class="nx">getState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="nx">todos</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">todos</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+
+<h2>
+<a name="dispatcher" class="anchor" href="#dispatcher"><span class="octicon octicon-link"></span></a>Dispatcher</h2>
+
+<blockquote>
+<p>The dispatcher is the central hub that manages all data flow in a Flux application.
+It is essentially a registry of callbacks into the stores. Each store registers
+itself and provides a callback. When the dispatcher responds to an action,
+all stores in the application are sent the data payload provided by the
+action via the callbacks in the registry.</p>
+</blockquote>
+
+<h3>
+<a name="fluxcreatedispatcher" class="anchor" href="#fluxcreatedispatcher"><span class="octicon octicon-link"></span></a><code>Flux.createDispatcher</code>
+</h3>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">TodoListApp</span> <span class="o">=</span> <span class="nx">Flux</span><span class="p">.</span><span class="nx">createDispatcher</span><span class="p">({</span>
+
+  <span class="nx">removeTodo</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">'Do you really want to delete this todo?'</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">dispatch</span><span class="p">(</span><span class="s1">'todo:remove'</span><span class="p">,</span> <span class="nx">todo</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="nx">getStores</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="nx">todoStore</span><span class="o">:</span> <span class="nx">TodoStore</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+<span class="p">});</span>
+</pre></div>
+
+<h4>
+<a name="action-dispatch" class="anchor" href="#action-dispatch"><span class="octicon octicon-link"></span></a>Action <code>dispatch</code>
+</h4>
+
+<p>When an action is dispatched, all the stores know about the status and they
+process the data asynchronously. When all of them are finished the dispatcher
+emits <code>change:all</code> event, also <code>dispatch</code> method returns a promise.</p>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">TodoListApp</span> <span class="o">=</span> <span class="nx">Flux</span><span class="p">.</span><span class="nx">createDispatcher</span><span class="p">({</span>
+
+  <span class="nx">removeTodo</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">'Do you really want to delete this todo?'</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">dispatch</span><span class="p">(</span><span class="s1">'todo:remove'</span><span class="p">,</span> <span class="nx">todo</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// All of the stores finished the process</span>
+        <span class="c1">// about 'todo:remove' action</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="s1">'Item removed successfully'</span><span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="nx">getStores</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="nx">todoStore</span><span class="o">:</span> <span class="nx">TodoStore</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+<span class="p">});</span>
+</pre></div>
+
+<h2>
+<a name="combining-to-react" class="anchor" href="#combining-to-react"><span class="octicon octicon-link"></span></a>Combining to React</h2>
+
+<p>You may bring all the flow together with the Views, actually <em>the Action generators</em>.
+You should use <strong><code>Flux.mixins.storeListener</code></strong> mixin to get a view into the Flux system.
+Also you should pass <code>dispatcher={DispatcherName}</code> attribute to React view.</p>
+
+<div class="highlight highlight-js"><pre><span class="c1">// Child views don't have to have storeListener.</span>
+
+<span class="kd">var</span> <span class="nx">TodoItemView</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">onClick</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">handleClick</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">todo</span><span class="p">.</span><span class="nx">text</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/li&gt;</span>
+  <span class="p">},</span>
+
+  <span class="nx">handleClick</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">dispatcher</span><span class="p">.</span><span class="nx">removeTodo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">todo</span><span class="p">);</span>
+  <span class="p">}</span>
+
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">TodoListView</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+
+  <span class="nx">mixins</span><span class="o">:</span> <span class="p">[</span><span class="nx">Flux</span><span class="p">.</span><span class="nx">mixins</span><span class="p">.</span><span class="nx">storeListener</span><span class="p">],</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+      <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">stores</span><span class="p">.</span><span class="nx">todoStore</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">&lt;</span><span class="nx">TodoItemView</span> <span class="nx">dispatcher</span><span class="o">=</span><span class="p">{</span><span class="nx">self</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">dispatcher</span><span class="p">}</span> <span class="nx">todo</span><span class="o">=</span><span class="p">{</span><span class="nx">todo</span><span class="p">}</span><span class="o">&gt;&lt;</span><span class="err">/TodoItemView&gt;</span>
+      <span class="p">})}</span>
+    <span class="o">&lt;</span><span class="err">/ul&gt;</span>
+  <span class="p">}</span>
+
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="storedidchanged-and-storesdidchanged" class="anchor" href="#storedidchanged-and-storesdidchanged"><span class="octicon octicon-link"></span></a>
+<code>storeDidChanged</code> and <code>storesDidChanged</code>
+</h3>
+
+<p>Two functions are triggered when a store changed and all stores are changed. You can use
+these functions if your application needs.</p>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">TodoListView</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+
+  <span class="nx">mixins</span><span class="o">:</span> <span class="p">[</span><span class="nx">Flux</span><span class="p">.</span><span class="nx">mixins</span><span class="p">.</span><span class="nx">storeListener</span><span class="p">],</span>
+
+  <span class="c1">// when all stores are updated</span>
+  <span class="nx">storesDidChanged</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"All stores are now updated."</span><span class="p">);</span>
+  <span class="p">},</span>
+
+  <span class="c1">// when a store updates</span>
+  <span class="nx">storeDidChanged</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">storeName</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">storeName</span> <span class="o">+</span> <span class="s2">" store is now updated."</span><span class="p">);</span>
+  <span class="p">},</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+
+<span class="p">});</span>
+</pre></div>
+
+<h2>
+<a name="running-an-example" class="anchor" href="#running-an-example"><span class="octicon octicon-link"></span></a>Running an Example</h2>
+
+<div class="highlight highlight-bash"><pre>grunt example
+open example/index.html
+</pre></div>
+
+<h2>
+<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>Todo</h2>
+
+<ul>
+<li>Improve Readme.</li>
+</ul><h2>
+<a name="name" class="anchor" href="#name"><span class="octicon octicon-link"></span></a>Name</h2>
+
+<p>The <strong>flux capacitor</strong> was the core component of Doctor Emmett Brown's time traveling <strong>DeLorean time machine</strong></p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p><a href="http://f.mit-license.org">MIT License</a></p>
+        </section>
+
+        <footer>
+          DeLorean.js is maintained by <a href="https://github.com/f">f</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
