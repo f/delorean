@@ -140,7 +140,7 @@ var TodoItemView = React.createClass({
   },
 
   handleClick: function () {
-    this.props.app.removeTodo(this.props.todo);
+    this.props.dispatcher.removeTodo(this.props.todo);
   }
 
 });
