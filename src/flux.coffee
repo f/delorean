@@ -1,5 +1,5 @@
 Store = require './store.coffee'
-App = require './app.coffee'
+Dispatcher = require './dispatcher.coffee'
 
 class Flux
 
@@ -9,15 +9,15 @@ class Flux
   @createStore: (store)->
     new Store store
 
-  # Apps are actually Action sets, it has getStores
+  # Dispatchers are actually Action sets, it has getStores
   # function. There should be stores for a complete
   # Flux structure.
-  @createApp: (actions)->
-    app = new App actions.getStores?()
+  @createDispatcher: (actions)->
+    dispatcher = new Dispatcher actions.getStores?()
     for own action, callback of actions
       unless action is 'getStores'
-        app.registerAction action, callback
-    app
+        dispatcher.registerAction action, callback
+    dispatcher
 
 # Mixins can be defined in `mixin.coffee` file.
 Flux.mixins = require './mixin'

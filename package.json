@@ -17,6 +17,7 @@
     "grunt-react": "^0.9.0"
   },
   "dependencies": {
+    "es6-promise": "^1.0.0",
     "react": "^0.11.1"
   }
 }

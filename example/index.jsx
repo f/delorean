@@ -36,13 +36,16 @@ var TodoStore = Flux.createStore({
   }
 });
 
-/* Generate List app with TodoStore. */
+/* Generate List dispatcher with TodoStore. */
 
-var TodoListApp = Flux.createApp({
+var TodoListDispatcher = Flux.createDispatcher({
 
   removeTodo: function (todo) {
     if (confirm('Do you really want to delete this todo?')) {
-      this.dispatch('todo:remove', todo);
+      this.dispatch('todo:remove', todo)
+      .then(function () {
+        alert('Item is deleted successfully.');
+      });
     }
   },
 
@@ -54,9 +57,9 @@ var TodoListApp = Flux.createApp({
 
 });
 
-/* Generate Todo Form app with TodoStore. */
+/* Generate Todo Form dispatcher with TodoStore. */
 
-var TodoFormApp = Flux.createApp({
+var TodoFormDispatcher = Flux.createDispatcher({
 
   addTodo: function (todo) {
     this.dispatch('todo:add', todo);
@@ -70,9 +73,9 @@ var TodoFormApp = Flux.createApp({
 
 });
 
-/* Static App */
+/* Static Dispatcher */
 
-var TodoApp = Flux.createApp({
+var TodoDispatcher = Flux.createDispatcher({
 
   getStores: function () {
     return {
@@ -91,7 +94,7 @@ var TodoItemView = React.createClass({
   },
 
   handleClick: function () {
-    this.props.app.removeTodo(this.props.todo);
+    this.props.dispatcher.removeTodo(this.props.todo);
   }
 
 });
@@ -102,9 +105,10 @@ var TodoListView = React.createClass({
 
   render: function () {
     var self = this;
+
     return <ul>
       {this.stores.todoStore.store.todos.map(function (todo) {
-        return <TodoItemView app={self.props.app} todo={todo}></TodoItemView>
+        return <TodoItemView dispatcher={self.dispatcher} todo={todo}></TodoItemView>
       })}
     </ul>
   }
@@ -128,7 +132,7 @@ var TodoFormView = React.createClass({
 
   handleSubmit: function (e) {
     e.preventDefault();
-    this.app.addTodo({text: this.state.todo});
+    this.dispatcher.addTodo({text: this.state.todo});
     this.setState({todo: ''});
   }
 
@@ -141,12 +145,12 @@ var ApplicationView = React.createClass({
   render: function () {
     var self = this;
     return <div>
-      <TodoListView app={TodoListApp} />
-      <TodoFormView app={TodoFormApp} />
+      <TodoListView dispatcher={TodoListDispatcher} />
+      <TodoFormView dispatcher={TodoFormDispatcher} />
       <span>There are {this.stores.todoStore.store.todos.length} todos.</span>
     </div>
   }
 
 });
 
-React.renderComponent(<ApplicationView app={TodoApp} />, document.getElementById('main'));
+React.renderComponent(<ApplicationView dispatcher={TodoDispatcher} />, document.getElementById('main'));

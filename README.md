@@ -69,19 +69,16 @@ var TodoStore = Flux.createStore({
 
 ## Dispatcher
 
-Dispatchers are called `Apps` in **DeLorean**. It manages all the logic of the
-partial app.
-
 > The dispatcher is the central hub that manages all data flow in a Flux application.
 > It is essentially a registry of callbacks into the stores. Each store registers
 > itself and provides a callback. When the dispatcher responds to an action,
 > all stores in the application are sent the data payload provided by the
 > action via the callbacks in the registry.
 
-### `Flux.createApp`
+### `Flux.createDispatcher`
 
 ```js
-var TodoListApp = Flux.createApp({
+var TodoListApp = Flux.createDispatcher({
 
   removeTodo: function (todo) {
     if (confirm('Do you really want to delete this todo?')) {
@@ -98,11 +95,40 @@ var TodoListApp = Flux.createApp({
 });
 ```
 
+#### Action `dispatch`
+
+When an action is dispatched, all the stores know about the status and they
+process the data asynchronously. When all of them are finished the dispatcher
+emits `change:all` event, also `dispatch` method returns a promise.
+
+```js
+var TodoListApp = Flux.createDispatcher({
+
+  removeTodo: function (todo) {
+    if (confirm('Do you really want to delete this todo?')) {
+      this.dispatch('todo:remove', todo)
+      .then(function () {
+        // All of the stores finished the process
+        // about 'todo:remove' action
+        alert('Item removed successfully');
+      });
+    }
+  },
+
+  getStores: function () {
+    return {
+      todoStore: TodoStore
+    }
+  }
+
+});
+```
+
 ## Combining to React
 
 You may bring all the flow together with the Views, actually *the Action generators*.
 You should use **`Flux.mixins.storeListener`** mixin to get a view into the Flux system.
-Also you should pass `app={AppName}` attribute to React view.
+Also you should pass `dispatcher={DispatcherName}` attribute to React view.
 
 ```js
 // Child views don't have to have storeListener.
@@ -127,9 +153,36 @@ var TodoListView = React.createClass({
     var self = this;
     return <ul>
       {this.stores.todoStore.store.todos.map(function (todo) {
-        return <TodoItemView app={self.props.app} todo={todo}></TodoItemView>
+        return <TodoItemView dispatcher={self.props.dispatcher} todo={todo}></TodoItemView>
       })}
     </ul>
+  }
+
+});
+```
+
+### `storeDidChanged` and `storesDidChanged`
+
+Two functions are triggered when a store changed and all stores are changed. You can use
+these functions if your application needs.
+
+```js
+var TodoListView = React.createClass({
+
+  mixins: [Flux.mixins.storeListener],
+
+  // when all stores are updated
+  storesDidChanged: function () {
+    console.log("All stores are now updated.");
+  },
+
+  // when a store updates
+  storeDidChanged: function (storeName) {
+    console.log(storeName + " store is now updated.");
+  },
+
+  render: function () {
+    // ...
   }
 
 });

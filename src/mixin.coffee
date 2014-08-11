@@ -5,21 +5,26 @@ module.exports =
   storeListener:
     # After the component mounted, listen changes of the related stores
     componentDidMount: ->
-      for own storeName of @stores
-        do (container=@stores[storeName])=>
-          container.on 'change', =>
+      for own storeName, store of @stores
+        do (store, storeName) =>
+          store.onChange =>
             # call the components `storeDidChanged` method
             @storeDidChanged? storeName
             # change state
-            @setState container.store.getState()
+            if state = store.store.getState?()
+              @state.stores[storeName] = state
+              @forceUpdate()
 
     getInitialState: ->
       # Some shortcuts
-      @app = @props.app
-      @stores = @app.stores
+      @dispatcher = @props.dispatcher
+      @dispatcher.on 'change:all', =>
+        @storesDidChanged?()
+
+      @stores = @dispatcher.stores
 
       state = stores: {}
       # more shortcuts for the state
       for own storeName of @stores
-        state.stores[storeName] = @stores[storeName].store.getState()
+        state.stores[storeName] = @stores[storeName].store.getState?()
       state

@@ -16,4 +16,7 @@ class Store extends EventEmitter
   dispatchAction: (actionName, data)->
     @emit "action:#{actionName}", data
 
+  onChange: (callback)->
+    @on 'change', callback
+
 module.exports = Store
