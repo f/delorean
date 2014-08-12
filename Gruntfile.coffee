@@ -7,13 +7,6 @@ module.exports = (grunt)->
 
   grunt.initConfig
 
-    # Coffee to JavaScript with Browserify
-    coffeeify:
-      build:
-        cwd: 'src'
-        src: ['delorean.coffee']
-        dest: 'dist'
-
     # Uglification
     uglify:
       build:
@@ -27,9 +20,18 @@ module.exports = (grunt)->
           'example/index.js': 'example/index.jsx'
 
     browserify:
+      coffeeify:
+        options:
+          bundleOptions:
+            standalone: 'DeLorean'
+          transform: ['coffeeify']
+
+        files:
+          'dist/delorean.js': ['src/delorean.coffee']
+
       example:
         files:
           'example/index.bundle.js': ['example/index.js']
 
-  grunt.registerTask 'default', ['coffeeify', 'uglify']
+  grunt.registerTask 'default', ['browserify:coffeeify', 'uglify']
   grunt.registerTask 'example', ['react:example', 'browserify:example']

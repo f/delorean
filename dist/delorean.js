@@ -1,15 +1,15 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.DeLorean=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 "use strict";
-var Promise = require("./promise/promise").Promise;
-var polyfill = require("./promise/polyfill").polyfill;
+var Promise = _dereq_("./promise/promise").Promise;
+var polyfill = _dereq_("./promise/polyfill").polyfill;
 exports.Promise = Promise;
 exports.polyfill = polyfill;
-},{"./promise/polyfill":5,"./promise/promise":6}],2:[function(require,module,exports){
+},{"./promise/polyfill":5,"./promise/promise":6}],2:[function(_dereq_,module,exports){
 "use strict";
 /* global toString */
 
-var isArray = require("./utils").isArray;
-var isFunction = require("./utils").isFunction;
+var isArray = _dereq_("./utils").isArray;
+var isFunction = _dereq_("./utils").isFunction;
 
 /**
   Returns a promise that is fulfilled when all the given promises have been
@@ -98,7 +98,7 @@ function all(promises) {
 }
 
 exports.all = all;
-},{"./utils":10}],3:[function(require,module,exports){
+},{"./utils":10}],3:[function(_dereq_,module,exports){
 (function (process,global){
 "use strict";
 var browserGlobal = (typeof window !== 'undefined') ? window : {};
@@ -161,8 +161,8 @@ function asap(callback, arg) {
 }
 
 exports.asap = asap;
-}).call(this,require("yMYBu3"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"yMYBu3":12}],4:[function(require,module,exports){
+}).call(this,_dereq_("JkpR2F"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"JkpR2F":12}],4:[function(_dereq_,module,exports){
 "use strict";
 var config = {
   instrument: false
@@ -178,12 +178,12 @@ function configure(name, value) {
 
 exports.config = config;
 exports.configure = configure;
-},{}],5:[function(require,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 (function (global){
 "use strict";
 /*global self*/
-var RSVPPromise = require("./promise").Promise;
-var isFunction = require("./utils").isFunction;
+var RSVPPromise = _dereq_("./promise").Promise;
+var isFunction = _dereq_("./utils").isFunction;
 
 function polyfill() {
   var local;
@@ -219,18 +219,18 @@ function polyfill() {
 
 exports.polyfill = polyfill;
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./promise":6,"./utils":10}],6:[function(require,module,exports){
+},{"./promise":6,"./utils":10}],6:[function(_dereq_,module,exports){
 "use strict";
-var config = require("./config").config;
-var configure = require("./config").configure;
-var objectOrFunction = require("./utils").objectOrFunction;
-var isFunction = require("./utils").isFunction;
-var now = require("./utils").now;
-var all = require("./all").all;
-var race = require("./race").race;
-var staticResolve = require("./resolve").resolve;
-var staticReject = require("./reject").reject;
-var asap = require("./asap").asap;
+var config = _dereq_("./config").config;
+var configure = _dereq_("./config").configure;
+var objectOrFunction = _dereq_("./utils").objectOrFunction;
+var isFunction = _dereq_("./utils").isFunction;
+var now = _dereq_("./utils").now;
+var all = _dereq_("./all").all;
+var race = _dereq_("./race").race;
+var staticResolve = _dereq_("./resolve").resolve;
+var staticReject = _dereq_("./reject").reject;
+var asap = _dereq_("./asap").asap;
 
 var counter = 0;
 
@@ -431,10 +431,10 @@ function publishRejection(promise) {
 }
 
 exports.Promise = Promise;
-},{"./all":2,"./asap":3,"./config":4,"./race":7,"./reject":8,"./resolve":9,"./utils":10}],7:[function(require,module,exports){
+},{"./all":2,"./asap":3,"./config":4,"./race":7,"./reject":8,"./resolve":9,"./utils":10}],7:[function(_dereq_,module,exports){
 "use strict";
 /* global toString */
-var isArray = require("./utils").isArray;
+var isArray = _dereq_("./utils").isArray;
 
 /**
   `RSVP.race` allows you to watch a series of promises and act as soon as the
@@ -521,7 +521,7 @@ function race(promises) {
 }
 
 exports.race = race;
-},{"./utils":10}],8:[function(require,module,exports){
+},{"./utils":10}],8:[function(_dereq_,module,exports){
 "use strict";
 /**
   `RSVP.reject` returns a promise that will become rejected with the passed
@@ -569,7 +569,7 @@ function reject(reason) {
 }
 
 exports.reject = reject;
-},{}],9:[function(require,module,exports){
+},{}],9:[function(_dereq_,module,exports){
 "use strict";
 function resolve(value) {
   /*jshint validthis:true */
@@ -585,7 +585,7 @@ function resolve(value) {
 }
 
 exports.resolve = resolve;
-},{}],10:[function(require,module,exports){
+},{}],10:[function(_dereq_,module,exports){
 "use strict";
 function objectOrFunction(x) {
   return isFunction(x) || (typeof x === "object" && x !== null);
@@ -608,7 +608,7 @@ exports.objectOrFunction = objectOrFunction;
 exports.isFunction = isFunction;
 exports.isArray = isArray;
 exports.now = now;
-},{}],11:[function(require,module,exports){
+},{}],11:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -913,7 +913,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],12:[function(require,module,exports){
+},{}],12:[function(_dereq_,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -978,226 +978,221 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],13:[function(require,module,exports){
-(function() {
-  var DeLorean;
+},{}],13:[function(_dereq_,module,exports){
+var DeLorean;
 
-  DeLorean = {
-    Flux: require('./flux.coffee')
-  };
+DeLorean = {
+  Flux: _dereq_('./flux.coffee')
+};
 
-  if (typeof window !== "undefined" && window !== null) {
-    window.DeLorean = DeLorean;
+module.exports = DeLorean;
+
+
+
+},{"./flux.coffee":15}],14:[function(_dereq_,module,exports){
+var Dispatcher, EventEmitter, Promise,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+EventEmitter = _dereq_('events').EventEmitter;
+
+Promise = _dereq_('es6-promise').Promise;
+
+Dispatcher = (function(_super) {
+  __extends(Dispatcher, _super);
+
+  function Dispatcher(stores) {
+    this.stores = stores;
   }
 
-}).call(this);
-
-},{"./flux.coffee":15}],14:[function(require,module,exports){
-(function() {
-  var Dispatcher, EventEmitter, Promise,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  EventEmitter = require('events').EventEmitter;
-
-  Promise = require('es6-promise').Promise;
-
-  Dispatcher = (function(_super) {
-    __extends(Dispatcher, _super);
-
-    function Dispatcher(stores) {
-      this.stores = stores;
-    }
-
-    Dispatcher.prototype.dispatch = function(actionName, data) {
-      var deferred, store, storeName, _ref;
-      deferred = this.waitFor((function() {
-        var _ref, _results;
-        _ref = this.stores;
-        _results = [];
-        for (storeName in _ref) {
-          store = _ref[storeName];
-          _results.push(store);
-        }
-        return _results;
-      }).call(this));
+  Dispatcher.prototype.dispatch = function(actionName, data) {
+    var deferred, store, storeName, _ref;
+    deferred = this.waitFor((function() {
+      var _ref, _results;
       _ref = this.stores;
+      _results = [];
+      for (storeName in _ref) {
+        store = _ref[storeName];
+        _results.push(store);
+      }
+      return _results;
+    }).call(this));
+    _ref = this.stores;
+    for (storeName in _ref) {
+      if (!__hasProp.call(_ref, storeName)) continue;
+      store = _ref[storeName];
+      store.dispatchAction(actionName, data);
+    }
+    return deferred;
+  };
+
+  Dispatcher.prototype.waitFor = function(stores) {
+    var promises, store;
+    promises = (function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = stores.length; _i < _len; _i++) {
+        store = stores[_i];
+        _results.push(new Promise(function(resolve, reject) {
+          return store.once('change', resolve);
+        }));
+      }
+      return _results;
+    })();
+    return Promise.all(promises).then((function(_this) {
+      return function() {
+        return _this.emit('change:all');
+      };
+    })(this));
+  };
+
+  Dispatcher.prototype.registerAction = function(actionName, callback) {
+    return this[actionName] = callback.bind(this);
+  };
+
+  return Dispatcher;
+
+})(EventEmitter);
+
+module.exports = Dispatcher;
+
+
+
+},{"es6-promise":1,"events":11}],15:[function(_dereq_,module,exports){
+var Dispatcher, Flux, Store,
+  __hasProp = {}.hasOwnProperty;
+
+Store = _dereq_('./store.coffee');
+
+Dispatcher = _dereq_('./dispatcher.coffee');
+
+Flux = (function() {
+  function Flux() {}
+
+  Flux.createStore = function(store) {
+    return new Store(store);
+  };
+
+  Flux.createDispatcher = function(actions) {
+    var action, callback, dispatcher;
+    dispatcher = new Dispatcher(typeof actions.getStores === "function" ? actions.getStores() : void 0);
+    for (action in actions) {
+      if (!__hasProp.call(actions, action)) continue;
+      callback = actions[action];
+      if (action !== 'getStores') {
+        dispatcher.registerAction(action, callback);
+      }
+    }
+    return dispatcher;
+  };
+
+  return Flux;
+
+})();
+
+Flux.mixins = _dereq_('./mixin.coffee');
+
+module.exports = Flux;
+
+
+
+},{"./dispatcher.coffee":14,"./mixin.coffee":16,"./store.coffee":17}],16:[function(_dereq_,module,exports){
+var __hasProp = {}.hasOwnProperty;
+
+module.exports = {
+  storeListener: {
+    componentDidMount: function() {
+      var store, storeName, _ref, _results;
+      _ref = this.stores;
+      _results = [];
       for (storeName in _ref) {
         if (!__hasProp.call(_ref, storeName)) continue;
         store = _ref[storeName];
-        store.dispatchAction(actionName, data);
-      }
-      return deferred;
-    };
-
-    Dispatcher.prototype.waitFor = function(stores) {
-      var promises, store;
-      promises = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = stores.length; _i < _len; _i++) {
-          store = stores[_i];
-          _results.push(new Promise(function(resolve, reject) {
-            return store.once('change', resolve);
-          }));
-        }
-        return _results;
-      })();
-      return Promise.all(promises).then((function(_this) {
-        return function() {
-          return _this.emit('change:all');
-        };
-      })(this));
-    };
-
-    Dispatcher.prototype.registerAction = function(actionName, callback) {
-      return this[actionName] = callback.bind(this);
-    };
-
-    return Dispatcher;
-
-  })(EventEmitter);
-
-  module.exports = Dispatcher;
-
-}).call(this);
-
-},{"es6-promise":1,"events":11}],15:[function(require,module,exports){
-(function() {
-  var Dispatcher, Flux, Store,
-    __hasProp = {}.hasOwnProperty;
-
-  Store = require('./store.coffee');
-
-  Dispatcher = require('./dispatcher.coffee');
-
-  Flux = (function() {
-    function Flux() {}
-
-    Flux.createStore = function(store) {
-      return new Store(store);
-    };
-
-    Flux.createDispatcher = function(actions) {
-      var action, callback, dispatcher;
-      dispatcher = new Dispatcher(typeof actions.getStores === "function" ? actions.getStores() : void 0);
-      for (action in actions) {
-        if (!__hasProp.call(actions, action)) continue;
-        callback = actions[action];
-        if (action !== 'getStores') {
-          dispatcher.registerAction(action, callback);
-        }
-      }
-      return dispatcher;
-    };
-
-    return Flux;
-
-  })();
-
-  Flux.mixins = require('./mixin');
-
-  module.exports = Flux;
-
-}).call(this);
-
-},{"./dispatcher.coffee":14,"./mixin":16,"./store.coffee":17}],16:[function(require,module,exports){
-(function() {
-  var __hasProp = {}.hasOwnProperty;
-
-  module.exports = {
-    storeListener: {
-      componentDidMount: function() {
-        var store, storeName, _ref, _results;
-        _ref = this.stores;
-        _results = [];
-        for (storeName in _ref) {
-          if (!__hasProp.call(_ref, storeName)) continue;
-          store = _ref[storeName];
-          _results.push((function(_this) {
-            return function(store, storeName) {
-              return store.onChange(function() {
-                var state, _base;
-                if (typeof _this.storeDidChanged === "function") {
-                  _this.storeDidChanged(storeName);
-                }
-                if (state = typeof (_base = store.store).getState === "function" ? _base.getState() : void 0) {
-                  _this.state.stores[storeName] = state;
-                  return _this.forceUpdate();
-                }
-              });
-            };
-          })(this)(store, storeName));
-        }
-        return _results;
-      },
-      getInitialState: function() {
-        var state, storeName, _base, _ref;
-        this.dispatcher = this.props.dispatcher;
-        this.dispatcher.on('change:all', (function(_this) {
-          return function() {
-            return typeof _this.storesDidChanged === "function" ? _this.storesDidChanged() : void 0;
+        _results.push((function(_this) {
+          return function(store, storeName) {
+            return store.onChange(function() {
+              var state, _base;
+              if (typeof _this.storeDidChanged === "function") {
+                _this.storeDidChanged(storeName);
+              }
+              if (state = typeof (_base = store.store).getState === "function" ? _base.getState() : void 0) {
+                _this.state.stores[storeName] = state;
+                return _this.forceUpdate();
+              }
+            });
           };
-        })(this));
-        this.stores = this.dispatcher.stores;
-        state = {
-          stores: {}
-        };
-        _ref = this.stores;
-        for (storeName in _ref) {
-          if (!__hasProp.call(_ref, storeName)) continue;
-          state.stores[storeName] = typeof (_base = this.stores[storeName].store).getState === "function" ? _base.getState() : void 0;
-        }
-        return state;
-      }
-    }
-  };
-
-}).call(this);
-
-},{}],17:[function(require,module,exports){
-(function() {
-  var EventEmitter, Store,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  EventEmitter = require('events').EventEmitter;
-
-  Store = (function(_super) {
-    __extends(Store, _super);
-
-    function Store(store) {
-      this.store = store;
-      Store.__super__.constructor.apply(this, arguments);
-      this.bindActions(store.actions);
-    }
-
-    Store.prototype.bindActions = function(actions) {
-      var actionName, callback, _results;
-      this.store.emit = this.emit.bind(this);
-      _results = [];
-      for (actionName in actions) {
-        if (!__hasProp.call(actions, actionName)) continue;
-        callback = actions[actionName];
-        _results.push(this.on("action:" + actionName, this.store[callback].bind(this.store)));
+        })(this)(store, storeName));
       }
       return _results;
-    };
+    },
+    getInitialState: function() {
+      var state, storeName, _base, _ref;
+      this.dispatcher = this.props.dispatcher;
+      this.dispatcher.on('change:all', (function(_this) {
+        return function() {
+          return typeof _this.storesDidChanged === "function" ? _this.storesDidChanged() : void 0;
+        };
+      })(this));
+      this.stores = this.dispatcher.stores;
+      state = {
+        stores: {}
+      };
+      _ref = this.stores;
+      for (storeName in _ref) {
+        if (!__hasProp.call(_ref, storeName)) continue;
+        state.stores[storeName] = typeof (_base = this.stores[storeName].store).getState === "function" ? _base.getState() : void 0;
+      }
+      return state;
+    }
+  }
+};
 
-    Store.prototype.dispatchAction = function(actionName, data) {
-      return this.emit("action:" + actionName, data);
-    };
 
-    Store.prototype.onChange = function(callback) {
-      return this.on('change', callback);
-    };
 
-    return Store;
+},{}],17:[function(_dereq_,module,exports){
+var EventEmitter, Store,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  })(EventEmitter);
+EventEmitter = _dereq_('events').EventEmitter;
 
-  module.exports = Store;
+Store = (function(_super) {
+  __extends(Store, _super);
 
-}).call(this);
+  function Store(store) {
+    this.store = store;
+    Store.__super__.constructor.apply(this, arguments);
+    this.bindActions(store.actions);
+  }
+
+  Store.prototype.bindActions = function(actions) {
+    var actionName, callback, _results;
+    this.store.emit = this.emit.bind(this);
+    _results = [];
+    for (actionName in actions) {
+      if (!__hasProp.call(actions, actionName)) continue;
+      callback = actions[actionName];
+      _results.push(this.on("action:" + actionName, this.store[callback].bind(this.store)));
+    }
+    return _results;
+  };
+
+  Store.prototype.dispatchAction = function(actionName, data) {
+    return this.emit("action:" + actionName, data);
+  };
+
+  Store.prototype.onChange = function(callback) {
+    return this.on('change', callback);
+  };
+
+  return Store;
+
+})(EventEmitter);
+
+module.exports = Store;
+
+
 
 },{"events":11}]},{},[13])
+(13)
+});

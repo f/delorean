@@ -3,8 +3,4 @@
 DeLorean =
   Flux: require './flux.coffee'
 
-if window?
-  window.DeLorean = DeLorean
-
-if module?.exports?
-  module.exports = DeLorean
+module.exports = DeLorean

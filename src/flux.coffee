@@ -20,5 +20,5 @@ class Flux
     dispatcher
 
 # Mixins can be defined in `mixin.coffee` file.
-Flux.mixins = require './mixin'
+Flux.mixins = require './mixin.coffee'
 module.exports = Flux

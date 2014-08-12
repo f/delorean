@@ -2,7 +2,7 @@
   "name": "delorean.js",
   "version": "0.2.2",
   "description": "Flux Library",
-  "main": "index.js",
+  "main": "dist/delorean.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,12 +12,10 @@
     "coffeeify": "^0.7.0",
     "grunt": "^0.4.5",
     "grunt-browserify": "^2.1.4",
-    "grunt-contrib-coffeeify": "^0.1.0",
     "grunt-contrib-uglify": "^0.5.1",
     "grunt-react": "^0.9.0"
   },
   "dependencies": {
-    "coffee-script": "^1.7.1",
     "director": "^1.2.3",
     "es6-promise": "^1.0.0",
     "react": "^0.11.1"
