@@ -5,3 +5,6 @@ DeLorean =
 
 if window?
   window.DeLorean = DeLorean
+
+if module?.exports?
+  module.exports = DeLorean
