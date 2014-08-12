@@ -4,6 +4,17 @@
 
 DeLorean is a tiny Flux pattern implementation.
 
+## What is Flux
+
+Data in a Flux application flows in a single direction, in a cycle:
+
+```
+Views ---> (actions) ----> Dispatcher ---> (registered callback) ---> Stores -------+
+Ʌ                                                                                   |
+|                                                                                   V
++-- (Controller-Views "change" event handlers) ---- (Stores emit "change" events) --+
+```
+
 ## Install
 
 You can install **DeLorean** with Bower:
