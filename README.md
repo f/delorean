@@ -188,7 +188,29 @@ var TodoListView = React.createClass({
 });
 ```
 
-## Running an Example
+## Routing
+
+You can use any Router tool with DeLorean. In the example I use `director` as the router.
+
+```js
+var Router = require('director').Router;
+```
+
+You may trig the action from View. So you can just do something like that:
+
+```js
+var mainView = React.renderComponent(<ApplicationView dispatcher={TodoDispatcher} />,
+  document.getElementById('main'))
+
+var appRouter = new Router({
+  '/random': function () {
+    mainView.dispatcher.dispatch('todo:add', {text: Math.random()});
+    location.hash = '/';
+  }
+});
+```
+
+## Running the example
 
 ```bash
 grunt example

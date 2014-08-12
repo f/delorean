@@ -1038,7 +1038,7 @@ process.chdir = function (dir) {
         for (_i = 0, _len = stores.length; _i < _len; _i++) {
           store = stores[_i];
           _results.push(new Promise(function(resolve, reject) {
-            return store.onChange(resolve);
+            return store.once('change', resolve);
           }));
         }
         return _results;

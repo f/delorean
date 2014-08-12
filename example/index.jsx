@@ -2,6 +2,7 @@
 
 var React = require('react');
 var Flux = DeLorean.Flux;
+var Router = require('director').Router;
 
 /* Generate Generic Store */
 
@@ -153,4 +154,14 @@ var ApplicationView = React.createClass({
 
 });
 
-React.renderComponent(<ApplicationView dispatcher={TodoDispatcher} />, document.getElementById('main'));
+var mainView = React.renderComponent(<ApplicationView dispatcher={TodoDispatcher} />,
+  document.getElementById('main'))
+
+var appRouter = new Router({
+  '/random': function () {
+    mainView.dispatcher.dispatch('todo:add', {text: Math.random()});
+    location.hash = '/';
+  }
+});
+
+appRouter.init('/');

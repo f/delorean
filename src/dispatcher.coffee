@@ -20,7 +20,7 @@ class Dispatcher extends EventEmitter
   waitFor: (stores)->
     promises = for store in stores
       new Promise (resolve, reject)->
-        store.onChange resolve
+        store.once 'change', resolve
 
     Promise.all(promises).then =>
       @emit 'change:all'
