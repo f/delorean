@@ -221,11 +221,14 @@ var appRouter = new Router({
 });
 ```
 
-## Running the example
+## Running the TodoMVC example
+
+There is a simple TodoMVC example working with DeLorean.js
 
 ```bash
-grunt example
-open example/index.html
+cd examples/todomvc
+grunt
+open index.html
 ```
 
 ## Todo

@@ -8,11 +8,11 @@ module.exports = (grunt)->
     react:
       example:
         files:
-          'asset/index.js': 'asset/index.jsx'
+          'asset/js/index.js': 'asset/jsx/index.jsx'
 
     browserify:
       example:
         files:
-          'asset/index.bundle.js': ['asset/index.js']
+          'asset/js/app.js': ['asset/js/index.js']
 
   grunt.registerTask 'default', ['react:example', 'browserify:example']

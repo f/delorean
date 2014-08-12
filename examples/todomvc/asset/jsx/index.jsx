@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 
 var React = require('react');
-var Flux = DeLorean.Flux;
+var Flux = require('../../../../').Flux;
 var Router = require('director').Router;
 
 /* Generate Generic Store */
