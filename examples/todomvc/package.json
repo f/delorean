@@ -1,0 +1,16 @@
+{
+  "name": "delorean-todomvc",
+  "version": "0.0.0",
+  "description": "DeLorean.js TodoMVC Example",
+  "author": "Fatih Kadir Akin",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^2.1.4",
+    "grunt-react": "^0.9.0"
+  },
+  "dependencies": {
+    "director": "^1.2.3",
+    "react": "^0.11.1"
+  }
+}
