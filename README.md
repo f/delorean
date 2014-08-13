@@ -2,7 +2,7 @@
 
 # DeLorean.js
 
-[![NPM version](https://badge.fury.io/js/delorean.js@2x.png)](http://badge.fury.io/js/delorean.js)
+[![NPM version](https://badge.fury.io/js/delorean.js.png)](http://badge.fury.io/js/delorean.js)
 
 DeLorean is a tiny Flux pattern implementation.
 
