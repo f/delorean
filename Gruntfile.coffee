@@ -22,4 +22,8 @@ module.exports = (grunt)->
         files:
           'dist/delorean.js': ['src/delorean.coffee']
 
+    release:
+      options:
+        files: ['package.json', 'bower.json']
+
   grunt.registerTask 'default', ['browserify:coffeeify', 'uglify']
