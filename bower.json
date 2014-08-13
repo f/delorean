@@ -3,7 +3,7 @@
   "version": "0.2.5",
   "homepage": "http://deloreanjs.com",
   "authors": [
-    "f <fka@fatihak.in>"
+    "Fatih Kadir Akin <fka@fatihak.in>"
   ],
   "description": "Flux Architecture Framework",
   "main": "dist/delorean.min.js",
