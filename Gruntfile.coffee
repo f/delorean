@@ -1,8 +1,8 @@
 module.exports = (grunt)->
 
   grunt.loadNpmTasks 'grunt-contrib-uglify'
-  grunt.loadNpmTasks 'grunt-react'
   grunt.loadNpmTasks 'grunt-browserify'
+  grunt.loadNpmTasks 'grunt-release'
 
   grunt.initConfig
 
