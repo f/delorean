@@ -1,6 +1,6 @@
 {
   "name": "delorean.js",
-  "version": "0.2.8",
+  "version": "0.2.13",
   "description": "Flux Library",
   "main": "dist/delorean.min.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "grunt-browserify": "^2.1.4",
     "grunt-contrib-uglify": "^0.5.1",
     "grunt-react": "^0.9.0",
-    "grunt-release": "^0.7.0"
+    "grunt-release": "git+https://github.com/townxelliot/grunt-release.git#371f3412b642a29aa62e1e41794fcfe4b028d11f"
   },
   "dependencies": {
     "es6-promise": "^1.0.0"
