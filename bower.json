@@ -1,11 +1,11 @@
 {
   "name": "delorean",
   "version": "0.0.0",
-  "homepage": "https://github.com/f/delorean",
+  "homepage": "http://deloreanjs.com",
   "authors": [
     "f <fka@fatihak.in>"
   ],
-  "description": "Flux library",
+  "description": "Flux Architecture Framework",
   "main": "dist/delorean.min.js",
   "moduleType": [
     "node"
