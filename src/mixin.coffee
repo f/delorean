@@ -9,7 +9,7 @@ module.exports =
         do (store, storeName) =>
           store.onChange =>
             # call the components `storeDidChanged` method
-            @storeDidChanged? storeName
+            @storeDidChange? storeName
             # change state
             if state = store.store.getState?()
               @state.stores[storeName] = state
@@ -19,7 +19,7 @@ module.exports =
       # Some shortcuts
       @dispatcher = @props.dispatcher
       @dispatcher.on 'change:all', =>
-        @storesDidChanged?()
+        @storesDidChange?()
 
       @stores = @dispatcher.stores
 

@@ -172,7 +172,7 @@ var TodoListView = React.createClass({
 });
 ```
 
-### `storeDidChanged` and `storesDidChanged`
+### `storeDidChange` and `storesDidChange`
 
 Two functions are triggered when a store changed and all stores are changed. You can use
 these functions if your application needs.
@@ -183,12 +183,12 @@ var TodoListView = React.createClass({
   mixins: [Flux.mixins.storeListener],
 
   // when all stores are updated
-  storesDidChanged: function () {
+  storesDidChange: function () {
     console.log("All stores are now updated.");
   },
 
   // when a store updates
-  storeDidChanged: function (storeName) {
+  storeDidChange: function (storeName) {
     console.log(storeName + " store is now updated.");
   },
 
