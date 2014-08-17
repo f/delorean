@@ -6,6 +6,13 @@
 
 DeLorean is a tiny Flux pattern implementation.
 
+  - Unidirectional data flow, it makes your app logic simpler than MVC,
+  - Automatically listens data changes and keeps your data updated,
+  - It uses **`Object.observe`** to listen store changes,
+  - Makes the data is more consistent in your whole application,
+  - Too easy to use with React; just add a mixin,
+  - Too small, just **13K**.
+
 ## What is Flux
 
 Data in a Flux application flows in a single direction, in a cycle:
@@ -309,9 +316,13 @@ grunt
 open index.html
 ```
 
-## Todo
+## TODO
 
-  - Improve Readme.
+  - Split README file into chapters.
+  - Fix English grammar mistakes in README.
+  - Draw the flow with SVG or something else.
+  - Build a webpage.
+  - Build Backbone.js plugin.
 
 ## Name
 
