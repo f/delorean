@@ -27,6 +27,11 @@ var TodoStore = Flux.createStore({
       self.todos.push({text: 'this came async.'});
       self.emit('change');
     }, 1000);
+
+    // Auto change
+    Array.observe(this.todos, function () {
+      self.emit('change');
+    });
   },
 
   actions: {
@@ -59,6 +64,7 @@ var myTodos = new TodoStore([
   {text: 'foo'},
   {text: 'bar'}
 ]);
+window.myTodos = myTodos;
 
 /* Generate List dispatcher with TodoStore. */
 

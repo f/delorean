@@ -96,9 +96,41 @@ var TodoStore = Flux.createStore({
   initialize: function (url) {
     var self = this;
 
-    $.getJSON(url, function (data) {
+    $.getJSON(url, {}, function (data) {
       self.todos = data.todos;
       self.emit('change');
+    });
+  }
+});
+
+var myTodos = new TodoStore('/todos');
+```
+
+#### Using `Array.observe` and `Object.observe`
+
+You don't have to call `emit('change')` everytime. You may use **`observe`** feature
+of **ES.next**.
+
+```javascript
+var TodoStore = Flux.createStore({
+
+  todos: [
+    {text: 'hello'},
+    {text: 'world'}
+  ],
+
+  initialize: function (url) {
+    var self = this;
+
+    // It will update store and Views everytime
+    // you changed the data.
+    Array.observe(this.todos, function () {
+      self.emit('change');
+    });
+
+    $.getJSON(url, {}, function (data) {
+      self.todos = data.todos;
+      // You don't have to emit 'change' event.
     });
   }
 });
