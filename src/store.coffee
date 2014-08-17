@@ -3,8 +3,9 @@
 # Stores are simple observable structures.
 class Store extends EventEmitter
 
-  constructor: (@store)->
+  constructor: (@store, args...)->
     super
+    @store.initialize?.call @store, args...;
     @bindActions store.actions
 
   bindActions: (actions)->

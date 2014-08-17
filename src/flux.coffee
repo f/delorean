@@ -6,8 +6,8 @@ class Flux
   # Generates new store using Store class
   # Stores are global and not connected directly
   # to the Views
-  @createStore: (store)->
-    new Store store
+  @createStore: (store)-> (args...)->
+    new Store store, args...
 
   # Dispatchers are actually Action sets, it has getStores
   # function. There should be stores for a complete

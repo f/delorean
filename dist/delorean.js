@@ -1060,6 +1060,7 @@ module.exports = Dispatcher;
 
 },{"es6-promise":1,"events":11}],15:[function(_dereq_,module,exports){
 var Dispatcher, Flux, Store,
+  __slice = [].slice,
   __hasProp = {}.hasOwnProperty;
 
 Store = _dereq_('./store.coffee');
@@ -1070,7 +1071,15 @@ Flux = (function() {
   function Flux() {}
 
   Flux.createStore = function(store) {
-    return new Store(store);
+    return function() {
+      var args;
+      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      return (function(func, args, ctor) {
+        ctor.prototype = func.prototype;
+        var child = new ctor, result = func.apply(child, args);
+        return Object(result) === result ? result : child;
+      })(Store, [store].concat(__slice.call(args)), function(){});
+    };
   };
 
   Flux.createDispatcher = function(actions) {
@@ -1112,8 +1121,8 @@ module.exports = {
           return function(store, storeName) {
             return store.onChange(function() {
               var state, _base;
-              if (typeof _this.storeDidChanged === "function") {
-                _this.storeDidChanged(storeName);
+              if (typeof _this.storeDidChange === "function") {
+                _this.storeDidChange(storeName);
               }
               if (state = typeof (_base = store.store).getState === "function" ? _base.getState() : void 0) {
                 _this.state.stores[storeName] = state;
@@ -1130,7 +1139,7 @@ module.exports = {
       this.dispatcher = this.props.dispatcher;
       this.dispatcher.on('change:all', (function(_this) {
         return function() {
-          return typeof _this.storesDidChanged === "function" ? _this.storesDidChanged() : void 0;
+          return typeof _this.storesDidChange === "function" ? _this.storesDidChange() : void 0;
         };
       })(this));
       this.stores = this.dispatcher.stores;
@@ -1152,16 +1161,22 @@ module.exports = {
 },{}],17:[function(_dereq_,module,exports){
 var EventEmitter, Store,
   __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  __slice = [].slice;
 
 EventEmitter = _dereq_('events').EventEmitter;
 
 Store = (function(_super) {
   __extends(Store, _super);
 
-  function Store(store) {
+  function Store() {
+    var args, store, _ref;
+    store = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     this.store = store;
     Store.__super__.constructor.apply(this, arguments);
+    if ((_ref = this.store.initialize) != null) {
+      _ref.call.apply(_ref, [this.store].concat(__slice.call(args)));
+    }
     this.bindActions(store.actions);
   }
 

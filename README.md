@@ -80,6 +80,32 @@ var TodoStore = Flux.createStore({
 });
 ```
 
+### `initialize`
+
+You may define an `initialize` function to run something on construction. In construction
+status, you can **do server actions**.
+
+```javascript
+var TodoStore = Flux.createStore({
+
+  todos: [
+    {text: 'hello'},
+    {text: 'world'}
+  ],
+
+  initialize: function (url) {
+    var self = this;
+
+    $.getJSON(url, function (data) {
+      self.todos = data.todos;
+      self.emit('change');
+    });
+  }
+});
+
+var myTodos = new TodoStore('/todos');
+```
+
 ## Dispatcher
 
 > The dispatcher is the central hub that manages all data flow in a Flux application.
@@ -101,7 +127,7 @@ var TodoListApp = Flux.createDispatcher({
 
   getStores: function () {
     return {
-      todoStore: TodoStore
+      todoStore: myTodos
     }
   }
 
@@ -130,7 +156,7 @@ var TodoListApp = Flux.createDispatcher({
 
   getStores: function () {
     return {
-      todoStore: TodoStore
+      todoStore: myTodos
     }
   }
 

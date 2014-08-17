@@ -13,6 +13,17 @@ var TodoStore = Flux.createStore({
     {text: 'world'}
   ],
 
+  initialize: function (todos) {
+    var self = this;
+    this.todos = this.todos.concat(todos);
+
+    // It's an example for async requests.
+    setTimeout(function () {
+      self.todos.push({text: 'this came async.'});
+      self.emit('change');
+    }, 1000);
+  },
+
   actions: {
     'todo:add': 'addTodo',
     'todo:remove': 'removeTodo'
@@ -37,6 +48,13 @@ var TodoStore = Flux.createStore({
   }
 });
 
+/* Create a Todo Store with a data */
+
+var myTodos = new TodoStore([
+  {text: 'foo'},
+  {text: 'bar'}
+]);
+
 /* Generate List dispatcher with TodoStore. */
 
 var TodoListDispatcher = Flux.createDispatcher({
@@ -52,7 +70,7 @@ var TodoListDispatcher = Flux.createDispatcher({
 
   getStores: function () {
     return {
-      todoStore: TodoStore
+      todoStore: myTodos
     }
   }
 
@@ -68,7 +86,7 @@ var TodoFormDispatcher = Flux.createDispatcher({
 
   getStores: function () {
     return {
-      todoStore: TodoStore
+      todoStore: myTodos
     }
   }
 
@@ -80,7 +98,7 @@ var TodoDispatcher = Flux.createDispatcher({
 
   getStores: function () {
     return {
-      todoStore: TodoStore
+      todoStore: myTodos
     }
   }
 
