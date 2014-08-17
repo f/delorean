@@ -24,9 +24,10 @@ var TodoStore = Flux.createStore({
     }, 1000);
 
     // Auto change
-    Array.observe(this.todos, function () {
-      self.emit('change');
-    });
+    // Array.observe(this.todos, function () {
+    //   self.emit('change');
+    // });
+    this.listenChanges(this.todos);
   },
 
   actions: {
@@ -36,14 +37,12 @@ var TodoStore = Flux.createStore({
 
   addTodo: function (todo) {
     this.todos.push({text: todo.text});
-    this.emit('change');
   },
 
   removeTodo: function (todoToComplete) {
     this.todos = this.todos.filter(function (todo) {
       return todoToComplete.text !== todo.text
     });
-    this.emit('change');
   },
 
   getState: function () {

@@ -106,7 +106,7 @@ var TodoStore = Flux.createStore({
 var myTodos = new TodoStore('/todos');
 ```
 
-#### Using `Array.observe` and `Object.observe`
+#### Using `Array.observe` and `Object.observe`, or `listenChanges`
 
 You don't have to call `emit('change')` everytime. You may use **`observe`** feature
 of **ES.next**.
@@ -136,6 +136,24 @@ var TodoStore = Flux.createStore({
 });
 
 var myTodos = new TodoStore('/todos');
+```
+
+Also you may use **`listenChanges`** method which is doing `Array.observe`
+or `Object.observe` already for you.
+
+```javascript
+  ...
+  initialize: function (url) {
+    var self = this;
+
+    // It will basically runs `Array.observe` or `Object.observe`
+    this.listenChanges(this.todos);
+
+    $.getJSON(url, {}, function (data) {
+      self.todos = data.todos;
+    });
+  }
+  ...
 ```
 
 ## Dispatcher

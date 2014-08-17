@@ -1174,15 +1174,16 @@ Store = (function(_super) {
     store = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     this.store = store;
     Store.__super__.constructor.apply(this, arguments);
+    this.bindActions(store.actions);
     if ((_ref = this.store.initialize) != null) {
       _ref.call.apply(_ref, [this.store].concat(__slice.call(args)));
     }
-    this.bindActions(store.actions);
   }
 
   Store.prototype.bindActions = function(actions) {
     var actionName, callback, _results;
     this.store.emit = this.emit.bind(this);
+    this.store.listenChanges = this.listenChanges.bind(this);
     _results = [];
     for (actionName in actions) {
       if (!__hasProp.call(actions, actionName)) continue;
@@ -1198,6 +1199,16 @@ Store = (function(_super) {
 
   Store.prototype.onChange = function(callback) {
     return this.on('change', callback);
+  };
+
+  Store.prototype.listenChanges = function(object) {
+    var observer;
+    observer = Array.isArray(object) ? Array.observe : Object.observe;
+    return observer(object, (function(_this) {
+      return function() {
+        return _this.emit('change');
+      };
+    })(this));
   };
 
   return Store;
