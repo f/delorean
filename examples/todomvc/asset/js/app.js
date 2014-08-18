@@ -45,9 +45,13 @@ var TodoStore = Flux.createStore({
   },
 
   removeTodo: function (todoToComplete) {
-    this.todos = this.todos.filter(function (todo) {
+    var filteredData = this.todos.filter(function (todo) {
       return todoToComplete.text !== todo.text
     });
+    this.listenChanges(filteredData);
+
+    this.todos = filteredData;
+    this.emit('change');
   },
 
   getState: function () {
