@@ -16,8 +16,14 @@ module.exports =
               @forceUpdate()
 
     getInitialState: ->
+      findDispatcher = (view)->
+        unless view.props.dispatcher
+          findDispatcher view._owner
+        else
+          view.props.dispatcher
+
       # Some shortcuts
-      @dispatcher = @props.dispatcher
+      @dispatcher = findDispatcher this
       @dispatcher.on 'change:all', =>
         @storesDidChange?()
 
@@ -26,5 +32,5 @@ module.exports =
       state = stores: {}
       # more shortcuts for the state
       for own storeName of @stores
-        state.stores[storeName] = @stores[storeName].store.getState?()
+        state.stores[storeName] = @stores[storeName]?.store?.getState?()
       state

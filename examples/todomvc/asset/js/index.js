@@ -17,12 +17,6 @@ var TodoStore = Flux.createStore({
     var self = this;
     this.todos = this.todos.concat(todos);
 
-    // It's an example for async requests.
-    setTimeout(function () {
-      self.todos.push({text: 'this came async.'});
-      self.emit('change');
-    }, 1000);
-
     // Auto change
     // Array.observe(this.todos, function () {
     //   self.emit('change');
@@ -32,7 +26,8 @@ var TodoStore = Flux.createStore({
 
   actions: {
     'todo:add': 'addTodo',
-    'todo:remove': 'removeTodo'
+    'todo:remove': 'removeTodo',
+    'todo:reset': 'resetTodos'
   },
 
   addTodo: function (todo) {
@@ -46,6 +41,12 @@ var TodoStore = Flux.createStore({
     this.listenChanges(filteredData);
 
     this.todos = filteredData;
+    this.emit('change');
+  },
+
+  resetTodos: function (todos) {
+    this.todos = todos;
+    this.listenChanges(this.todos);
     this.emit('change');
   },
 
@@ -68,6 +69,10 @@ window.myTodos = myTodos;
 
 var TodoListDispatcher = Flux.createDispatcher({
 
+  addTodo: function (todo) {
+    this.dispatch('todo:add', todo);
+  },
+
   removeTodo: function (todo) {
     if (confirm('Do you really want to delete this todo?')) {
       this.dispatch('todo:remove', todo)
@@ -77,20 +82,8 @@ var TodoListDispatcher = Flux.createDispatcher({
     }
   },
 
-  getStores: function () {
-    return {
-      todoStore: myTodos
-    }
-  }
-
-});
-
-/* Generate Todo Form dispatcher with TodoStore. */
-
-var TodoFormDispatcher = Flux.createDispatcher({
-
-  addTodo: function (todo) {
-    this.dispatch('todo:add', todo);
+  reset: function (todos) {
+    this.dispatch('todo:reset', todos);
   },
 
   getStores: function () {
@@ -113,6 +106,37 @@ var TodoDispatcher = Flux.createDispatcher({
 
 });
 
+/* Action generators are simple functions */
+
+var TodoActionCreator = Flux.createActionCreator({
+
+  getAllMessages: function () {
+    // It's an example for async requests.
+    setTimeout(function () {
+      TodoListDispatcher.reset([
+        {text: 1},
+        {text: 2},
+        {text: 3}
+      ]);
+    }, 1000);
+  },
+
+  addTodo: function (todo) {
+    TodoListDispatcher.addTodo(todo);
+  },
+
+  removeTodo: function (todo) {
+    TodoListDispatcher.removeTodo(todo);
+  },
+
+  addAsyncTodo: function (todo) {
+    setTimeout(function () {
+      TodoListDispatcher.addTodo(todo);
+    }, 1000);
+  }
+
+});
+
 /* React Components */
 
 var TodoItemView = React.createClass({displayName: 'TodoItemView',
@@ -122,7 +146,7 @@ var TodoItemView = React.createClass({displayName: 'TodoItemView',
   },
 
   handleClick: function () {
-    this.props.dispatcher.removeTodo(this.props.todo);
+    TodoActionCreator.removeTodo(this.props.todo);
   }
 
 });
@@ -136,7 +160,7 @@ var TodoListView = React.createClass({displayName: 'TodoListView',
 
     return React.DOM.ul(null, 
       this.stores.todoStore.store.todos.map(function (todo) {
-        return TodoItemView({dispatcher: self.dispatcher, todo: todo})
+        return TodoItemView({todo: todo})
       })
     )
   }
@@ -160,7 +184,7 @@ var TodoFormView = React.createClass({displayName: 'TodoFormView',
 
   handleSubmit: function (e) {
     e.preventDefault();
-    this.dispatcher.addTodo({text: this.state.todo});
+    TodoActionCreator.addTodo({text: this.state.todo});
     this.setState({todo: ''});
   }
 
@@ -173,20 +197,23 @@ var ApplicationView = React.createClass({displayName: 'ApplicationView',
   render: function () {
     var self = this;
     return React.DOM.div(null, 
-      TodoListView({dispatcher: TodoListDispatcher}), 
-      TodoFormView({dispatcher: TodoFormDispatcher}), 
+      TodoListView(null), 
+      TodoFormView(null), 
       React.DOM.span(null, "There are ", this.stores.todoStore.store.todos.length, " todos.")
     )
   }
 
 });
 
-var mainView = React.renderComponent(ApplicationView({dispatcher: TodoDispatcher}),
+window.mainView = React.renderComponent(ApplicationView({dispatcher: TodoListDispatcher}),
   document.getElementById('main'))
 
 var appRouter = new Router({
+  '/': function () {
+    TodoActionCreator.addAsyncTodo({text: 'this is async'});
+  },
   '/random': function () {
-    mainView.dispatcher.dispatch('todo:add', {text: Math.random()});
+    TodoActionCreator.addTodo({text: Math.random()});
     location.hash = '/';
   }
 });

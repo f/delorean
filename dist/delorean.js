@@ -1095,6 +1095,10 @@ Flux = (function() {
     return dispatcher;
   };
 
+  Flux.createActionCreator = function(actions) {
+    return actions;
+  };
+
   return Flux;
 
 })();
@@ -1135,8 +1139,15 @@ module.exports = {
       return _results;
     },
     getInitialState: function() {
-      var state, storeName, _base, _ref;
-      this.dispatcher = this.props.dispatcher;
+      var findDispatcher, state, storeName, _ref, _ref1, _ref2;
+      findDispatcher = function(view) {
+        if (!view.props.dispatcher) {
+          return findDispatcher(view._owner);
+        } else {
+          return view.props.dispatcher;
+        }
+      };
+      this.dispatcher = findDispatcher(this);
       this.dispatcher.on('change:all', (function(_this) {
         return function() {
           return typeof _this.storesDidChange === "function" ? _this.storesDidChange() : void 0;
@@ -1149,7 +1160,7 @@ module.exports = {
       _ref = this.stores;
       for (storeName in _ref) {
         if (!__hasProp.call(_ref, storeName)) continue;
-        state.stores[storeName] = typeof (_base = this.stores[storeName].store).getState === "function" ? _base.getState() : void 0;
+        state.stores[storeName] = (_ref1 = this.stores[storeName]) != null ? (_ref2 = _ref1.store) != null ? typeof _ref2.getState === "function" ? _ref2.getState() : void 0 : void 0 : void 0;
       }
       return state;
     }

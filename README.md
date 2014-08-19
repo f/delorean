@@ -90,7 +90,8 @@ var TodoStore = Flux.createStore({
 ### `initialize`
 
 You may define an `initialize` function to run something on construction. In construction
-status, you can **do server actions**.
+status, you may **do server actions**. *But **action creators** are more simple entity to
+do server actions.*
 
 ```javascript
 var TodoStore = Flux.createStore({
@@ -220,11 +221,42 @@ var TodoListApp = Flux.createDispatcher({
 });
 ```
 
+## Action Creators
+
+Action creators are the main controller of the app. They are simply functions that
+manages everything. It allows you to compose data and logic.
+
+```javascript
+var TodoActionCreator = Flux.createActionCreator({
+
+  getAllTodos: function () {
+    // It's an example for async requests.
+    // You can do a server request.
+    $.getJSON('/todos', function (data) {
+      TodoListDispatcher.reset(data.todos);
+    });
+  },
+
+  addTodo: function (todo) {
+    // It statically calls dispatchers.
+    TodoListDispatcher.addTodo(todo);
+  },
+
+  removeTodo: function (todo) {
+    TodoListDispatcher.removeTodo(todo);
+  }
+
+});
+```
+
+Then you can just run `TodoActionCreator.getAllTodos()` function **to start Flux cycle**.
+
 ## Combining to React
 
 You may bring all the flow together with the Views, actually *the Action generators*.
 You should use **`Flux.mixins.storeListener`** mixin to get a view into the Flux system.
-Also you should pass `dispatcher={DispatcherName}` attribute to React view.
+Also you should pass `dispatcher={DispatcherName}` attribute to *main* React view. It will
+pass dispatcher all the child views which have `storeListener` mixin.
 
 ```js
 // Child views don't have to have storeListener.
@@ -236,7 +268,8 @@ var TodoItemView = React.createClass({
   },
 
   handleClick: function () {
-    this.props.dispatcher.removeTodo(this.props.todo);
+    TodoActionCreator.removeTodo(this.props.todo);
+    // or, this.props.dispatcher.removeTodo(this.props.todo);
   }
 
 });
@@ -249,7 +282,7 @@ var TodoListView = React.createClass({
     var self = this;
     return <ul>
       {this.stores.todoStore.store.todos.map(function (todo) {
-        return <TodoItemView dispatcher={self.props.dispatcher} todo={todo}></TodoItemView>
+        return <TodoItemView todo={todo}></TodoItemView>
       })}
     </ul>
   }
@@ -295,12 +328,12 @@ var Router = require('director').Router;
 You may trig the action from View. So you can just do something like that:
 
 ```js
-var mainView = React.renderComponent(<ApplicationView dispatcher={TodoDispatcher} />,
+var mainView = React.renderComponent(<ApplicationView dispatcher={TodoListDispatcher} />,
   document.getElementById('main'))
 
 var appRouter = new Router({
   '/random': function () {
-    mainView.dispatcher.dispatch('todo:add', {text: Math.random()});
+    TodoActionCreator.addTodo({text: Math.random()});
     location.hash = '/';
   }
 });
