@@ -16,8 +16,8 @@ DeLorean is a tiny Flux pattern implementation.
 
 ## Overview
 
-[Try **React.js** example on JSFiddle](http://jsfiddle.net/fkadev/a2ms7rcc/)
-[Try **Flight.js** example on JSFiddle](http://jsfiddle.net/fkadev/1cw9Leau/)
+  - [Try **React.js** example on JSFiddle](http://jsfiddle.net/fkadev/a2ms7rcc/)
+  - [Try **Flight.js** example on JSFiddle](http://jsfiddle.net/fkadev/1cw9Leau/)
 
 ---
 
