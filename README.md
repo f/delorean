@@ -218,11 +218,11 @@ var TodoListApp = Flux.createDispatcher({
 
 ## Action Creators
 
-Action creators are the main controller of the app. They are simply functions that
+Action creators are the main controller of the app. **They are simply objects** that
 manages everything. It allows you to compose data and logic.
 
 ```javascript
-var TodoActionCreator = Flux.createActionCreator({
+var TodoActionCreator = {
 
   getAllTodos: function () {
     // It's an example for async requests.
@@ -241,7 +241,7 @@ var TodoActionCreator = Flux.createActionCreator({
     TodoListDispatcher.removeTodo(todo);
   }
 
-});
+};
 ```
 
 Then you can just run `TodoActionCreator.getAllTodos()` function **to start Flux cycle**.

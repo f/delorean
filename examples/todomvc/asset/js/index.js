@@ -108,7 +108,7 @@ var TodoDispatcher = Flux.createDispatcher({
 
 /* Action generators are simple functions */
 
-var TodoActionCreator = Flux.createActionCreator({
+var TodoActionCreator = {
 
   getAllMessages: function () {
     // It's an example for async requests.
@@ -135,7 +135,7 @@ var TodoActionCreator = Flux.createActionCreator({
     }, 1000);
   }
 
-});
+};
 
 /* React Components */
 

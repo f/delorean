@@ -19,9 +19,6 @@ class Flux
         dispatcher.registerAction action, callback
     dispatcher
 
-  @createActionCreator: (actions)->
-    actions
-
 # Mixins can be defined in `mixin.coffee` file.
 Flux.mixins = require './mixin.coffee'
 module.exports = Flux

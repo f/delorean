@@ -1095,10 +1095,6 @@ Flux = (function() {
     return dispatcher;
   };
 
-  Flux.createActionCreator = function(actions) {
-    return actions;
-  };
-
   return Flux;
 
 })();
