@@ -13,6 +13,76 @@ DeLorean is a tiny Flux pattern implementation.
   - Too easy to use with React; just add a mixin,
   - Too small, just **13K**.
 
+## Overview
+
+[You can try it](http://jsfiddle.net/fkadev/a2ms7rcc/)
+
+```javascript
+/** @jsx React.DOM */
+
+var Flux = DeLorean.Flux;
+
+// Store
+var IncrementStore = Flux.createStore({
+
+    actions: {
+        'increase': 'increaseTotal'
+    },
+
+    total: 0,
+    increaseTotal: function () {
+        this.total++;
+        this.emit('change');
+    },
+    getState: function () {
+        return {
+            total: this.total
+        };
+    }
+});
+
+var incrementStore = new IncrementStore();
+
+// Dispatcher
+var IncrementDispatcher = Flux.createDispatcher({
+  increase: function () {
+      this.dispatch('increase');
+  },
+  getStores: function () {
+      return {
+          increment: incrementStore
+      };
+  }
+});
+
+// Action Generator
+var IncrementActions = {
+    increase: function () {
+        IncrementDispatcher.increase();
+    }
+};
+
+// Component
+var IncrementView = React.createClass({
+
+    mixins: [Flux.mixins.storeListener],
+
+    render: function() {
+        return <div>
+            <div>Total: {this.stores.increment.store.total}</div>
+            <button onClick={this.handleIncrease}>Increase</button>
+        </div>;
+    },
+    handleIncrease: function () {
+        IncrementActions.increase();
+    }
+});
+
+React.renderComponent(<IncrementView dispatcher={IncrementDispatcher} />, document.body);
+```
+
+---
+
 ## What is Flux
 
 Data in a Flux application flows in a single direction, in a cycle:
