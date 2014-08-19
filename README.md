@@ -391,7 +391,7 @@ Since DeLorean.Flux doesn't require React, you can use it everywhere. Also in **
 var TodoCountUI = flight.component(function () {
 
   this.render = function () {
-    this.$node.html(myTodos.store.todos.length);
+    this.$node.html(TodoListDispatcher.stores.todoStore.store.todos.length);
   };
 
   this.after('initialize', function() {
