@@ -17,12 +17,7 @@ DeLorean is a tiny Flux pattern implementation.
 
 Data in a Flux application flows in a single direction, in a cycle:
 
-```
-Views ---> (actions) ----> Dispatcher ---> (registered callback) ---> Stores -------+
-Ʌ                                                                                   |
-|                                                                                   V
-+-- (Controller-Views "change" event handlers) ---- (Stores emit "change" events) --+
-```
+![Flux Diagram](https://raw.githubusercontent.com/f/delorean/master/asset/flux-diagram.png)
 
 ## Install
 
