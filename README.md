@@ -11,6 +11,7 @@ DeLorean is a tiny Flux pattern implementation.
   - It uses **`Object.observe`** to listen store changes,
   - Makes the data is more consistent in your whole application,
   - Too easy to use with React; just add a mixin,
+  - Too easy to use with **Flight.js**
   - Too small, just **13K**.
 
 ## Overview
@@ -382,6 +383,25 @@ var TodoListView = React.createClass({
 });
 ```
 
+## Combining to Flight.js
+
+Since DeLorean.Flux doesn't require React, you can use it everywhere. Also in **Flight.js**
+
+```javascript
+var TodoCountUI = flight.component(function () {
+
+  this.render = function () {
+    this.$node.html(myTodos.store.todos.length);
+  };
+
+  this.after('initialize', function() {
+    // You should listen changes
+    TodoListDispatcher.on('change:all', this.render.bind(this));
+    this.render();
+  });
+});
+```
+
 ## Routing
 
 You can use any Router tool with DeLorean. In the example I use `director` as the router.
@@ -421,6 +441,8 @@ open index.html
   - Draw the flow with SVG or something else.
   - Build a webpage.
   - Build Backbone.js plugin.
+  - Build Flight.js mixin.
+  - Seperate React and Flight mixins from source.
 
 ## Name
 
