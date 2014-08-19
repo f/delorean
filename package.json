@@ -1,6 +1,6 @@
 {
   "name": "delorean.js",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "Flux Library",
   "main": "dist/delorean.min.js",
   "scripts": {
