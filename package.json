@@ -4,7 +4,7 @@
   "description": "Flux Library",
   "main": "dist/delorean.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/jest"
   },
   "author": "Fatih Kadir Akin",
   "license": "MIT",
@@ -14,7 +14,8 @@
     "grunt-browserify": "^2.1.4",
     "grunt-contrib-uglify": "^0.5.1",
     "grunt-react": "^0.9.0",
-    "grunt-release": "git+https://github.com/f/grunt-release.git#c17216608469c5ecbb43458289763e09839932ba"
+    "grunt-release": "git+https://github.com/f/grunt-release.git#c17216608469c5ecbb43458289763e09839932ba",
+    "jest-cli": "^0.1.18"
   },
   "dependencies": {
     "es6-promise": "^1.0.0"
