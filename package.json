@@ -2,20 +2,18 @@
   "name": "delorean.js",
   "version": "0.4.9",
   "description": "Flux Library",
-  "main": "dist/delorean.min.js",
+  "main": "src/delorean.js",
   "scripts": {
-    "test": "./node_modules/.bin/jest"
+    "test": "test"
   },
   "author": "Fatih Kadir Akin",
   "license": "MIT",
   "devDependencies": {
-    "coffeeify": "^0.7.0",
     "grunt": "^0.4.5",
     "grunt-browserify": "^2.1.4",
     "grunt-contrib-uglify": "^0.5.1",
     "grunt-react": "^0.9.0",
-    "grunt-release": "git+https://github.com/f/grunt-release.git#c17216608469c5ecbb43458289763e09839932ba",
-    "jest-cli": "^0.1.18"
+    "grunt-release": "git+https://github.com/f/grunt-release.git#c17216608469c5ecbb43458289763e09839932ba"
   },
   "dependencies": {
     "es6-promise": "^1.0.0"

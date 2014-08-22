@@ -12,15 +12,14 @@ module.exports = function (grunt) {
       }
     },
     browserify: {
-      coffeeify: {
+      build: {
         options: {
           bundleOptions: {
             standalone: 'DeLorean'
           },
-          transform: ['coffeeify']
         },
         files: {
-          'dist/delorean.js': ['src/delorean.coffee']
+          'dist/delorean.js': ['src/delorean.js']
         }
       }
     },
