@@ -13,7 +13,7 @@ DeLorean is a tiny Flux pattern implementation.
   - Too easy to use with **React.js**; just add a mixin,
   - Too easy to use with **Flight.js**
   - It's platform agnostic, completely. There's no dependency.
-  - Too small, just **13K**.
+  - Too small, just **5K** gzipped.
 
 ## Overview
 
