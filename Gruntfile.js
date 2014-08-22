@@ -1,4 +1,5 @@
 module.exports = function (grunt) {
+  grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-release');
@@ -23,6 +24,11 @@ module.exports = function (grunt) {
         }
       }
     },
+    karma: {
+      unit: {
+        configFile: 'test/karma.conf.js',
+      },
+    },
     release: {
       options: {
         files: ['package.json', 'bower.json']
@@ -30,6 +36,6 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('default', ['browserify:coffeeify', 'uglify']);
+  grunt.registerTask('default', ['karma', 'browserify', 'uglify']);
 
 };
