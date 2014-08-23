@@ -227,8 +227,8 @@ var TodoListApp = Flux.createDispatcher({
 
 ## Action Creators
 
-Action creators are the main controller of the app. **They are simply objects** that
-manages everything. It allows you to compose data and logic.
+Action creators are the main controllers of the app. **They are simply objects** that
+manage everything. They allow you to compose data and logic.
 
 ```javascript
 var TodoActionCreator = {
