@@ -1,3 +1,3 @@
-(function (DeLorean) {
+(function () {
 
-})(window.DeLorean);
+})();

@@ -5,7 +5,9 @@ module.exports = function(config) {
     autoWatch: true,
     frameworks: ['jasmine'],
     files: [
-      'src/**/*.js',
+      'src/delorean.js',
+      'dist/delorean-requires.js',
+      'src/plugins/*.js',
       'test/spec/**/*Spec.js'
     ],
     browsers: ['PhantomJS'],

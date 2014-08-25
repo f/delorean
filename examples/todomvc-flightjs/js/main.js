@@ -9,13 +9,16 @@ var TodoStore = Flux.createStore({
 
   initialize: function (todos) {
     var self = this;
-    this.todos = this.todos.concat(todos);
+    if (todos) {
+      this.todos = this.todos.concat(todos);
+      this.emit('change');
+    }
 
     // Auto change
     // Array.observe(this.todos, function () {
     //   self.emit('change');
     // });
-    this.listenChanges(this.todos);
+    // this.listenChanges(this.todos);
   },
 
   actions: {
@@ -26,13 +29,14 @@ var TodoStore = Flux.createStore({
 
   addTodo: function (todo) {
     this.todos.push({text: todo.text});
+    this.emit('change');
   },
 
   removeTodo: function (todoToComplete) {
     var filteredData = this.todos.filter(function (todo) {
       return todoToComplete.text !== todo.text
     });
-    this.listenChanges(filteredData);
+    // this.listenChanges(filteredData);
 
     this.todos = filteredData;
     this.emit('change');
@@ -40,7 +44,7 @@ var TodoStore = Flux.createStore({
 
   resetTodos: function (todos) {
     this.todos = todos;
-    this.listenChanges(this.todos);
+    // this.listenChanges(this.todos);
     this.emit('change');
   }
 

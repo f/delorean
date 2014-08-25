@@ -1,15 +1,11 @@
 module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-release');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
-
-  var concatFiles = ['src/core/bootstrap.js',
-               'src/core/dispatcher.js',
-               'src/core/store.js',
-               'src/core/flux.js'];
+  grunt.loadNpmTasks('grunt-release');
 
   grunt.initConfig({
 
@@ -20,6 +16,13 @@ module.exports = function (grunt) {
         configFile: 'test/karma.conf.js',
       },
     },
+    browserify: {
+      dist: {
+        files: {
+          'dist/delorean-requires.js': 'src/requires.js'
+        }
+      }
+    },
     concat: {
       options: {
         separator: ';',
@@ -27,19 +30,19 @@ module.exports = function (grunt) {
                 '<%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-        src: concatFiles,
+        src: ['src/delorean.js', 'dist/delorean-requires.js'],
         dest: 'dist/delorean.js',
       },
       react: {
-        src: concatFiles.concat('src/plugins/react.js'),
+        src: ['src/delorean.js', 'dist/delorean-requires.js', 'src/plugins/react.js'],
         dest: 'dist/extras/delorean-react.js',
       },
       flght: {
-        src: concatFiles.concat('src/plugins/flight.js'),
+        src: ['src/delorean.js', 'dist/delorean-requires.js', 'src/plugins/flight.js'],
         dest: 'dist/extras/delorean-flight.js',
       },
       backbone: {
-        src: concatFiles.concat('src/plugins/backbone.js'),
+        src: ['src/delorean.js', 'dist/delorean-requires.js', 'src/plugins/backbone.js'],
         dest: 'dist/extras/delorean-backbone.js',
       },
     },
@@ -67,7 +70,7 @@ module.exports = function (grunt) {
     },
     watch: {
       development: {
-        files: ['src/**/*.js', 'test/**/*.js'],
+        files: ['!src/index.js', 'src/**/*.js', 'test/**/*.js'],
         tasks: ['default'],
         options: {
           livereload: true
@@ -81,7 +84,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('default', ['karma', 'concat', 'uglify']);
+  grunt.registerTask('default', ['browserify', 'concat', 'uglify']);
   grunt.registerTask('dev', ['connect', 'watch']);
 
 };
