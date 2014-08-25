@@ -1,0 +1,7 @@
+- Split README file into chapters.
+- Fix English grammar mistakes in README.
+- Draw the flow with SVG or something else.
+- Build a webpage.
+- Build Backbone.js plugin.
+- Build Flight.js mixin.
+- Seperate React and Flight mixins from source.
