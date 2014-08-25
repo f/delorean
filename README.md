@@ -39,8 +39,21 @@ npm install delorean.js
 
 ## Usage
 
+Hipster way:
+
 ```js
 var Flux = require('delorean.js').Flux;
+// ...
+```
+
+Old-skool way:
+
+```html
+<script src="//rawgit.com/f/delorean/master/dist/delorean.min.js"></script>
+<script>
+var Flux = DeLorean.Flux;
+// ...
+</script>
 ```
 
 ## Docs
