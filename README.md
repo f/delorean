@@ -56,6 +56,44 @@ var Flux = DeLorean.Flux;
 </script>
 ```
 
+## Overview
+
+```javascript
+var Store = Flux.createStore({
+  data: 0,
+  increase: function () {
+    this.data++;
+    this.emit('change');
+  },
+  actions: {increase: 'increase'}
+});
+var store = new Store();
+
+var Dispatcher = Flux.createDispatcher({
+  increase: function () {
+    this.dispatch('increase');
+  },
+  getStores: function () {
+    return {increment: store};
+  }
+});
+
+var Actions = {
+  increase: function () {
+    Dispatcher.increase();
+  }
+};
+
+// The data cycle.
+store.onChange(function () {
+  document.getElementById('result').innerText = store.store.data;
+});
+
+document.getElementById('increment').onClick = function () {
+  Actions.increase();
+};
+```
+
 ## Docs
 
 ### Basic Concepts
