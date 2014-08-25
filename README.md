@@ -11,8 +11,8 @@ DeLorean is a tiny Flux pattern implementation.
   - Automatically listens data changes and keeps your data updated,
   - Makes data more **consistent** in your whole application,
   - Too easy to use with **React.js**; just add a mixin,
-  - Too easy to use with **Flight.js**; see the example
-  - It's platform agnostic, completely. There's no dependency.
+  - Too easy to use with **Flight.js**; see the example,
+  - It's framework agnostic, completely. There's **no view framework dependency**.
   - Too small, just **4K** gzipped.
 
 ## Overview
