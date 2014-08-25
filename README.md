@@ -108,6 +108,7 @@ document.getElementById('dataChanger').onClick = function () {
   Actions.setData(Math.random());
 };
 ```
+[Run this example on JSFiddle](http://jsfiddle.net/fkadev/40cx3146/)
 
 ## Docs
 
