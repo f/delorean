@@ -59,38 +59,53 @@ var Flux = DeLorean.Flux;
 ## Overview
 
 ```javascript
+/*
+ * Stores are simple data buckets which manages data.
+ */
 var Store = Flux.createStore({
-  data: 0,
-  increase: function () {
-    this.data++;
+  data: null,
+  setData: function (data) {
+    this.data = data;
     this.emit('change');
   },
-  actions: {increase: 'increase'}
+  actions: {
+    'incoming-data': 'setData'
+  }
 });
 var store = new Store();
 
+/*
+ * Dispatcher are simple action dispatchers for stores.
+ * Stores handle the related action.
+ */
 var Dispatcher = Flux.createDispatcher({
-  increase: function () {
-    this.dispatch('increase');
+  setData: function (data) {
+    this.dispatch('incoming-data', data);
   },
   getStores: function () {
     return {increment: store};
   }
 });
 
+/*
+ * Action Creators are simple controllers. They are simple functions.
+ *  They talk to dispatchers. They are not required.
+ */
 var Actions = {
-  increase: function () {
-    Dispatcher.increase();
+  setData: function (data) {
+    Dispatcher.setData(data);
   }
 };
 
 // The data cycle.
 store.onChange(function () {
+  // End of data cycle.
   document.getElementById('result').innerText = store.store.data;
 });
 
-document.getElementById('increment').onClick = function () {
-  Actions.increase();
+document.getElementById('dataChanger').onClick = function () {
+  // Start data cycle:
+  Actions.setData(Math.random());
 };
 ```
 
