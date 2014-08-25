@@ -22,7 +22,6 @@
     "bower_components",
     "test",
     "tests",
-    "**/*.coffee",
     "src",
     "example"
   ]

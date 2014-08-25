@@ -1,12 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (global){
-!function(a){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=a();else if("function"==typeof define&&define.amd)define([],a);else{var b;"undefined"!=typeof window?b=window:"undefined"!=typeof global?b=global:"undefined"!=typeof self&&(b=self),b.DeLorean=a()}}(function(){return function a(b,c,d){function e(g,h){if(!c[g]){if(!b[g]){var i="function"==typeof require&&require;if(!h&&i)return i(g,!0);if(f)return f(g,!0);throw new Error("Cannot find module '"+g+"'")}var j=c[g]={exports:{}};b[g][0].call(j.exports,function(a){var c=b[g][1][a];return e(c?c:a)},j,j.exports,a,b,c,d)}return c[g].exports}for(var f="function"==typeof require&&require,g=0;g<d.length;g++)e(d[g]);return e}({1:[function(a,b,c){"use strict";var d=a("./promise/promise").Promise,e=a("./promise/polyfill").polyfill;c.Promise=d,c.polyfill=e},{"./promise/polyfill":5,"./promise/promise":6}],2:[function(a,b,c){"use strict";function d(a){var b=this;if(!e(a))throw new TypeError("You must pass an array to all.");return new b(function(b,c){function d(a){return function(b){e(a,b)}}function e(a,c){h[a]=c,0===--i&&b(h)}var g,h=[],i=a.length;0===i&&b([]);for(var j=0;j<a.length;j++)g=a[j],g&&f(g.then)?g.then(d(j),c):e(j,g)})}var e=a("./utils").isArray,f=a("./utils").isFunction;c.all=d},{"./utils":10}],3:[function(a,b,c){(function(a,b){"use strict";function d(){return function(){a.nextTick(g)}}function e(){var a=0,b=new k(g),c=document.createTextNode("");return b.observe(c,{characterData:!0}),function(){c.data=a=++a%2}}function f(){return function(){l.setTimeout(g,1)}}function g(){for(var a=0;a<m.length;a++){var b=m[a],c=b[0],d=b[1];c(d)}m=[]}function h(a,b){var c=m.push([a,b]);1===c&&i()}var i,j="undefined"!=typeof window?window:{},k=j.MutationObserver||j.WebKitMutationObserver,l="undefined"!=typeof b?b:void 0===this?window:this,m=[];i="undefined"!=typeof a&&"[object process]"==={}.toString.call(a)?d():k?e():f(),c.asap=h}).call(this,a("JkpR2F"),"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{JkpR2F:12}],4:[function(a,b,c){"use strict";function d(a,b){return 2!==arguments.length?e[a]:void(e[a]=b)}var e={instrument:!1};c.config=e,c.configure=d},{}],5:[function(a,b,c){(function(b){"use strict";function d(){var a;a="undefined"!=typeof b?b:"undefined"!=typeof window&&window.document?window:self;var c="Promise"in a&&"resolve"in a.Promise&&"reject"in a.Promise&&"all"in a.Promise&&"race"in a.Promise&&function(){var b;return new a.Promise(function(a){b=a}),f(b)}();c||(a.Promise=e)}var e=a("./promise").Promise,f=a("./utils").isFunction;c.polyfill=d}).call(this,"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{"./promise":6,"./utils":10}],6:[function(a,b,c){"use strict";function d(a){if(!q(a))throw new TypeError("You must pass a resolver function as the first argument to the promise constructor");if(!(this instanceof d))throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");this._subscribers=[],e(a,this)}function e(a,b){function c(a){j(b,a)}function d(a){l(b,a)}try{a(c,d)}catch(e){d(e)}}function f(a,b,c,d){var e,f,g,h,k=q(c);if(k)try{e=c(d),g=!0}catch(m){h=!0,f=m}else e=d,g=!0;i(b,e)||(k&&g?j(b,e):h?l(b,f):a===y?j(b,e):a===z&&l(b,e))}function g(a,b,c,d){var e=a._subscribers,f=e.length;e[f]=b,e[f+y]=c,e[f+z]=d}function h(a,b){for(var c,d,e=a._subscribers,g=a._detail,h=0;h<e.length;h+=3)c=e[h],d=e[h+b],f(b,c,d,g);a._subscribers=null}function i(a,b){var c,d=null;try{if(a===b)throw new TypeError("A promises callback cannot return that same promise.");if(p(b)&&(d=b.then,q(d)))return d.call(b,function(d){return c?!0:(c=!0,void(b!==d?j(a,d):k(a,d)))},function(b){return c?!0:(c=!0,void l(a,b))}),!0}catch(e){return c?!0:(l(a,e),!0)}return!1}function j(a,b){a===b?k(a,b):i(a,b)||k(a,b)}function k(a,b){a._state===w&&(a._state=x,a._detail=b,o.async(m,a))}function l(a,b){a._state===w&&(a._state=x,a._detail=b,o.async(n,a))}function m(a){h(a,a._state=y)}function n(a){h(a,a._state=z)}var o=a("./config").config,p=(a("./config").configure,a("./utils").objectOrFunction),q=a("./utils").isFunction,r=(a("./utils").now,a("./all").all),s=a("./race").race,t=a("./resolve").resolve,u=a("./reject").reject,v=a("./asap").asap;o.async=v;var w=void 0,x=0,y=1,z=2;d.prototype={constructor:d,_state:void 0,_detail:void 0,_subscribers:void 0,then:function(a,b){var c=this,d=new this.constructor(function(){});if(this._state){var e=arguments;o.async(function(){f(c._state,d,e[c._state-1],c._detail)})}else g(this,d,a,b);return d},"catch":function(a){return this.then(null,a)}},d.all=r,d.race=s,d.resolve=t,d.reject=u,c.Promise=d},{"./all":2,"./asap":3,"./config":4,"./race":7,"./reject":8,"./resolve":9,"./utils":10}],7:[function(a,b,c){"use strict";function d(a){var b=this;if(!e(a))throw new TypeError("You must pass an array to race.");return new b(function(b,c){for(var d,e=0;e<a.length;e++)d=a[e],d&&"function"==typeof d.then?d.then(b,c):b(d)})}var e=a("./utils").isArray;c.race=d},{"./utils":10}],8:[function(a,b,c){"use strict";function d(a){var b=this;return new b(function(b,c){c(a)})}c.reject=d},{}],9:[function(a,b,c){"use strict";function d(a){if(a&&"object"==typeof a&&a.constructor===this)return a;var b=this;return new b(function(b){b(a)})}c.resolve=d},{}],10:[function(a,b,c){"use strict";function d(a){return e(a)||"object"==typeof a&&null!==a}function e(a){return"function"==typeof a}function f(a){return"[object Array]"===Object.prototype.toString.call(a)}var g=Date.now||function(){return(new Date).getTime()};c.objectOrFunction=d,c.isFunction=e,c.isArray=f,c.now=g},{}],11:[function(a,b){function c(){this._events=this._events||{},this._maxListeners=this._maxListeners||void 0}function d(a){return"function"==typeof a}function e(a){return"number"==typeof a}function f(a){return"object"==typeof a&&null!==a}function g(a){return void 0===a}b.exports=c,c.EventEmitter=c,c.prototype._events=void 0,c.prototype._maxListeners=void 0,c.defaultMaxListeners=10,c.prototype.setMaxListeners=function(a){if(!e(a)||0>a||isNaN(a))throw TypeError("n must be a positive number");return this._maxListeners=a,this},c.prototype.emit=function(a){var b,c,e,h,i,j;if(this._events||(this._events={}),"error"===a&&(!this._events.error||f(this._events.error)&&!this._events.error.length))throw b=arguments[1],b instanceof Error?b:TypeError('Uncaught, unspecified "error" event.');if(c=this._events[a],g(c))return!1;if(d(c))switch(arguments.length){case 1:c.call(this);break;case 2:c.call(this,arguments[1]);break;case 3:c.call(this,arguments[1],arguments[2]);break;default:for(e=arguments.length,h=new Array(e-1),i=1;e>i;i++)h[i-1]=arguments[i];c.apply(this,h)}else if(f(c)){for(e=arguments.length,h=new Array(e-1),i=1;e>i;i++)h[i-1]=arguments[i];for(j=c.slice(),e=j.length,i=0;e>i;i++)j[i].apply(this,h)}return!0},c.prototype.addListener=function(a,b){var e;if(!d(b))throw TypeError("listener must be a function");if(this._events||(this._events={}),this._events.newListener&&this.emit("newListener",a,d(b.listener)?b.listener:b),this._events[a]?f(this._events[a])?this._events[a].push(b):this._events[a]=[this._events[a],b]:this._events[a]=b,f(this._events[a])&&!this._events[a].warned){var e;e=g(this._maxListeners)?c.defaultMaxListeners:this._maxListeners,e&&e>0&&this._events[a].length>e&&(this._events[a].warned=!0,console.error("(node) warning: possible EventEmitter memory leak detected. %d listeners added. Use emitter.setMaxListeners() to increase limit.",this._events[a].length),"function"==typeof console.trace&&console.trace())}return this},c.prototype.on=c.prototype.addListener,c.prototype.once=function(a,b){function c(){this.removeListener(a,c),e||(e=!0,b.apply(this,arguments))}if(!d(b))throw TypeError("listener must be a function");var e=!1;return c.listener=b,this.on(a,c),this},c.prototype.removeListener=function(a,b){var c,e,g,h;if(!d(b))throw TypeError("listener must be a function");if(!this._events||!this._events[a])return this;if(c=this._events[a],g=c.length,e=-1,c===b||d(c.listener)&&c.listener===b)delete this._events[a],this._events.removeListener&&this.emit("removeListener",a,b);else if(f(c)){for(h=g;h-->0;)if(c[h]===b||c[h].listener&&c[h].listener===b){e=h;break}if(0>e)return this;1===c.length?(c.length=0,delete this._events[a]):c.splice(e,1),this._events.removeListener&&this.emit("removeListener",a,b)}return this},c.prototype.removeAllListeners=function(a){var b,c;if(!this._events)return this;if(!this._events.removeListener)return 0===arguments.length?this._events={}:this._events[a]&&delete this._events[a],this;if(0===arguments.length){for(b in this._events)"removeListener"!==b&&this.removeAllListeners(b);return this.removeAllListeners("removeListener"),this._events={},this}if(c=this._events[a],d(c))this.removeListener(a,c);else for(;c.length;)this.removeListener(a,c[c.length-1]);return delete this._events[a],this},c.prototype.listeners=function(a){var b;return b=this._events&&this._events[a]?d(this._events[a])?[this._events[a]]:this._events[a].slice():[]},c.listenerCount=function(a,b){var c;return c=a._events&&a._events[b]?d(a._events[b])?1:a._events[b].length:0}},{}],12:[function(a,b){function c(){}var d=b.exports={};d.nextTick=function(){var a="undefined"!=typeof window&&window.setImmediate,b="undefined"!=typeof window&&window.postMessage&&window.addEventListener;if(a)return function(a){return window.setImmediate(a)};if(b){var c=[];return window.addEventListener("message",function(a){var b=a.source;if((b===window||null===b)&&"process-tick"===a.data&&(a.stopPropagation(),c.length>0)){var d=c.shift();d()}},!0),function(a){c.push(a),window.postMessage("process-tick","*")}}return function(a){setTimeout(a,0)}}(),d.title="browser",d.browser=!0,d.env={},d.argv=[],d.on=c,d.addListener=c,d.once=c,d.off=c,d.removeListener=c,d.removeAllListeners=c,d.emit=c,d.binding=function(){throw new Error("process.binding is not supported")},d.cwd=function(){return"/"},d.chdir=function(){throw new Error("process.chdir is not supported")}},{}],13:[function(a,b){var c;c={Flux:a("./flux.coffee")},b.exports=c},{"./flux.coffee":15}],14:[function(a,b){var c,d,e,f={}.hasOwnProperty,g=function(a,b){function c(){this.constructor=a}for(var d in b)f.call(b,d)&&(a[d]=b[d]);return c.prototype=b.prototype,a.prototype=new c,a.__super__=b.prototype,a};d=a("events").EventEmitter,e=a("es6-promise").Promise,c=function(a){function b(a){this.stores=a}return g(b,a),b.prototype.dispatch=function(a,b){var c,d,e,g;c=this.waitFor(function(){var a,b;a=this.stores,b=[];for(e in a)d=a[e],b.push(d);return b}.call(this)),g=this.stores;for(e in g)f.call(g,e)&&(d=g[e],d.dispatchAction(a,b));return c},b.prototype.waitFor=function(a){var b,c;return b=function(){var b,d,f;for(f=[],b=0,d=a.length;d>b;b++)c=a[b],f.push(new e(function(a){return c.once("change",a)}));return f}(),e.all(b).then(function(a){return function(){return a.emit("change:all")}}(this))},b.prototype.registerAction=function(a,b){return this[a]=b.bind(this)},b}(d),b.exports=c},{"es6-promise":1,events:11}],15:[function(a,b){var c,d,e,f=[].slice,g={}.hasOwnProperty;e=a("./store.coffee"),c=a("./dispatcher.coffee"),d=function(){function a(){}return a.createStore=function(a){return function(){var b;return b=1<=arguments.length?f.call(arguments,0):[],function(a,b,c){c.prototype=a.prototype;var d=new c,e=a.apply(d,b);return Object(e)===e?e:d}(e,[a].concat(f.call(b)),function(){})}},a.createDispatcher=function(a){var b,d,e;e=new c("function"==typeof a.getStores?a.getStores():void 0);for(b in a)g.call(a,b)&&(d=a[b],"getStores"!==b&&e.registerAction(b,d));return e},a}(),d.mixins=a("./mixin.coffee"),b.exports=d},{"./dispatcher.coffee":14,"./mixin.coffee":16,"./store.coffee":17}],16:[function(a,b){var c={}.hasOwnProperty;b.exports={storeListener:{componentDidMount:function(){var a,b,d,e;d=this.stores,e=[];for(b in d)c.call(d,b)&&(a=d[b],e.push(function(a){return function(b,c){return b.onChange(function(){var d,e;return"function"==typeof a.storeDidChange&&a.storeDidChange(c),(d="function"==typeof(e=b.store).getState?e.getState():void 0)?(a.state.stores[c]=d,a.forceUpdate()):void 0})}}(this)(a,b)));return e},getInitialState:function(){var a,b,d,e,f,g;a=function(b){return b.props.dispatcher?b.props.dispatcher:a(b._owner)},this.dispatcher=a(this),this.dispatcher.on("change:all",function(a){return function(){return"function"==typeof a.storesDidChange?a.storesDidChange():void 0}}(this)),this.stores=this.dispatcher.stores,b={stores:{}},e=this.stores;for(d in e)c.call(e,d)&&(b.stores[d]=null!=(f=this.stores[d])&&null!=(g=f.store)&&"function"==typeof g.getState?g.getState():void 0);return b}}}},{}],17:[function(a,b){var c,d,e={}.hasOwnProperty,f=function(a,b){function c(){this.constructor=a}for(var d in b)e.call(b,d)&&(a[d]=b[d]);return c.prototype=b.prototype,a.prototype=new c,a.__super__=b.prototype,a},g=[].slice;c=a("events").EventEmitter,d=function(a){function b(){var a,c,d;c=arguments[0],a=2<=arguments.length?g.call(arguments,1):[],this.store=c,b.__super__.constructor.apply(this,arguments),this.bindActions(c.actions),null!=(d=this.store.initialize)&&d.call.apply(d,[this.store].concat(g.call(a)))}return f(b,a),b.prototype.bindActions=function(a){var b,c,d;this.store.emit=this.emit.bind(this),this.store.listenChanges=this.listenChanges.bind(this),d=[];for(b in a)e.call(a,b)&&(c=a[b],d.push(this.on("action:"+b,this.store[c].bind(this.store))));return d},b.prototype.dispatchAction=function(a,b){return this.emit("action:"+a,b)},b.prototype.onChange=function(a){return this.on("change",a)},b.prototype.listenChanges=function(a){var b;return(b=Array.isArray(a)?Array.observe:Object.observe)(a,function(a){return function(){return a.emit("change")}}(this))},b}(c),b.exports=d},{events:11}]},{},[13])(13)});
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],2:[function(require,module,exports){
 /** @jsx React.DOM */
 
 var React = require('react');
 var Flux = require('../../../../').Flux;
+
 var Router = require('director').Router;
 
 /* Generate Generic Store */
@@ -20,7 +17,9 @@ var TodoStore = Flux.createStore({
 
   initialize: function (todos) {
     var self = this;
-    this.todos = this.todos.concat(todos);
+    if (todos) {
+      this.todos = this.todos.concat(todos);
+    }
 
     // Auto change
     // Array.observe(this.todos, function () {
@@ -225,7 +224,7 @@ var appRouter = new Router({
 
 appRouter.init('/');
 
-},{"../../../../":1,"director":3,"react":148}],3:[function(require,module,exports){
+},{"../../../../":159,"director":2,"react":148}],2:[function(require,module,exports){
 
 
 //
@@ -945,6 +944,311 @@ Router.prototype.mount = function(routes, path) {
 
 
 }(typeof exports === "object" ? exports : window));
+},{}],3:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+function EventEmitter() {
+  this._events = this._events || {};
+  this._maxListeners = this._maxListeners || undefined;
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+EventEmitter.defaultMaxListeners = 10;
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!isNumber(n) || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+  return this;
+};
+
+EventEmitter.prototype.emit = function(type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (isObject(this._events.error) && !this._events.error.length)) {
+      er = arguments[1];
+      if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+      } else {
+        throw TypeError('Uncaught, unspecified "error" event.');
+      }
+      return false;
+    }
+  }
+
+  handler = this._events[type];
+
+  if (isUndefined(handler))
+    return false;
+
+  if (isFunction(handler)) {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        len = arguments.length;
+        args = new Array(len - 1);
+        for (i = 1; i < len; i++)
+          args[i - 1] = arguments[i];
+        handler.apply(this, args);
+    }
+  } else if (isObject(handler)) {
+    len = arguments.length;
+    args = new Array(len - 1);
+    for (i = 1; i < len; i++)
+      args[i - 1] = arguments[i];
+
+    listeners = handler.slice();
+    len = listeners.length;
+    for (i = 0; i < len; i++)
+      listeners[i].apply(this, args);
+  }
+
+  return true;
+};
+
+EventEmitter.prototype.addListener = function(type, listener) {
+  var m;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === "newListener"! Before
+  // adding it to the listeners, first emit "newListener".
+  if (this._events.newListener)
+    this.emit('newListener', type,
+              isFunction(listener.listener) ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (isObject(this._events[type]))
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (isObject(this._events[type]) && !this._events[type].warned) {
+    var m;
+    if (!isUndefined(this._maxListeners)) {
+      m = this._maxListeners;
+    } else {
+      m = EventEmitter.defaultMaxListeners;
+    }
+
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      if (typeof console.trace === 'function') {
+        // not supported in IE 10
+        console.trace();
+      }
+    }
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+};
+
+// emits a 'removeListener' event iff the listener was removed
+EventEmitter.prototype.removeListener = function(type, listener) {
+  var list, position, length, i;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events || !this._events[type])
+    return this;
+
+  list = this._events[type];
+  length = list.length;
+  position = -1;
+
+  if (list === listener ||
+      (isFunction(list.listener) && list.listener === listener)) {
+    delete this._events[type];
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+
+  } else if (isObject(list)) {
+    for (i = length; i-- > 0;) {
+      if (list[i] === listener ||
+          (list[i].listener && list[i].listener === listener)) {
+        position = i;
+        break;
+      }
+    }
+
+    if (position < 0)
+      return this;
+
+    if (list.length === 1) {
+      list.length = 0;
+      delete this._events[type];
+    } else {
+      list.splice(position, 1);
+    }
+
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  var key, listeners;
+
+  if (!this._events)
+    return this;
+
+  // not listening for removeListener, no need to emit
+  if (!this._events.removeListener) {
+    if (arguments.length === 0)
+      this._events = {};
+    else if (this._events[type])
+      delete this._events[type];
+    return this;
+  }
+
+  // emit removeListener for all listeners on all events
+  if (arguments.length === 0) {
+    for (key in this._events) {
+      if (key === 'removeListener') continue;
+      this.removeAllListeners(key);
+    }
+    this.removeAllListeners('removeListener');
+    this._events = {};
+    return this;
+  }
+
+  listeners = this._events[type];
+
+  if (isFunction(listeners)) {
+    this.removeListener(type, listeners);
+  } else {
+    // LIFO order
+    while (listeners.length)
+      this.removeListener(type, listeners[listeners.length - 1]);
+  }
+  delete this._events[type];
+
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  var ret;
+  if (!this._events || !this._events[type])
+    ret = [];
+  else if (isFunction(this._events[type]))
+    ret = [this._events[type]];
+  else
+    ret = this._events[type].slice();
+  return ret;
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  var ret;
+  if (!emitter._events || !emitter._events[type])
+    ret = 0;
+  else if (isFunction(emitter._events[type]))
+    ret = 1;
+  else
+    ret = emitter._events[type].length;
+  return ret;
+};
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+
 },{}],4:[function(require,module,exports){
 // shim for using process in browser
 
@@ -19576,4 +19880,871 @@ module.exports = warning;
 },{"./emptyFunction":106,"JkpR2F":4}],148:[function(require,module,exports){
 module.exports = require('./lib/React');
 
-},{"./lib/React":31}]},{},[2]);
+},{"./lib/React":31}],149:[function(require,module,exports){
+"use strict";
+var Promise = require("./promise/promise").Promise;
+var polyfill = require("./promise/polyfill").polyfill;
+exports.Promise = Promise;
+exports.polyfill = polyfill;
+},{"./promise/polyfill":153,"./promise/promise":154}],150:[function(require,module,exports){
+"use strict";
+/* global toString */
+
+var isArray = require("./utils").isArray;
+var isFunction = require("./utils").isFunction;
+
+/**
+  Returns a promise that is fulfilled when all the given promises have been
+  fulfilled, or rejected if any of them become rejected. The return promise
+  is fulfilled with an array that gives all the values in the order they were
+  passed in the `promises` array argument.
+
+  Example:
+
+  ```javascript
+  var promise1 = RSVP.resolve(1);
+  var promise2 = RSVP.resolve(2);
+  var promise3 = RSVP.resolve(3);
+  var promises = [ promise1, promise2, promise3 ];
+
+  RSVP.all(promises).then(function(array){
+    // The array here would be [ 1, 2, 3 ];
+  });
+  ```
+
+  If any of the `promises` given to `RSVP.all` are rejected, the first promise
+  that is rejected will be given as an argument to the returned promises's
+  rejection handler. For example:
+
+  Example:
+
+  ```javascript
+  var promise1 = RSVP.resolve(1);
+  var promise2 = RSVP.reject(new Error("2"));
+  var promise3 = RSVP.reject(new Error("3"));
+  var promises = [ promise1, promise2, promise3 ];
+
+  RSVP.all(promises).then(function(array){
+    // Code here never runs because there are rejected promises!
+  }, function(error) {
+    // error.message === "2"
+  });
+  ```
+
+  @method all
+  @for RSVP
+  @param {Array} promises
+  @param {String} label
+  @return {Promise} promise that is fulfilled when all `promises` have been
+  fulfilled, or rejected if any of them become rejected.
+*/
+function all(promises) {
+  /*jshint validthis:true */
+  var Promise = this;
+
+  if (!isArray(promises)) {
+    throw new TypeError('You must pass an array to all.');
+  }
+
+  return new Promise(function(resolve, reject) {
+    var results = [], remaining = promises.length,
+    promise;
+
+    if (remaining === 0) {
+      resolve([]);
+    }
+
+    function resolver(index) {
+      return function(value) {
+        resolveAll(index, value);
+      };
+    }
+
+    function resolveAll(index, value) {
+      results[index] = value;
+      if (--remaining === 0) {
+        resolve(results);
+      }
+    }
+
+    for (var i = 0; i < promises.length; i++) {
+      promise = promises[i];
+
+      if (promise && isFunction(promise.then)) {
+        promise.then(resolver(i), reject);
+      } else {
+        resolveAll(i, promise);
+      }
+    }
+  });
+}
+
+exports.all = all;
+},{"./utils":158}],151:[function(require,module,exports){
+(function (process,global){
+"use strict";
+var browserGlobal = (typeof window !== 'undefined') ? window : {};
+var BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
+var local = (typeof global !== 'undefined') ? global : (this === undefined? window:this);
+
+// node
+function useNextTick() {
+  return function() {
+    process.nextTick(flush);
+  };
+}
+
+function useMutationObserver() {
+  var iterations = 0;
+  var observer = new BrowserMutationObserver(flush);
+  var node = document.createTextNode('');
+  observer.observe(node, { characterData: true });
+
+  return function() {
+    node.data = (iterations = ++iterations % 2);
+  };
+}
+
+function useSetTimeout() {
+  return function() {
+    local.setTimeout(flush, 1);
+  };
+}
+
+var queue = [];
+function flush() {
+  for (var i = 0; i < queue.length; i++) {
+    var tuple = queue[i];
+    var callback = tuple[0], arg = tuple[1];
+    callback(arg);
+  }
+  queue = [];
+}
+
+var scheduleFlush;
+
+// Decide what async method to use to triggering processing of queued callbacks:
+if (typeof process !== 'undefined' && {}.toString.call(process) === '[object process]') {
+  scheduleFlush = useNextTick();
+} else if (BrowserMutationObserver) {
+  scheduleFlush = useMutationObserver();
+} else {
+  scheduleFlush = useSetTimeout();
+}
+
+function asap(callback, arg) {
+  var length = queue.push([callback, arg]);
+  if (length === 1) {
+    // If length is 1, that means that we need to schedule an async flush.
+    // If additional callbacks are queued before the queue is flushed, they
+    // will be processed by this flush that we are scheduling.
+    scheduleFlush();
+  }
+}
+
+exports.asap = asap;
+}).call(this,require("JkpR2F"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"JkpR2F":4}],152:[function(require,module,exports){
+"use strict";
+var config = {
+  instrument: false
+};
+
+function configure(name, value) {
+  if (arguments.length === 2) {
+    config[name] = value;
+  } else {
+    return config[name];
+  }
+}
+
+exports.config = config;
+exports.configure = configure;
+},{}],153:[function(require,module,exports){
+(function (global){
+"use strict";
+/*global self*/
+var RSVPPromise = require("./promise").Promise;
+var isFunction = require("./utils").isFunction;
+
+function polyfill() {
+  var local;
+
+  if (typeof global !== 'undefined') {
+    local = global;
+  } else if (typeof window !== 'undefined' && window.document) {
+    local = window;
+  } else {
+    local = self;
+  }
+
+  var es6PromiseSupport = 
+    "Promise" in local &&
+    // Some of these methods are missing from
+    // Firefox/Chrome experimental implementations
+    "resolve" in local.Promise &&
+    "reject" in local.Promise &&
+    "all" in local.Promise &&
+    "race" in local.Promise &&
+    // Older version of the spec had a resolver object
+    // as the arg rather than a function
+    (function() {
+      var resolve;
+      new local.Promise(function(r) { resolve = r; });
+      return isFunction(resolve);
+    }());
+
+  if (!es6PromiseSupport) {
+    local.Promise = RSVPPromise;
+  }
+}
+
+exports.polyfill = polyfill;
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./promise":154,"./utils":158}],154:[function(require,module,exports){
+"use strict";
+var config = require("./config").config;
+var configure = require("./config").configure;
+var objectOrFunction = require("./utils").objectOrFunction;
+var isFunction = require("./utils").isFunction;
+var now = require("./utils").now;
+var all = require("./all").all;
+var race = require("./race").race;
+var staticResolve = require("./resolve").resolve;
+var staticReject = require("./reject").reject;
+var asap = require("./asap").asap;
+
+var counter = 0;
+
+config.async = asap; // default async is asap;
+
+function Promise(resolver) {
+  if (!isFunction(resolver)) {
+    throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
+  }
+
+  if (!(this instanceof Promise)) {
+    throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
+  }
+
+  this._subscribers = [];
+
+  invokeResolver(resolver, this);
+}
+
+function invokeResolver(resolver, promise) {
+  function resolvePromise(value) {
+    resolve(promise, value);
+  }
+
+  function rejectPromise(reason) {
+    reject(promise, reason);
+  }
+
+  try {
+    resolver(resolvePromise, rejectPromise);
+  } catch(e) {
+    rejectPromise(e);
+  }
+}
+
+function invokeCallback(settled, promise, callback, detail) {
+  var hasCallback = isFunction(callback),
+      value, error, succeeded, failed;
+
+  if (hasCallback) {
+    try {
+      value = callback(detail);
+      succeeded = true;
+    } catch(e) {
+      failed = true;
+      error = e;
+    }
+  } else {
+    value = detail;
+    succeeded = true;
+  }
+
+  if (handleThenable(promise, value)) {
+    return;
+  } else if (hasCallback && succeeded) {
+    resolve(promise, value);
+  } else if (failed) {
+    reject(promise, error);
+  } else if (settled === FULFILLED) {
+    resolve(promise, value);
+  } else if (settled === REJECTED) {
+    reject(promise, value);
+  }
+}
+
+var PENDING   = void 0;
+var SEALED    = 0;
+var FULFILLED = 1;
+var REJECTED  = 2;
+
+function subscribe(parent, child, onFulfillment, onRejection) {
+  var subscribers = parent._subscribers;
+  var length = subscribers.length;
+
+  subscribers[length] = child;
+  subscribers[length + FULFILLED] = onFulfillment;
+  subscribers[length + REJECTED]  = onRejection;
+}
+
+function publish(promise, settled) {
+  var child, callback, subscribers = promise._subscribers, detail = promise._detail;
+
+  for (var i = 0; i < subscribers.length; i += 3) {
+    child = subscribers[i];
+    callback = subscribers[i + settled];
+
+    invokeCallback(settled, child, callback, detail);
+  }
+
+  promise._subscribers = null;
+}
+
+Promise.prototype = {
+  constructor: Promise,
+
+  _state: undefined,
+  _detail: undefined,
+  _subscribers: undefined,
+
+  then: function(onFulfillment, onRejection) {
+    var promise = this;
+
+    var thenPromise = new this.constructor(function() {});
+
+    if (this._state) {
+      var callbacks = arguments;
+      config.async(function invokePromiseCallback() {
+        invokeCallback(promise._state, thenPromise, callbacks[promise._state - 1], promise._detail);
+      });
+    } else {
+      subscribe(this, thenPromise, onFulfillment, onRejection);
+    }
+
+    return thenPromise;
+  },
+
+  'catch': function(onRejection) {
+    return this.then(null, onRejection);
+  }
+};
+
+Promise.all = all;
+Promise.race = race;
+Promise.resolve = staticResolve;
+Promise.reject = staticReject;
+
+function handleThenable(promise, value) {
+  var then = null,
+  resolved;
+
+  try {
+    if (promise === value) {
+      throw new TypeError("A promises callback cannot return that same promise.");
+    }
+
+    if (objectOrFunction(value)) {
+      then = value.then;
+
+      if (isFunction(then)) {
+        then.call(value, function(val) {
+          if (resolved) { return true; }
+          resolved = true;
+
+          if (value !== val) {
+            resolve(promise, val);
+          } else {
+            fulfill(promise, val);
+          }
+        }, function(val) {
+          if (resolved) { return true; }
+          resolved = true;
+
+          reject(promise, val);
+        });
+
+        return true;
+      }
+    }
+  } catch (error) {
+    if (resolved) { return true; }
+    reject(promise, error);
+    return true;
+  }
+
+  return false;
+}
+
+function resolve(promise, value) {
+  if (promise === value) {
+    fulfill(promise, value);
+  } else if (!handleThenable(promise, value)) {
+    fulfill(promise, value);
+  }
+}
+
+function fulfill(promise, value) {
+  if (promise._state !== PENDING) { return; }
+  promise._state = SEALED;
+  promise._detail = value;
+
+  config.async(publishFulfillment, promise);
+}
+
+function reject(promise, reason) {
+  if (promise._state !== PENDING) { return; }
+  promise._state = SEALED;
+  promise._detail = reason;
+
+  config.async(publishRejection, promise);
+}
+
+function publishFulfillment(promise) {
+  publish(promise, promise._state = FULFILLED);
+}
+
+function publishRejection(promise) {
+  publish(promise, promise._state = REJECTED);
+}
+
+exports.Promise = Promise;
+},{"./all":150,"./asap":151,"./config":152,"./race":155,"./reject":156,"./resolve":157,"./utils":158}],155:[function(require,module,exports){
+"use strict";
+/* global toString */
+var isArray = require("./utils").isArray;
+
+/**
+  `RSVP.race` allows you to watch a series of promises and act as soon as the
+  first promise given to the `promises` argument fulfills or rejects.
+
+  Example:
+
+  ```javascript
+  var promise1 = new RSVP.Promise(function(resolve, reject){
+    setTimeout(function(){
+      resolve("promise 1");
+    }, 200);
+  });
+
+  var promise2 = new RSVP.Promise(function(resolve, reject){
+    setTimeout(function(){
+      resolve("promise 2");
+    }, 100);
+  });
+
+  RSVP.race([promise1, promise2]).then(function(result){
+    // result === "promise 2" because it was resolved before promise1
+    // was resolved.
+  });
+  ```
+
+  `RSVP.race` is deterministic in that only the state of the first completed
+  promise matters. For example, even if other promises given to the `promises`
+  array argument are resolved, but the first completed promise has become
+  rejected before the other promises became fulfilled, the returned promise
+  will become rejected:
+
+  ```javascript
+  var promise1 = new RSVP.Promise(function(resolve, reject){
+    setTimeout(function(){
+      resolve("promise 1");
+    }, 200);
+  });
+
+  var promise2 = new RSVP.Promise(function(resolve, reject){
+    setTimeout(function(){
+      reject(new Error("promise 2"));
+    }, 100);
+  });
+
+  RSVP.race([promise1, promise2]).then(function(result){
+    // Code here never runs because there are rejected promises!
+  }, function(reason){
+    // reason.message === "promise2" because promise 2 became rejected before
+    // promise 1 became fulfilled
+  });
+  ```
+
+  @method race
+  @for RSVP
+  @param {Array} promises array of promises to observe
+  @param {String} label optional string for describing the promise returned.
+  Useful for tooling.
+  @return {Promise} a promise that becomes fulfilled with the value the first
+  completed promises is resolved with if the first completed promise was
+  fulfilled, or rejected with the reason that the first completed promise
+  was rejected with.
+*/
+function race(promises) {
+  /*jshint validthis:true */
+  var Promise = this;
+
+  if (!isArray(promises)) {
+    throw new TypeError('You must pass an array to race.');
+  }
+  return new Promise(function(resolve, reject) {
+    var results = [], promise;
+
+    for (var i = 0; i < promises.length; i++) {
+      promise = promises[i];
+
+      if (promise && typeof promise.then === 'function') {
+        promise.then(resolve, reject);
+      } else {
+        resolve(promise);
+      }
+    }
+  });
+}
+
+exports.race = race;
+},{"./utils":158}],156:[function(require,module,exports){
+"use strict";
+/**
+  `RSVP.reject` returns a promise that will become rejected with the passed
+  `reason`. `RSVP.reject` is essentially shorthand for the following:
+
+  ```javascript
+  var promise = new RSVP.Promise(function(resolve, reject){
+    reject(new Error('WHOOPS'));
+  });
+
+  promise.then(function(value){
+    // Code here doesn't run because the promise is rejected!
+  }, function(reason){
+    // reason.message === 'WHOOPS'
+  });
+  ```
+
+  Instead of writing the above, your code now simply becomes the following:
+
+  ```javascript
+  var promise = RSVP.reject(new Error('WHOOPS'));
+
+  promise.then(function(value){
+    // Code here doesn't run because the promise is rejected!
+  }, function(reason){
+    // reason.message === 'WHOOPS'
+  });
+  ```
+
+  @method reject
+  @for RSVP
+  @param {Any} reason value that the returned promise will be rejected with.
+  @param {String} label optional string for identifying the returned promise.
+  Useful for tooling.
+  @return {Promise} a promise that will become rejected with the given
+  `reason`.
+*/
+function reject(reason) {
+  /*jshint validthis:true */
+  var Promise = this;
+
+  return new Promise(function (resolve, reject) {
+    reject(reason);
+  });
+}
+
+exports.reject = reject;
+},{}],157:[function(require,module,exports){
+"use strict";
+function resolve(value) {
+  /*jshint validthis:true */
+  if (value && typeof value === 'object' && value.constructor === this) {
+    return value;
+  }
+
+  var Promise = this;
+
+  return new Promise(function(resolve) {
+    resolve(value);
+  });
+}
+
+exports.resolve = resolve;
+},{}],158:[function(require,module,exports){
+"use strict";
+function objectOrFunction(x) {
+  return isFunction(x) || (typeof x === "object" && x !== null);
+}
+
+function isFunction(x) {
+  return typeof x === "function";
+}
+
+function isArray(x) {
+  return Object.prototype.toString.call(x) === "[object Array]";
+}
+
+// Date.now is not available in browsers < IE9
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now#Compatibility
+var now = Date.now || function() { return new Date().getTime(); };
+
+
+exports.objectOrFunction = objectOrFunction;
+exports.isFunction = isFunction;
+exports.isArray = isArray;
+exports.now = now;
+},{}],159:[function(require,module,exports){
+(function (DeLorean) {
+  'use strict';
+
+  // Helper functions
+  function _generateActionName(name) {
+    return "action:" + name;
+  }
+
+  function _hasOwn(object, prop) {
+    return Object.prototype.hasOwnProperty.call(object, prop);
+  }
+
+  function _argsShift(args, from) {
+    return Array.prototype.slice.call(args, from);
+  }
+
+  // Dispatcher
+  var Dispatcher = (function () {
+    function Dispatcher(stores) {
+      var self = this;
+      this.listener = new DeLorean.EventEmitter();
+      this.stores = stores;
+    }
+
+    Dispatcher.prototype.dispatch = function (actionName, data) {
+      var self = this;
+
+      var stores = (function () {
+        var stores = [];
+        for (var storeName in self.stores) {
+          var store = self.stores[storeName];
+          if (!store instanceof Store) {
+            throw 'Given store is not a store instance';
+          }
+          stores.push(store);
+        }
+        return stores;
+      }());
+
+      var deferred = this.waitFor(stores);
+      for (var storeName in self.stores) {
+        self.stores[storeName].dispatchAction(actionName, data);
+      };
+      return deferred;
+    };
+
+    Dispatcher.prototype.waitFor = function (stores) {
+      var self = this;
+      var promises = (function () {
+        var _promises = [];
+        for (var i in stores) {
+          var promise = (function (store) {
+            return new DeLorean.Promise(function (resolve, reject) {
+              store.listener.once('change', resolve);
+            });
+          })(stores[i]);
+          _promises.push(promise);
+        }
+        return _promises;
+      }());
+      return DeLorean.Promise.all(promises).then(function () {
+        self.listener.emit('change:all');
+      });
+    };
+
+    Dispatcher.prototype.registerAction = function (action, callback) {
+      if (typeof callback === 'function') {
+        this[action] = callback.bind(this.stores);
+      } else {
+        throw 'Action callback should be a function.'
+      }
+    };
+
+    Dispatcher.prototype.on = function () {
+      return this.listener.on.apply(this.listener, arguments);
+    };
+
+    Dispatcher.prototype.off = function () {
+      return this.listener.removeListener.apply(this.listener, arguments);
+    };
+
+    return Dispatcher;
+  }());
+
+  // Store
+  var Store = (function () {
+
+    function Store(store) {
+      if (typeof store !== 'object') {
+        throw 'Stores should be defined by passing the definition to the constructor';
+      }
+
+      this.listener = new DeLorean.EventEmitter();
+      this.store = store;
+      this.bindActions();
+      if (typeof store.initialize === 'function') {
+        var args = _argsShift(arguments, 1);
+        store.initialize.apply(this.store, args);
+      }
+    }
+
+    Store.prototype.bindActions = function () {
+      this.store.emit = this.listener.emit.bind(this.listener);
+      this.store.listenChanges = this.listenChanges.bind(this);
+
+      for (var actionName in this.store.actions) {
+        if (_hasOwn(this.store.actions, actionName)) {
+          var callback = this.store.actions[actionName];
+          if (typeof this.store[callback] !== 'function') {
+            throw 'Callback should be a method!';
+          }
+          this.listener.on(_generateActionName(actionName),
+                           this.store[callback].bind(this.store));
+        }
+      }
+    };
+
+    Store.prototype.dispatchAction = function (actionName, data) {
+      this.listener.emit(_generateActionName(actionName) , data)
+    };
+
+    Store.prototype.onChange = function (callback) {
+      this.listener.on('change', callback);
+    };
+
+    Store.prototype.listenChanges = function (object) {
+      if (!Object.observe) {
+        console.error('Store#listenChanges method uses Object.observe, you should fire changes manually.');
+        return;
+      }
+      var self = this;
+
+      var observer = Array.isArray(object) ? Array.observe : Object.observe;
+
+      observer(object, function () {
+        self.listener.emit('change');
+      });
+    };
+
+    return Store;
+  }());
+
+  // Flux
+  DeLorean.Flux = {
+    createStore: function (factoryDefinition) {
+      return function () {
+        return new Store(factoryDefinition);
+      }
+    },
+    createDispatcher: function (actionsToDispatch) {
+      if (typeof actionsToDispatch.getStores === 'function') {
+        var actionsOfStores = actionsToDispatch.getStores();
+      }
+      var dispatcher = new Dispatcher(actionsOfStores || {});
+
+      for (var actionName in actionsToDispatch) {
+        if (_hasOwn(actionsToDispatch, actionName)) {
+          if (actionName !== 'getStores') {
+            var callback = actionsToDispatch[actionName];
+            dispatcher.registerAction(actionName, callback.bind(dispatcher));
+          }
+        }
+      }
+
+      return dispatcher;
+    },
+    // Helper
+    define: function (key, value) {
+      DeLorean[key] = value;
+    }
+  };
+
+  // Module Registration
+  DeLorean.Dispatcher = Dispatcher;
+  DeLorean.Store = Store;
+
+  // React Mixin
+  DeLorean.Flux.mixins = {
+    // It should be inserted to the React components which
+    // used in Flux.
+    // Simply `mixin: [Flux.mixins.storeListener]` will work.
+    storeListener: {
+    // After the component mounted, listen changes of the related stores
+      componentDidMount: function () {
+        var self = this;
+        for (var storeName in this.stores) {
+          if (_hasOwn(this.stores, storeName)) {
+            var store = this.stores[storeName];
+            store.onChange(function () {
+              // call the components `storeDidChanged` method
+              if (self.storeDidChange) {
+                self.storeDidChange(storeName);
+              }
+              // change state
+              if (typeof store.store.getState === 'function') {
+                var state = store.store.getState();
+                self.state.stores[storeName] = state;
+                self.forceUpdate();
+              }
+            });
+          }
+        }
+      },
+      getInitialState: function () {
+        var self = this;
+        function _findDispatcher(view) {
+          if (!view.props.dispatcher) {
+            return _findDispatcher(view._owner);
+          } else {
+            return view.props.dispatcher;
+          }
+        }
+
+        // some shortcuts
+        this.dispatcher = _findDispatcher(this);
+        if (this.storesDidChange) {
+          this.dispatcher.on('change:all', function () {
+            self.storesDidChange();
+          });
+        }
+
+        this.stores = this.dispatcher.stores;
+
+        var state = {stores: {}};
+        // more shortcuts for the state
+        for (var storeName in this.stores) {
+          if (_hasOwn(this.stores, storeName)) {
+            if (this.stores[storeName]
+            &&  this.stores[storeName].store
+            &&  this.stores[storeName].store.getState) {
+              state.stores[storeName] = this.stores[storeName].store.getState();
+            }
+          }
+        }
+        return state;
+      }
+    }
+  };
+
+  // Module export
+  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    DeLorean.Flux.define('EventEmitter', require('events').EventEmitter);
+    DeLorean.Flux.define('Promise', require('es6-promise').Promise);
+    module.exports = DeLorean;
+  } else {
+    if (typeof define === 'function' && define.amd) {
+      define([], function() {
+        return DeLorean;
+      });
+    } else {
+      window.DeLorean = DeLorean;
+    }
+  }
+
+})({});
+
+},{"es6-promise":149,"events":3}]},{},[1]);

@@ -2,6 +2,7 @@
 
 var React = require('react');
 var Flux = require('../../../../').Flux;
+
 var Router = require('director').Router;
 
 /* Generate Generic Store */
@@ -15,7 +16,9 @@ var TodoStore = Flux.createStore({
 
   initialize: function (todos) {
     var self = this;
-    this.todos = this.todos.concat(todos);
+    if (todos) {
+      this.todos = this.todos.concat(todos);
+    }
 
     // Auto change
     // Array.observe(this.todos, function () {
