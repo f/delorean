@@ -6,8 +6,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files: [
       'src/delorean.js',
-      'dist/delorean-requires.js',
-      'src/plugins/*.js',
+      'dist/.tmp/delorean-requires.js',
       'test/spec/**/*Spec.js'
     ],
     browsers: ['PhantomJS'],

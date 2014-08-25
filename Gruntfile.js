@@ -19,7 +19,7 @@ module.exports = function (grunt) {
     browserify: {
       dist: {
         files: {
-          'dist/delorean-requires.js': 'src/requires.js'
+          'dist/.tmp/delorean-requires.js': 'src/requires.js'
         }
       }
     },
@@ -30,32 +30,20 @@ module.exports = function (grunt) {
                 '<%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-        src: ['src/delorean.js', 'dist/delorean-requires.js'],
+        src: ['src/delorean.js', 'dist/.tmp/delorean-requires.js'],
         dest: 'dist/delorean.js',
-      },
-      react: {
-        src: ['src/delorean.js', 'dist/delorean-requires.js', 'src/plugins/react.js'],
-        dest: 'dist/extras/delorean-react.js',
-      },
-      flght: {
-        src: ['src/delorean.js', 'dist/delorean-requires.js', 'src/plugins/flight.js'],
-        dest: 'dist/extras/delorean-flight.js',
-      },
-      backbone: {
-        src: ['src/delorean.js', 'dist/delorean-requires.js', 'src/plugins/backbone.js'],
-        dest: 'dist/extras/delorean-backbone.js',
-      },
+      }
     },
     uglify: {
       options: {
-        sourceMap: true
+        sourceMap: true,
+        mangle: {
+          except: ['DeLorean', 'Store', 'Dispatcher', 'Flux']
+        }
       },
       build: {
         files: {
-          'dist/delorean.min.js': ['dist/delorean.js'],
-          'dist/extras/delorean-react.min.js': ['dist/extras/delorean-react.js'],
-          'dist/extras/delorean-flight.min.js': ['dist/extras/delorean-flight.js'],
-          'dist/extras/delorean-backbone.min.js': ['dist/extras/delorean-backbone.js']
+          'dist/delorean.min.js': ['dist/delorean.js']
         }
       }
     },

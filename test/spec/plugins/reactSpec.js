@@ -1,3 +1,0 @@
-describe("React Mixin", function() {
-
-});

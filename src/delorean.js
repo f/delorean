@@ -163,6 +163,10 @@
       }
 
       return dispatcher;
+    },
+    // Helper
+    define: function (key, value) {
+      DeLorean[key] = value;
     }
   };
 
@@ -170,8 +174,73 @@
   DeLorean.Dispatcher = Dispatcher;
   DeLorean.Store = Store;
 
+  // React Mixin
+  DeLorean.Flux.mixins = {
+    // It should be inserted to the React components which
+    // used in Flux.
+    // Simply `mixin: [Flux.mixins.storeListener]` will work.
+    storeListener: {
+    // After the component mounted, listen changes of the related stores
+      componentDidMount: function () {
+        var self = this;
+        for (var storeName in this.stores) {
+          if (_hasOwn(this.stores, storeName)) {
+            var store = this.stores[storeName];
+            store.onChange(function () {
+              // call the components `storeDidChanged` method
+              if (self.storeDidChange) {
+                self.storeDidChange(storeName);
+              }
+              // change state
+              if (typeof store.store.getState === 'function') {
+                var state = store.store.getState();
+                self.state.stores[storeName] = state;
+                self.forceUpdate();
+              }
+            });
+          }
+        }
+      },
+      getInitialState: function () {
+        var self = this;
+        function _findDispatcher(view) {
+          if (!view.props.dispatcher) {
+            return _findDispatcher(view._owner);
+          } else {
+            return view.props.dispatcher;
+          }
+        }
+
+        // some shortcuts
+        this.dispatcher = _findDispatcher(this);
+        if (this.storesDidChange) {
+          this.dispatcher.on('change:all', function () {
+            self.storesDidChange();
+          });
+        }
+
+        this.stores = this.dispatcher.stores;
+
+        var state = {stores: {}};
+        // more shortcuts for the state
+        for (var storeName in this.stores) {
+          if (_hasOwn(this.stores, storeName)) {
+            if (this.stores[storeName]
+            &&  this.stores[storeName].store
+            &&  this.stores[storeName].store.getState) {
+              state.stores[storeName] = this.stores[storeName].store.getState();
+            }
+          }
+        }
+        return state;
+      }
+    }
+  };
+
   // Module export
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    DeLorean.Flux.define('EventEmitter', require('events').EventEmitter);
+    DeLorean.Flux.define('Promise', require('es6-promise').Promise);
     module.exports = DeLorean;
   } else {
     if (typeof define === 'function' && define.amd) {
