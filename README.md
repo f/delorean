@@ -103,7 +103,7 @@ store.onChange(function () {
   document.getElementById('result').innerText = store.store.data;
 });
 
-document.getElementById('dataChanger').onClick = function () {
+document.getElementById('dataChanger').onclick = function () {
   // Start data cycle:
   Actions.setData(Math.random());
 };
