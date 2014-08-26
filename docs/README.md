@@ -8,3 +8,5 @@ Data in a Flux application flows in a single direction, in a cycle:
 - [**Dispatcher**: The postman, drops mails to the postboxes](./dispatcher.md)
 - [**View**: Box owner, checks box for the mail](./views.md)
 - [**Action Creator**: The post office, manages postmans](./actions.md)
+
+[Read the tutorial now.](./tutorial.md)

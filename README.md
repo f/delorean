@@ -10,12 +10,15 @@ DeLorean is a tiny Flux pattern implementation.
   - **Unidirectional data flow**, it makes your app logic **simpler than MVC**,
   - Automatically listens data changes and keeps your data updated,
   - Makes data more **consistent** in your whole application,
-  - Too easy to use with **React.js**; just add a mixin,
-  - Too easy to use with **Flight.js**; see the example,
   - It's framework agnostic, completely. There's **no view framework dependency**.
   - Too small, just **4K** gzipped.
+  - Built in **React.js** integration.
 
-## Overview
+### Tutorial
+
+You can learn Flux and DeLorean.js in minutes. [Read the tutorial](./docs/tutorial.md)
+
+## Using with Frameworks
 
   - [Try **React.js** example on JSFiddle](http://jsfiddle.net/fkadev/a2ms7rcc/)
   - [Try **Flight.js** example on JSFiddle](http://jsfiddle.net/fkadev/1cw9Leau/)
@@ -111,6 +114,9 @@ document.getElementById('dataChanger').onClick = function () {
 [Run this example on JSFiddle](http://jsfiddle.net/fkadev/40cx3146/)
 
 ## Docs
+
+You can read the [tutorial](./docs/tutorial.md) to learn how to start using
+**DeLorean.js** with your favorite framework.
 
 ### Basic Concepts
 
