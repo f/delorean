@@ -1,6 +1,6 @@
 var Flux = DeLorean.Flux;
 
-describe("Flux", function() {
+describe('Flux', function () {
   it('should generate a store', function () {
     var store = Flux.createStore();
     expect(store instanceof DeLorean.Store).toBeTruthy();

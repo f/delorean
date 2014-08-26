@@ -1,6 +1,6 @@
 var Dispatcher = DeLorean.Dispatcher;
 
-describe("Dispatcher", function() {
+describe('Dispatcher', function () {
 
   beforeEach(function () {
     this.actions = jasmine

@@ -1,6 +1,6 @@
 var Store = DeLorean.Store;
 
-describe("Store", function() {
+describe('Store', function () {
   it('store entity should be defined', function () {
     expect(Store).toBeDefined();
   });

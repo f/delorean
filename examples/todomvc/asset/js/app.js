@@ -162,7 +162,7 @@ var TodoListView = React.createClass({displayName: 'TodoListView',
   render: function () {
     var self = this;
 
-    return React.DOM.ul(null, 
+    return React.DOM.ul(null,
       this.stores.todoStore.store.todos.map(function (todo) {
         return TodoItemView({todo: todo})
       })
@@ -177,7 +177,7 @@ var TodoFormView = React.createClass({displayName: 'TodoFormView',
 
   render: function () {
     var self = this;
-    return React.DOM.form({onSubmit: this.handleSubmit}, 
+    return React.DOM.form({onSubmit: this.handleSubmit},
       React.DOM.input({value: this.state.todo, onChange: this.handleChange})
     )
   },
@@ -200,9 +200,9 @@ var ApplicationView = React.createClass({displayName: 'ApplicationView',
 
   render: function () {
     var self = this;
-    return React.DOM.div(null, 
-      TodoListView(null), 
-      TodoFormView(null), 
+    return React.DOM.div(null,
+      TodoListView(null),
+      TodoFormView(null),
       React.DOM.span(null, "There are ", this.stores.todoStore.store.todos.length, " todos.")
     )
   }
@@ -20078,7 +20078,7 @@ function polyfill() {
     local = self;
   }
 
-  var es6PromiseSupport = 
+  var es6PromiseSupport =
     "Promise" in local &&
     // Some of these methods are missing from
     // Firefox/Chrome experimental implementations

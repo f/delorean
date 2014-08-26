@@ -5,16 +5,31 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-jscs-checker');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-release');
 
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
 
+    jshint: {
+      all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js']
+    },
+    jscs: {
+      src: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
+      options: {
+        config: '.jscsrc',
+        validateIndentation: 2,
+        disallowDanglingUnderscores: null,
+        disallowMultipleVarDecl: null,
+        requireMultipleVarDecl: null
+      }
+    },
     karma: {
       unit: {
-        configFile: 'test/karma.conf.js',
-      },
+        configFile: 'test/karma.conf.js'
+      }
     },
     browserify: {
       dist: {
@@ -31,7 +46,7 @@ module.exports = function (grunt) {
       },
       build: {
         src: ['src/delorean.js', 'dist/.tmp/delorean-requires.js'],
-        dest: 'dist/delorean.js',
+        dest: 'dist/delorean.js'
       }
     },
     uglify: {
@@ -62,8 +77,8 @@ module.exports = function (grunt) {
         tasks: ['default'],
         options: {
           livereload: true
-        },
-      },
+        }
+      }
     },
     release: {
       options: {
@@ -72,7 +87,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('default', ['browserify', 'concat', 'uglify']);
+  grunt.registerTask('default', ['jscs', 'jshint', 'browserify', 'concat', 'uglify']);
   grunt.registerTask('dev', ['connect', 'watch']);
 
 };
