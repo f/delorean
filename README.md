@@ -3,7 +3,7 @@
 # DeLorean.js
 
 [![NPM version](https://badge.fury.io/js/delorean.js.svg)](http://badge.fury.io/js/delorean.js)
- ![Coverage](http://progressed.io/bar/26?title=coverage)
+ ![Coverage](http://progressed.io/bar/67?title=coverage)
 
 DeLorean is a tiny Flux pattern implementation.
 
