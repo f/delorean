@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/f/delorean.svg?branch=master)](https://travis-ci.org/f/delorean)
  [![NPM version](https://badge.fury.io/js/delorean.js.svg)](http://badge.fury.io/js/delorean.js)
- ![Coverage](http://progressed.io/bar/85?title=coverage)
+ ![Coverage](http://progressed.io/bar/86?title=coverage)
 
 DeLorean is a tiny Flux pattern implementation.
 
