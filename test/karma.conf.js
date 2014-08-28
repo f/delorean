@@ -5,6 +5,8 @@ module.exports = function (config) {
     autoWatch: true,
     frameworks: ['jasmine'],
     files: [
+      'test/spec/common.js',
+      'test/vendor/react-0.11.1.js',
       'src/delorean.js',
       'dist/.tmp/delorean-requires.js',
       'test/spec/**/*Spec.js'
