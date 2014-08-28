@@ -81,4 +81,21 @@ describe('Flux', function () {
     expect(myStore2.store.list[0]).toBe('ANOTHER: hello world');
   });
 
+  it('dispatcher can listen events', function () {
+    var spy = jasmine.createSpy('dispatcher listener');
+    MyAppDispatcher.on('hello', spy);
+    MyAppDispatcher.listener.emit('hello');
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('dispatcher can listen events', function () {
+    var spy = jasmine.createSpy('dispatcher listener');
+    MyAppDispatcher.on('hello', spy);
+    MyAppDispatcher.off('hello', spy);
+    MyAppDispatcher.listener.emit('hello');
+
+    expect(spy).not.toHaveBeenCalled();
+  });
+
 });

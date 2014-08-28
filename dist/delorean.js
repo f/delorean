@@ -1,4 +1,4 @@
-/*! delorean.js - v0.5.0-9 - 2014-08-27 */
+/*! delorean.js - v0.5.0-17 - 2014-08-28 */
 (function (DeLorean) {
   'use strict';
 
@@ -199,7 +199,7 @@
     // After the component mounted, listen changes of the related stores
       componentDidMount: function () {
         var self = this, store, __changeHandler;
-        __changeHandler = function (store) {
+        __changeHandler = function (store, storeName) {
           return function () {
             var state;
             // call the components `storeDidChanged` method
@@ -217,7 +217,7 @@
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             store = this.stores[storeName];
-            store.onChange(__changeHandler(store));
+            store.onChange(__changeHandler(store, storeName));
           }
         }
       },

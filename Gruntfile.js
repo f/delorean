@@ -14,10 +14,10 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     jshint: {
-      all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js']
+      all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js', '!test/vendor/**/*.js']
     },
     jscs: {
-      src: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
+      src: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js', '!test/vendor/**/*.js'],
       options: {
         config: '.jscsrc',
         validateIndentation: 2,

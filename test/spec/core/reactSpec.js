@@ -21,6 +21,24 @@ describe('React Test', function () {
   });
   var myStore = new MyAppStore();
 
+  var MyAppStore2 = DeLorean.Flux.createStore({
+    list: [],
+    actions: {
+      // Remember the `dispatch('addItem')`
+      addItem: 'addItemMethod'
+    },
+    addItemMethod: function (data) {
+      this.list.push('ANOTHER: ' + data.random);
+
+      // You need to say your store is changed.
+      this.emit('change');
+    },
+    getState: function () {
+      return {list: this.list};
+    }
+  });
+  var myStore2 = new MyAppStore2();
+
   var MyAppDispatcher = DeLorean.Flux.createDispatcher({
     addItem: function (data) {
       this.dispatch('addItem', data);
@@ -28,7 +46,8 @@ describe('React Test', function () {
 
     getStores: function () {
       return {
-        myStore: myStore
+        myStore: myStore,
+        myStore2: myStore2
       };
     }
   });
@@ -52,7 +71,8 @@ describe('React Test', function () {
 
     render: function () {
       return React.DOM.div(null,
-        React.DOM.span(null, "There are ", this.stores.myStore.store.list.length, " items.")
+        React.DOM.span(null, 'There are ', this.stores.myStore.store.list.length, ' items.'),
+        React.DOM.span(null, 'There are ', this.stores.myStore2.store.list.length, ' items.')
       );
     }
 
@@ -62,15 +82,16 @@ describe('React Test', function () {
                                       document.getElementById('test'));
 
   it('should be no item before add', function () {
-    expect(el.innerText).toBe('There are 0 items.');
+    expect(el.innerText).toBe('There are 0 items.There are 0 items.');
   });
 
   it('should have and item after add', function () {
     ActionCreator.addItem();
     ActionCreator.addItem();
     ActionCreator.addItem();
-    expect(el.innerText).toBe('There are 3 items.');
+    expect(el.innerText).toBe('There are 3 items.There are 3 items.');
     expect(storeSpy).toHaveBeenCalledWith('myStore');
+    expect(storeSpy).toHaveBeenCalledWith('myStore2');
   });
 
 });
