@@ -2,7 +2,7 @@
 
 Data in a Flux application flows in a single direction, in a cycle:
 
-![Flux Diagram](https://raw.githubusercontent.com/f/delorean/master/asset/flux-diagram.png)
+![Flux Diagram](https://raw.githubusercontent.com/f/delorean/master/docs/asset/flux-diagram.png)
 
 - [**Store**: A postbox](./store.md)
 - [**Dispatcher**: The postman, drops mails to the postboxes](./dispatcher.md)
