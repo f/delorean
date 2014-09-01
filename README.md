@@ -1,5 +1,3 @@
-![DeLorean Logo](https://raw.githubusercontent.com/f/delorean/master/docs/asset/delorean-logo.png)
-
 # DeLorean.js
 
 [![Build Status](https://travis-ci.org/f/delorean.svg?branch=master)](https://travis-ci.org/f/delorean)
