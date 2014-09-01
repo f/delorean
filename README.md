@@ -1,6 +1,6 @@
 # DeLorean.js
 
-[![Build Status](https://travis-ci.org/f/delorean.svg?branch=master)](https://travis-ci.org/f/delorean)
+[![Build Status](https://travis-ci.org/deloreanjs/delorean.svg?branch=master)](https://travis-ci.org/f/delorean)
  [![NPM version](https://badge.fury.io/js/delorean.js.svg)](http://badge.fury.io/js/delorean.js)
  ![Coverage](http://progressed.io/bar/86?title=coverage)
 
