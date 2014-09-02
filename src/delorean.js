@@ -12,24 +12,33 @@
     return 'action:' + name;
   }
 
-  function __argsShift(args, from) {
-    return Array.prototype.slice.call(args, from);
-  }
-
   function __findDispatcher(view) {
     if (!view.props.dispatcher) {
       return __findDispatcher(view._owner);
-    } else {
-      return view.props.dispatcher;
     }
+    return view.props.dispatcher;
   }
 
   // Dispatcher
   Dispatcher = (function () {
+    var __rollbackListener = function (stores) {
+      var __listener = function () {
+        for (var i in stores) {
+          stores[i].listener.emit('__rollback');
+        }
+      };
+      for (var j in stores) {
+        stores[j].listener.on('rollback', __listener);
+      }
+    };
+
     function Dispatcher(stores) {
       var self = this;
       this.listener = new DeLorean.EventEmitter();
       this.stores = stores;
+      __rollbackListener(Object.keys(stores).map(function (key) {
+        return stores[key];
+      }));
     }
 
     Dispatcher.prototype.dispatch = function (actionName, data) {
@@ -55,7 +64,7 @@
     };
 
     Dispatcher.prototype.waitFor = function (stores) {
-      var self = this, promises;
+      var self = this, promises, __rollbackListener;
       promises = (function () {
         var __promises = [], __promiseGenerator, promise;
         __promiseGenerator = function (store) {
@@ -90,13 +99,17 @@
       return this.listener.removeListener.apply(this.listener, arguments);
     };
 
+    Dispatcher.prototype.emit = function () {
+      return this.listener.emit.apply(this.listener, arguments);
+    };
+
     return Dispatcher;
   }());
 
   // Store
   Store = (function () {
 
-    function Store(store) {
+    function Store(store, args) {
       if (typeof store !== 'object') {
         throw 'Stores should be defined by passing the definition to the constructor';
       }
@@ -105,7 +118,6 @@
       this.store = store;
       this.bindActions();
       if (typeof store.initialize === 'function') {
-        var args = __argsShift(arguments, 1);
         store.initialize.apply(this.store, args);
       }
     }
@@ -114,6 +126,9 @@
       var callback;
 
       this.store.emit = this.listener.emit.bind(this.listener);
+      this.store.emitChange = this.listener.emit.bind(this.listener, 'change');
+      this.store.emitRollback = this.listener.emit.bind(this.listener, 'rollback');
+      this.store.rollback = this.listener.on.bind(this.listener, '__rollback');
       this.store.listenChanges = this.listenChanges.bind(this);
 
       for (var actionName in this.store.actions) {
@@ -157,7 +172,7 @@
   DeLorean.Flux = {
     createStore: function (factoryDefinition) {
       return function () {
-        return new Store(factoryDefinition);
+        return new Store(factoryDefinition, arguments);
       };
     },
     createDispatcher: function (actionsToDispatch) {

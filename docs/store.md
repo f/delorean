@@ -68,9 +68,19 @@ var TodoStore = Flux.createStore({
 var myTodos = new TodoStore('/todos');
 ```
 
+### `emitChange()` or `emit('change')`
+
+When your data changes, you need to call `emitChange()` or `emit('change')` to publish
+change signal for views.
+
+### `emitRollback(bool:noChange)` or `emit('rollback', bool:noChange)`
+
+When something goes wrong with your store, you may want to call a `rollback` event. When
+you call it, it informs other stores related to itself to be rolled back.
+
 #### Using `Array.observe` and `Object.observe`, or `listenChanges`
 
-You don't have to call `emit('change')` everytime. You may use **`observe`** feature
+You don't have to call `emitChange()` or `emit('change')` everytime. You may use **`observe`** feature
 of **ES.next**.
 
 ```javascript
@@ -114,6 +124,45 @@ or `Object.observe` already for you.
     $.getJSON(url, {}, function (data) {
       self.todos = data.todos;
     });
+  }
+  ...
+```
+
+### Protect your state from failures using `rollback`
+
+Sometimes stores may fail and you want your data back. In these cases, you'll need
+a rollback mechanism. When a store says it needs to be rolled back, **every sibling
+store on same dispatcher will be warned about it**.
+
+```javascript
+  ...
+  todos: [],
+
+  initialize: function (url) {
+    var self = this;
+
+    this.rollback(function () {
+      // bring old todos back, also it will tell another stores
+      // to be rolled back.
+      self.todos = self.oldTodos.slice(0);
+    });
+  },
+
+  addTodo: function (data) {
+    // Let's backup the data
+    self.oldTodos = self.todos.slice(0);
+
+    // Now apply the view
+    self.todos.push({text: data});
+    self.emitChange();
+
+    // Now try to react to the server
+    $.post('/todos', {text: data}, function (response) {
+      if (response.status === false) {
+        // if something goes wrong with the server, emit rollback.
+        self.emitRollback();
+      }
+    }, 'json');
   }
   ...
 ```
