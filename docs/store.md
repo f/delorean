@@ -73,7 +73,7 @@ var myTodos = new TodoStore('/todos');
 When your data changes, you need to call `emitChange()` or `emit('change')` to publish
 change signal for views.
 
-### `emitRollback(bool:noChange)` or `emit('rollback', bool:noChange)`
+### `emitRollback()` or `emit('rollback')`
 
 When something goes wrong with your store, you may want to call a `rollback` event. When
 you call it, it informs other stores related to itself to be rolled back.
@@ -145,6 +145,7 @@ store on same dispatcher will be warned about it**.
       // bring old todos back, also it will tell another stores
       // to be rolled back.
       self.todos = self.oldTodos.slice(0);
+      self.emit('change');
     });
   },
 
