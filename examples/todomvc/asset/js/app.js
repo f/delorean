@@ -159,6 +159,10 @@ var TodoListView = React.createClass({displayName: 'TodoListView',
 
   mixins: [Flux.mixins.storeListener],
 
+  storeDidChange: function () {
+    console.log(arguments);
+  },
+
   render: function () {
     var self = this;
 
@@ -20505,24 +20509,33 @@ exports.now = now;
     return 'action:' + name;
   }
 
-  function __argsShift(args, from) {
-    return Array.prototype.slice.call(args, from);
-  }
-
   function __findDispatcher(view) {
     if (!view.props.dispatcher) {
       return __findDispatcher(view._owner);
-    } else {
-      return view.props.dispatcher;
     }
+    return view.props.dispatcher;
   }
 
   // Dispatcher
   Dispatcher = (function () {
+    var __rollbackListener = function (stores) {
+      var __listener = function () {
+        for (var i in stores) {
+          stores[i].listener.emit('__rollback');
+        }
+      };
+      for (var j in stores) {
+        stores[j].listener.on('rollback', __listener);
+      }
+    };
+
     function Dispatcher(stores) {
       var self = this;
       this.listener = new DeLorean.EventEmitter();
       this.stores = stores;
+      __rollbackListener(Object.keys(stores).map(function (key) {
+        return stores[key];
+      }));
     }
 
     Dispatcher.prototype.dispatch = function (actionName, data) {
@@ -20548,7 +20561,7 @@ exports.now = now;
     };
 
     Dispatcher.prototype.waitFor = function (stores) {
-      var self = this, promises;
+      var self = this, promises, __rollbackListener;
       promises = (function () {
         var __promises = [], __promiseGenerator, promise;
         __promiseGenerator = function (store) {
@@ -20583,13 +20596,17 @@ exports.now = now;
       return this.listener.removeListener.apply(this.listener, arguments);
     };
 
+    Dispatcher.prototype.emit = function () {
+      return this.listener.emit.apply(this.listener, arguments);
+    };
+
     return Dispatcher;
   }());
 
   // Store
   Store = (function () {
 
-    function Store(store) {
+    function Store(store, args) {
       if (typeof store !== 'object') {
         throw 'Stores should be defined by passing the definition to the constructor';
       }
@@ -20598,7 +20615,6 @@ exports.now = now;
       this.store = store;
       this.bindActions();
       if (typeof store.initialize === 'function') {
-        var args = __argsShift(arguments, 1);
         store.initialize.apply(this.store, args);
       }
     }
@@ -20607,6 +20623,9 @@ exports.now = now;
       var callback;
 
       this.store.emit = this.listener.emit.bind(this.listener);
+      this.store.emitChange = this.listener.emit.bind(this.listener, 'change');
+      this.store.emitRollback = this.listener.emit.bind(this.listener, 'rollback');
+      this.store.rollback = this.listener.on.bind(this.listener, '__rollback');
       this.store.listenChanges = this.listenChanges.bind(this);
 
       for (var actionName in this.store.actions) {
@@ -20638,8 +20657,8 @@ exports.now = now;
 
       observer = Array.isArray(object) ? Array.observe : Object.observe;
 
-      observer(object, function () {
-        self.listener.emit('change');
+      observer(object, function (changes) {
+        self.listener.emit('change', changes);
       });
     };
 
@@ -20650,7 +20669,7 @@ exports.now = now;
   DeLorean.Flux = {
     createStore: function (factoryDefinition) {
       return function () {
-        return new Store(factoryDefinition);
+        return new Store(factoryDefinition, arguments);
       };
     },
     createDispatcher: function (actionsToDispatch) {
@@ -20693,10 +20712,11 @@ exports.now = now;
         var self = this, store, __changeHandler;
         __changeHandler = function (store, storeName) {
           return function () {
-            var state;
+            var state, args;
             // call the components `storeDidChanged` method
             if (self.storeDidChange) {
-              self.storeDidChange(storeName);
+              args = [storeName].concat(Array.prototype.slice.call(arguments, 0));
+              self.storeDidChange.apply(self, args);
             }
             // change state
             if (typeof store.store.getState === 'function') {

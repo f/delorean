@@ -1,4 +1,4 @@
-/*! delorean.js - v0.6.0 - 2014-09-03 */
+/*! delorean.js - v0.6.1 - 2014-09-04 */
 (function (DeLorean) {
   'use strict';
 
@@ -161,8 +161,8 @@
 
       observer = Array.isArray(object) ? Array.observe : Object.observe;
 
-      observer(object, function () {
-        self.listener.emit('change');
+      observer(object, function (changes) {
+        self.listener.emit('change', changes);
       });
     };
 
@@ -216,10 +216,11 @@
         var self = this, store, __changeHandler;
         __changeHandler = function (store, storeName) {
           return function () {
-            var state;
+            var state, args;
             // call the components `storeDidChanged` method
             if (self.storeDidChange) {
-              self.storeDidChange(storeName);
+              args = [storeName].concat(Array.prototype.slice.call(arguments, 0));
+              self.storeDidChange.apply(self, args);
             }
             // change state
             if (typeof store.store.getState === 'function') {

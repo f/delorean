@@ -158,6 +158,10 @@ var TodoListView = React.createClass({displayName: 'TodoListView',
 
   mixins: [Flux.mixins.storeListener],
 
+  storeDidChange: function () {
+    console.log(arguments);
+  },
+
   render: function () {
     var self = this;
 
