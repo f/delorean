@@ -12,6 +12,7 @@ DeLorean is a tiny Flux pattern implementation.
   - It's framework agnostic, completely. There's **no view framework dependency**.
   - Too small, just **4K** gzipped.
   - Built-in **React.js** integration, easy to use with **Flight.js** and **Ractive.js** and probably all others.
+  - Improve your UI/data consistency using **rollbacks**.
 
 ### Tutorial
 
