@@ -147,11 +147,11 @@ The **flux capacitor** was the core component of Doctor Emmett Brown's time trav
 
 ## Authors
 
-  - Fatih Kadir Akin ([@f](/f))
-  - Burak Can ([@burakcan](/burakcan))
+  - Fatih Kadir Akin ([@f](https://github.com/f))
+  - Burak Can ([@burakcan](https://github.com/burakcan))
 
 ## Contributors
 
-  - Quang Van ([@quangv](/quangv))
-  - James H. Edwards ([@incrediblesound](/incrediblesound))
-  - Fehmi Can Sağlam ([@fehmicansaglam](/fehmicansaglam))
+  - Quang Van ([@quangv](https://github.com/quangv))
+  - James H. Edwards ([@incrediblesound](https://github.com/incrediblesound))
+  - Fehmi Can Sağlam ([@fehmicansaglam](https://github.com/fehmicansaglam))
