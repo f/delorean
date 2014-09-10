@@ -7,10 +7,10 @@
 DeLorean is a tiny Flux pattern implementation.
 
   - **Unidirectional data flow**, it makes your app logic **simpler than MVC**,
-  - Automatically listens data changes and keeps your data updated,
-  - Makes data more **consistent** in your whole application,
+  - Automatically listens to data changes and keeps your data updated,
+  - Makes data more **consistent** across your whole application,
   - It's framework agnostic, completely. There's **no view framework dependency**.
-  - Too small, just **4K** gzipped.
+  - Very small, just **4K** gzipped.
   - Built-in **React.js** integration, easy to use with **Flight.js** and **Ractive.js** and probably all others.
   - Improve your UI/data consistency using **rollbacks**.
 
@@ -78,7 +78,7 @@ var Store = Flux.createStore({
 var store = new Store();
 
 /*
- * Dispatcher are simple action dispatchers for stores.
+ * Dispatchers are simple action dispatchers for stores.
  * Stores handle the related action.
  */
 var Dispatcher = Flux.createDispatcher({
@@ -115,15 +115,15 @@ document.getElementById('dataChanger').onclick = function () {
 
 ## Docs
 
-You can read the [tutorial](./docs/tutorial.md) to learn how to start using
+You can read the [tutorial](./docs/tutorial.md) to get started
 **DeLorean.js** with your favorite framework.
 
 ### Basic Concepts
 
   - [**Store**: A postbox](./docs/store.md)
-  - [**Dispatcher**: The postman, drops mails to the postboxes](./docs/dispatcher.md)
-  - [**View**: Box owner, checks box for the mail](./docs/views.md)
-  - [**Action Creator**: The post office, manages postmans](./docs/actions.md)
+  - [**Dispatcher**: The postman, drops mail in the postboxes](./docs/dispatcher.md)
+  - [**View**: Box owner, checks the box for mail](./docs/views.md)
+  - [**Action Creator**: The post office, manages postmen](./docs/actions.md)
 
 Or you can visit [documents](./docs) page.
 
@@ -139,7 +139,7 @@ open index.html
 
 ## Name
 
-The **flux capacitor** was the core component of Doctor Emmett Brown's time traveling **DeLorean time machine**
+The **flux capacitor** was the core component of Doctor Emmett Brown's **DeLorean time machine**
 
 ## License
 
