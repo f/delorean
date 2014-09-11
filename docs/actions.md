@@ -26,4 +26,4 @@ var TodoActionCreator = {
 };
 ```
 
-Then you can just run `TodoActionCreator.getAllTodos()` function **to start Flux cycle**.
+Then you just run `TodoActionCreator.getAllTodos()` method **to start the Flux cycle**.
