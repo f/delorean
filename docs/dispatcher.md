@@ -28,9 +28,9 @@ var TodoListApp = Flux.createDispatcher({
 
 #### Action `dispatch`
 
-When an action is dispatched, all the stores know about the status and they
-process the data asynchronously. When all of them are finished the dispatcher
-emits `change:all` event, also `dispatch` method returns a promise.
+When an action is dispatched, all the stores know about the status and 
+process the data asynchronously. When all of them are finished, the dispatcher
+emits `change:all` event, also the `dispatch` method returns a promise.
 
 ```js
 var TodoListApp = Flux.createDispatcher({
