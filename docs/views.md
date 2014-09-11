@@ -1,14 +1,14 @@
-# Views
+# Views (or components)
 
 ## Combining to React
 
-You bring all the flow together with the Views, actually *the Action generators*.
-Use the **`Flux.mixins.storeListener`** mixin to get a view into the Flux system.
-Also pass `dispatcher={DispatcherName}` attribute to the *main* or *top level* React view. It will
-then pass the dispatcher to all the child views to which you have applied the `storeListener` mixin.
+You bring all the flow together with the Views (or components), actually *the Action generators*.
+Use the **`Flux.mixins.storeListener`** mixin to get a component into the Flux system.
+Also pass `dispatcher={DispatcherName}` attribute to the *main* or *top level* React component. It will
+then pass the dispatcher to all the child component to which you have applied the `storeListener` mixin.
 
 ```js
-// Child views don't have to have the storeListener.
+// Child components don't have to have the storeListener.
 
 var TodoItemView = React.createClass({
 
@@ -42,8 +42,8 @@ var TodoListView = React.createClass({
 ### `storeDidChange` and `storesDidChange`
 
 These methods are triggered when a store is changed, and all stores are changed. You can use
-these methods in your views to perform specific actions after a store changes. Please note 
-that the **`Flux.mixins.storeListener`** will automatically update your view's `state` and force
+these methods in your components to perform specific actions after a store changes. Please note 
+that the **`Flux.mixins.storeListener`** will automatically update your component's `state` and force
 a render, so it is not required that you define these methods to peform routine re-renders.
 
 ```js
