@@ -54,3 +54,15 @@ var TodoListApp = Flux.createDispatcher({
 
 });
 ```
+
+#### `getStores()`
+
+The `getStores()` method is what hooks up your stores and React components to a dispatcher. This method should return an 
+object with a key for each store you want to respond to `dispatch` calls. This method is also used by 
+the React mixin, which uses it to apply state from these stores in your React components (states are 
+generated from each store's `getState` method).
+
+
+
+
+
