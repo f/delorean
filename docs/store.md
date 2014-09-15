@@ -67,6 +67,14 @@ var TodoStore = Flux.createStore({
 var myTodos = new TodoStore('/todos');
 ```
 
+### `getState()`
+
+You must define a `getState` method on your store. This method should return an object 
+containing the state data needed by your view(s). It is called by the React mixin on 
+`compnentDidMount`, and the returned data is placed into `this.state.stores[storeName]` on 
+React components with the Delorean `storeListener` mixin applied (see the [View (or React Component)](./views.md) 
+documentation for more).
+
 ### `emitChange()` or `emit('change')`
 
 When your data changes, you need to call `emitChange()` or `emit('change')` to publish
