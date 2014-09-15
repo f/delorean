@@ -122,7 +122,7 @@ You can read the [tutorial](./docs/tutorial.md) to get started
 
   - [**Store**: A postbox](./docs/store.md)
   - [**Dispatcher**: The postman, drops mail in the postboxes](./docs/dispatcher.md)
-  - [**View**: Box owner, checks the box for mail](./docs/views.md)
+  - [**View (or React Component)**: Box owner, checks the box for mail](./docs/views.md)
   - [**Action Creator**: The post office, manages postmen](./docs/actions.md)
 
 Or you can visit [documents](./docs) page.
@@ -155,4 +155,4 @@ The **flux capacitor** was the core component of Doctor Emmett Brown's **DeLorea
   - Quang Van ([@quangv](https://github.com/quangv))
   - James H. Edwards ([@incrediblesound](https://github.com/incrediblesound))
   - Fehmi Can Sağlam ([@fehmicansaglam](https://github.com/fehmicansaglam))
-  - [@darcyadams](https://github.com/darcyadams)
+  - Darcy Adams [@darcyadams](https://github.com/darcyadams)
