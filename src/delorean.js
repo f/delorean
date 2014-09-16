@@ -252,7 +252,7 @@
       
         // Set state.stores for all present stores with a setState method defined
         for (var storeName in this.stores) {
-          if (_hasOwn(this.stores, storeName)) {
+          if (__hasOwn(this.stores, storeName)) {
             if (this.stores[storeName]
             &&  this.stores[storeName].store
             &&  this.stores[storeName].store.getState) {
