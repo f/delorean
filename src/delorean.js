@@ -222,13 +222,23 @@
               self.storeDidChange.apply(self, args);
             }
             // change state
-            self.setState(self.getStoreStates());
+            if (self.isMounted()) { 
+              self.setState(self.getStoreStates()); 
+            }
           };
         };
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             store = this.stores[storeName];
             store.onChange(__changeHandler(store, storeName));
+          }
+        }
+      },
+      componentWillUnmount: function() {
+        for (var storeName in this.stores) {
+          if (__hasOwn(this.stores, storeName)) {
+            var store = this.stores[storeName];
+            store.listener.removeAllListeners('change')
           }
         }
       },
