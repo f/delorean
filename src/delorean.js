@@ -222,8 +222,8 @@
               self.storeDidChange.apply(self, args);
             }
             // change state
-            if (self.isMounted()) { 
-              self.setState(self.getStoreStates()); 
+            if (self.isMounted()) {
+              self.setState(self.getStoreStates());
             }
           };
         };
@@ -234,11 +234,11 @@
           }
         }
       },
-      componentWillUnmount: function() {
+      componentWillUnmount: function () {
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             var store = this.stores[storeName];
-            store.listener.removeAllListeners('change')
+            store.listener.removeAllListeners('change');
           }
         }
       },
@@ -257,15 +257,15 @@
 
         return this.getStoreStates();
       },
-      getStoreStates: function() {
+      getStoreStates: function () {
         var state = {stores: {}};
-      
+
         // Set state.stores for all present stores with a setState method defined
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             if (this.stores[storeName]
-            &&  this.stores[storeName].store
-            &&  this.stores[storeName].store.getState) {
+            && this.stores[storeName].store
+            && this.stores[storeName].store.getState) {
               state.stores[storeName] = this.stores[storeName].store.getState();
             }
           }

@@ -1,4 +1,4 @@
-/*! delorean.js - v0.6.1 - 2014-09-04 */
+/*! delorean.js - v0.6.2 - 2014-09-16 */
 (function (DeLorean) {
   'use strict';
 
@@ -223,10 +223,8 @@
               self.storeDidChange.apply(self, args);
             }
             // change state
-            if (typeof store.store.getState === 'function') {
-              state = store.store.getState();
-              self.state.stores[storeName] = state;
-              self.forceUpdate();
+            if (self.isMounted()) {
+              self.setState(self.getStoreStates());
             }
           };
         };
@@ -234,6 +232,14 @@
           if (__hasOwn(this.stores, storeName)) {
             store = this.stores[storeName];
             store.onChange(__changeHandler(store, storeName));
+          }
+        }
+      },
+      componentWillUnmount: function () {
+        for (var storeName in this.stores) {
+          if (__hasOwn(this.stores, storeName)) {
+            var store = this.stores[storeName];
+            store.listener.removeAllListeners('change');
           }
         }
       },
@@ -250,13 +256,17 @@
 
         this.stores = this.dispatcher.stores;
 
-        state = {stores: {}};
-        // more shortcuts for the state
+        return this.getStoreStates();
+      },
+      getStoreStates: function () {
+        var state = {stores: {}};
+
+        // Set state.stores for all present stores with a setState method defined
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
-            if (this.stores[storeName] &&
-              this.stores[storeName].store &&
-              this.stores[storeName].store.getState) {
+            if (this.stores[storeName]
+            && this.stores[storeName].store
+            && this.stores[storeName].store.getState) {
               state.stores[storeName] = this.stores[storeName].store.getState();
             }
           }

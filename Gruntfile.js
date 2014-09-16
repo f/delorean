@@ -14,6 +14,9 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     jshint: {
+      options: {
+        laxbreak: true
+      },
       all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js', '!test/vendor/**/*.js']
     },
     jscs: {
