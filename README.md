@@ -147,12 +147,12 @@ The **flux capacitor** was the core component of Doctor Emmett Brown's **DeLorea
 
 ## Authors
 
-  - Fatih Kadir Akin ([@f](https://github.com/f))
-  - Burak Can ([@burakcan](https://github.com/burakcan))
+  - Fatih Kadir Akin [@f](https://github.com/f)
+  - Burak Can [@burakcan](https://github.com/burakcan)
   - Darcy Adams [@darcyadams](https://github.com/darcyadams)
 
 ## Contributors
 
-  - Quang Van ([@quangv](https://github.com/quangv))
-  - James H. Edwards ([@incrediblesound](https://github.com/incrediblesound))
-  - Fehmi Can Sağlam ([@fehmicansaglam](https://github.com/fehmicansaglam))
+  - Quang Van [@quangv](https://github.com/quangv)
+  - James H. Edwards [@incrediblesound](https://github.com/incrediblesound)
+  - Fehmi Can Sağlam [@fehmicansaglam](https://github.com/fehmicansaglam)
