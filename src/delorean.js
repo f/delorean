@@ -222,11 +222,7 @@
               self.storeDidChange.apply(self, args);
             }
             // change state
-            if (typeof store.store.getState === 'function') {
-              state = store.store.getState();
-              self.state.stores[storeName] = state;
-              self.forceUpdate();
-            }
+            self.setState(self.getStoreStates());
           };
         };
         for (var storeName in this.stores) {
@@ -249,13 +245,17 @@
 
         this.stores = this.dispatcher.stores;
 
-        state = {stores: {}};
-        // more shortcuts for the state
+        return this.getStoreStates();
+      },
+      getStoreStates: function() {
+        var state = {stores: {}};
+      
+        // Set state.stores for all present stores with a setState method defined
         for (var storeName in this.stores) {
-          if (__hasOwn(this.stores, storeName)) {
-            if (this.stores[storeName] &&
-              this.stores[storeName].store &&
-              this.stores[storeName].store.getState) {
+          if (_hasOwn(this.stores, storeName)) {
+            if (this.stores[storeName]
+            &&  this.stores[storeName].store
+            &&  this.stores[storeName].store.getState) {
               state.stores[storeName] = this.stores[storeName].store.getState();
             }
           }
