@@ -1,4 +1,4 @@
-# Views (or components)
+# Views (or Components)
 
 ## Combining to React
 
