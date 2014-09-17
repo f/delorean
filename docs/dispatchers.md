@@ -1,4 +1,4 @@
-# Dispatcher
+# Dispatchers
 
 The dispatcher is the central hub that manages all data flow in a Flux application.
 It is essentially a registry of callbacks into the stores. Each store registers
