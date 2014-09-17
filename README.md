@@ -122,7 +122,7 @@ You can read the [tutorial](./docs/tutorial.md) to get started
 
   - [**Store**: A postbox](./docs/store.md)
   - [**Dispatcher**: The postman, drops mail in the postboxes](./docs/dispatcher.md)
-  - [**View (or React Component)**: Box owner, checks the box for mail](./docs/views.md)
+  - [**View (or Component)**: Box owner, checks the box for mail](./docs/views.md)
   - [**Action Creator**: The post office, manages postmen](./docs/actions.md)
 
 Or you can visit [documents](./docs) page.
