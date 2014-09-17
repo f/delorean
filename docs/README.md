@@ -1,12 +1,14 @@
 ## What is Flux
 
-Data in a Flux application flows in a single direction, in a cycle:
+Data in a Flux application flows in a single direction, in a cycle.
 
-![Flux Diagram](https://raw.githubusercontent.com/f/delorean/master/docs/asset/flux-diagram.png)
-
-- [**Store**: A postbox](./store.md)
-- [**Dispatcher**: The postman, drops mails to the postboxes](./dispatcher.md)
-- [**View (or components)**: Box owner, checks box for the mail](./views.md)
-- [**Action Creator**: The post office, manages postmans](./actions.md)
+- [**Store**: A postbox](./stores.md)
+- [**Dispatcher**: The postman, drops mail in the postboxes](./dispatchers.md)
+- [**View (or Component)**: Box owner, checks the box for mail](./views.md)
+- [**Action Creator**: The post office, manages postmen](./actions.md)
 
 [Read the tutorial now.](./tutorial.md)
+
+## Flux Architecture Diagram (from Facebook)
+
+![Flux Diagram](https://raw.githubusercontent.com/f/delorean/master/docs/asset/flux-diagram.png)
