@@ -1,4 +1,4 @@
-## What is Flux
+## What is Flux?
 
 Data in a Flux application flows in a single direction, in a cycle.
 
