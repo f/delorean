@@ -71,8 +71,8 @@ describe('React Test', function () {
 
     render: function () {
       return React.DOM.div(null,
-        React.DOM.span(null, 'There are ', this.stores.myStore.store.list.length, ' items.'),
-        React.DOM.span(null, 'There are ', this.stores.myStore2.store.list.length, ' items.')
+        React.DOM.span(null, 'There are ', this.getStore('myStore').list.length, ' items.'),
+        React.DOM.span(null, 'There are ', this.getStore('myStore2').list.length, ' items.')
       );
     }
 
@@ -80,6 +80,11 @@ describe('React Test', function () {
 
   var mainView = React.renderComponent(ApplicationView({dispatcher: MyAppDispatcher}),
                                       document.getElementById('test'));
+
+  it('dispatcher can get stores itself', function () {
+    expect(MyAppDispatcher.getStore('myStore')).toBe(myStore.store);
+    expect(MyAppDispatcher.getStore('myStore2')).toBe(myStore2.store);
+  });
 
   it('should be no item before add', function () {
     expect(el.innerText).toBe('There are 0 items.There are 0 items.');

@@ -30,7 +30,7 @@ var TodoListView = React.createClass({
   render: function () {
     var self = this;
     return <ul>
-      {this.stores.todoStore.store.todos.map(function (todo) {
+      {this.getStore('todoStore').todos.map(function (todo) {
         return <TodoItemView todo={todo}></TodoItemView>
       })}
     </ul>
@@ -42,7 +42,7 @@ var TodoListView = React.createClass({
 ### `storeDidChange` and `storesDidChange`
 
 These methods are triggered when a store is changed, and all stores are changed. You can use
-these methods in your components to perform specific actions after a store changes. Please note 
+these methods in your components to perform specific actions after a store changes. Please note
 that the **`Flux.mixins.storeListener`** will automatically update your component's `state` and force
 a render, so it is not required that you define these methods to peform routine re-renders.
 
@@ -68,6 +68,20 @@ var TodoListView = React.createClass({
 });
 ```
 
+### `getStore(storeName)`
+
+It returns the related store to the component.
+
+```js
+...
+  return <ul>
+    {this.getStore('todoStore').todos.map(function (todo) {
+      return <TodoItemView todo={todo}></TodoItemView>
+    })}
+  </ul>
+...
+```
+
 ## Combining to Flight.js
 
 Since DeLorean.Flux doesn't require React, you can use it everywhere, including **Flight.js**
@@ -76,7 +90,7 @@ Since DeLorean.Flux doesn't require React, you can use it everywhere, including 
 var TodoCountUI = flight.component(function () {
 
   this.render = function () {
-    this.$node.html(TodoListDispatcher.stores.todoStore.store.todos.length);
+    this.$node.html(TodoListDispatcher.getStore('todoStore').todos.length);
   };
 
   this.after('initialize', function() {

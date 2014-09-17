@@ -103,6 +103,13 @@
       return this.listener.emit.apply(this.listener, arguments);
     };
 
+    Dispatcher.prototype.getStore = function (storeName) {
+      if (!this.stores[storeName]) {
+        throw 'Store ' + storeName + ' does not exist.';
+      }
+      return this.stores[storeName].store;
+    };
+
     return Dispatcher;
   }());
 
@@ -256,6 +263,9 @@
         this.stores = this.dispatcher.stores;
 
         return this.getStoreStates();
+      },
+      getStore: function (storeName) {
+        return this.state.stores[storeName];
       },
       getStoreStates: function () {
         var state = {stores: {}};

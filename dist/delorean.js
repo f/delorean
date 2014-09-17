@@ -1,4 +1,4 @@
-/*! delorean.js - v0.6.2 - 2014-09-16 */
+/*! delorean.js - v0.7.0 - 2014-09-17 */
 (function (DeLorean) {
   'use strict';
 
@@ -102,6 +102,13 @@
 
     Dispatcher.prototype.emit = function () {
       return this.listener.emit.apply(this.listener, arguments);
+    };
+
+    Dispatcher.prototype.getStore = function (storeName) {
+      if (!this.stores[storeName]) {
+        throw 'Store ' + storeName + ' does not exist.';
+      }
+      return this.stores[storeName].store;
     };
 
     return Dispatcher;
@@ -257,6 +264,9 @@
         this.stores = this.dispatcher.stores;
 
         return this.getStoreStates();
+      },
+      getStore: function (storeName) {
+        return this.state.stores[storeName];
       },
       getStoreStates: function () {
         var state = {stores: {}};
