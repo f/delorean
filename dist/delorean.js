@@ -1,4 +1,4 @@
-/*! delorean.js - v0.7.1 - 2014-09-20 */
+/*! delorean.js - v0.7.2 - 2014-09-20 */
 (function (DeLorean) {
   'use strict';
 
@@ -359,7 +359,7 @@
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             var store = this.stores[storeName];
-            // TODO: What if another mounted view listening this store? Commenting out for now.
+            // FIXME: What if another mounted view listening this store? Commenting out for now.
             store.listener.removeAllListeners('change');
           }
         }
