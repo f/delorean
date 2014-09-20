@@ -137,14 +137,6 @@ grunt
 open index.html
 ```
 
-## Name
-
-The **flux capacitor** was the core component of Doctor Emmett Brown's **DeLorean time machine**
-
-## License
-
-[MIT License](http://f.mit-license.org)
-
 ## Authors
 
   - Fatih Kadir Akin [@f](https://github.com/f)
@@ -156,3 +148,29 @@ The **flux capacitor** was the core component of Doctor Emmett Brown's **DeLorea
   - Quang Van [@quangv](https://github.com/quangv)
   - James H. Edwards [@incrediblesound](https://github.com/incrediblesound)
   - Fehmi Can Sağlam [@fehmicansaglam](https://github.com/fehmicansaglam)
+
+## Contribution
+
+```bash
+git clone git@github.com:deloreanjs/delorean.git
+cd delorean
+git checkout -b your-feature-branch
+```
+
+After you make some changes and add your test cases to the `test/spec/*Spec.js`
+files. please run:
+
+```bash
+grunt
+grunt test
+```
+
+When it's all OK, [open a pull request](https://github.com/deloreanjs/delorean/compare/).
+
+## License
+
+[MIT License](http://f.mit-license.org)
+
+## Name
+
+The **flux capacitor** was the core component of Doctor Emmett Brown's **DeLorean time machine**
