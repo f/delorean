@@ -10,10 +10,26 @@ var Router = require('director').Router;
 
 var TodoStore = Flux.createStore({
 
-  todos: [
-    {text: 'hello'},
-    {text: 'world'}
-  ],
+  scheme: {
+    firstname: 'unknown',
+    surname: 'name',
+    fullname: function () {
+      return this.firstname + ' ' + this.surname;
+    },
+    todos: {
+      default: [
+        {text: 'b'},
+        {text: 'c'},
+        {text: 'a'}
+      ],
+      calculate: function () {
+        var self = this;
+        return this.todos.map(function (todo) {
+          return {text: todo.text.toUpperCase()};
+        });
+      }
+    }
+  },
 
   initialize: function (todos) {
     var self = this;
@@ -35,7 +51,7 @@ var TodoStore = Flux.createStore({
   },
 
   addTodo: function (todo) {
-    this.todos.push({text: todo.text});
+    this.set('todos', this.todos.concat({text: todo.text}));
   },
 
   removeTodo: function (todoToComplete) {
@@ -44,21 +60,16 @@ var TodoStore = Flux.createStore({
     });
     this.listenChanges(filteredData);
 
-    this.todos = filteredData;
+    this.set('todos', filteredData);
     this.emit('change');
   },
 
   resetTodos: function (todos) {
-    this.todos = todos;
+    this.set('todos', todos);
     this.listenChanges(this.todos);
     this.emit('change');
-  },
-
-  getState: function () {
-    return {
-      todos: this.todos
-    }
   }
+
 });
 
 /* Create a Todo Store with a data */
@@ -205,9 +216,10 @@ var ApplicationView = React.createClass({displayName: 'ApplicationView',
   render: function () {
     var self = this;
     return React.DOM.div(null, 
+      React.DOM.span(null, this.dispatcher.getStore('todoStore').fullname), 
       TodoListView(null), 
       TodoFormView(null), 
-      React.DOM.span(null, "There are ", this.stores.todoStore.store.todos.length, " todos.")
+      React.DOM.span(null, "There are ", this.dispatcher.getStore('todoStore').todos.length, " todos.")
     )
   }
 
@@ -20699,12 +20711,85 @@ exports.now = now;
       this.store = store;
       this.bindActions();
 
+      this.buildScheme();
+
       // `initialize` is the construction function, you can define `initialize` method
       // in your store definitions.
       if (typeof store.initialize === 'function') {
         store.initialize.apply(this.store, args);
       }
     }
+
+    Store.prototype.set = function (key, value) {
+      var scheme = this.store.scheme, definition;
+      if (scheme && this.store.scheme[key]) {
+        definition = scheme[key];
+
+        this.store[key] = value || definition.default;
+
+        if (typeof definition.calculate === 'function') {
+          this.store[key] = definition.calculate.call(this.store);
+        }
+
+        this.listener.emit('change');
+      } else {
+        throw 'Scheme should include the key ' + key + ' you wanted to set.';
+      }
+    };
+
+    // Removes the scheme format and standardizes all the shortcuts.
+    // If you run `formatScheme({name: 'joe'})` it will return you
+    // `{name: {default: 'joe'}}`. Also if you run `formatScheme({fullname: function () {}})`
+    // it will return `{fullname: {calculate: function () {}}}`.
+    Store.prototype.formatScheme = function (scheme) {
+      var formattedScheme = {};
+      for (var keyName in scheme) {
+        var definition = scheme[keyName], defaultValue, calculatedValue;
+
+        formattedScheme[keyName] = {default: null};
+
+        /* {key: 'value'} will be {key: {default: 'value'}} */
+        defaultValue = (typeof definition === 'object') ?
+                        definition.default : definition;
+        formattedScheme[keyName].default = defaultValue;
+
+        /* {key: function () {}} will be {key: {calculate: function () {}}} */
+        if (typeof definition.calculate === 'function') {
+          calculatedValue = definition.calculate;
+        } else if (typeof definition === 'function') {
+          calculatedValue = definition;
+        }
+        if (calculatedValue) {
+          formattedScheme[keyName].calculate = calculatedValue;
+        }
+      }
+      return formattedScheme;
+    };
+
+    /* Applying `scheme` to the store if exists. */
+    Store.prototype.buildScheme = function () {
+
+      var scheme, calculatedData;
+      if (typeof this.store.scheme === 'object') {
+        /* Scheme must be formatted to standardize the keys. */
+        scheme = this.store.scheme = this.formatScheme(this.store.scheme);
+
+        /* Set the defaults first */
+        for (var keyName in scheme) {
+          var definition = scheme[keyName];
+          this.store[keyName] = definition.default;
+        }
+
+        /* Set the calculations */
+        for (var keyName in scheme) {
+          var definition = scheme[keyName];
+          if (definition.calculate) {
+            this.store[keyName] = definition.calculate.call(this.store);
+          }
+        }
+      }
+
+    };
 
     // `bindActions` is semi-private method. You'll never need to call it from outside.
     // It powers up the `this.store` object.
@@ -20718,6 +20803,7 @@ exports.now = now;
       this.store.emitRollback = this.listener.emit.bind(this.listener, 'rollback');
       this.store.rollback = this.listener.on.bind(this.listener, '__rollback');
       this.store.listenChanges = this.listenChanges.bind(this);
+      this.store.set = this.set.bind(this);
 
       // Stores must have a `actions` hash of `actionName: methodName`
       // `methodName` is the `this.store`'s prototype method..
@@ -20897,6 +20983,8 @@ exports.now = now;
             // If stores has `getState` method, it'll be pushed to the component's state.
             && this.stores[storeName].store.getState) {
               state.stores[storeName] = this.stores[storeName].store.getState();
+            } else {
+              console.log('state not found, getting scheme');
             }
           }
         }

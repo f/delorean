@@ -9,10 +9,26 @@ var Router = require('director').Router;
 
 var TodoStore = Flux.createStore({
 
-  todos: [
-    {text: 'hello'},
-    {text: 'world'}
-  ],
+  scheme: {
+    firstname: 'unknown',
+    surname: 'name',
+    fullname: function () {
+      return this.firstname + ' ' + this.surname;
+    },
+    todos: {
+      default: [
+        {text: 'b'},
+        {text: 'c'},
+        {text: 'a'}
+      ],
+      calculate: function () {
+        var self = this;
+        return this.todos.map(function (todo) {
+          return {text: todo.text.toUpperCase()};
+        });
+      }
+    }
+  },
 
   initialize: function (todos) {
     var self = this;
@@ -34,7 +50,7 @@ var TodoStore = Flux.createStore({
   },
 
   addTodo: function (todo) {
-    this.todos.push({text: todo.text});
+    this.set('todos', this.todos.concat({text: todo.text}));
   },
 
   removeTodo: function (todoToComplete) {
@@ -43,21 +59,16 @@ var TodoStore = Flux.createStore({
     });
     this.listenChanges(filteredData);
 
-    this.todos = filteredData;
+    this.set('todos', filteredData);
     this.emit('change');
   },
 
   resetTodos: function (todos) {
-    this.todos = todos;
+    this.set('todos', todos);
     this.listenChanges(this.todos);
     this.emit('change');
-  },
-
-  getState: function () {
-    return {
-      todos: this.todos
-    }
   }
+
 });
 
 /* Create a Todo Store with a data */
@@ -204,9 +215,10 @@ var ApplicationView = React.createClass({
   render: function () {
     var self = this;
     return <div>
+      <span>{this.dispatcher.getStore('todoStore').fullname}</span>
       <TodoListView />
       <TodoFormView />
-      <span>There are {this.stores.todoStore.store.todos.length} todos.</span>
+      <span>There are {this.dispatcher.getStore('todoStore').todos.length} todos.</span>
     </div>
   }
 

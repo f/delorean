@@ -1,4 +1,4 @@
-/*! delorean.js - v0.7.2-2 - 2014-09-20 */
+/*! delorean.js - v0.7.2-4 - 2014-09-20 */
 (function (DeLorean) {
   'use strict';
 
@@ -202,6 +202,7 @@
       /* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */
       this.store = store;
       this.bindActions();
+      this.buildScheme();
 
       // `initialize` is the construction function, you can define `initialize` method
       // in your store definitions.
@@ -209,6 +210,10 @@
         store.initialize.apply(this.store, args);
       }
     }
+
+    Store.prototype.buildScheme = function () {
+      console.log(this.scheme);
+    };
 
     // `bindActions` is semi-private method. You'll never need to call it from outside.
     // It powers up the `this.store` object.
@@ -401,6 +406,8 @@
             // If stores has `getState` method, it'll be pushed to the component's state.
             && this.stores[storeName].store.getState) {
               state.stores[storeName] = this.stores[storeName].store.getState();
+            } else {
+              console.log('state not found, getting scheme');
             }
           }
         }
