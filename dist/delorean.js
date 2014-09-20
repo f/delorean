@@ -202,6 +202,7 @@
       /* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */
       this.store = store;
       this.bindActions();
+
       this.buildScheme();
 
       // `initialize` is the construction function, you can define `initialize` method
@@ -211,8 +212,75 @@
       }
     }
 
+    Store.prototype.set = function (key, value) {
+      var scheme = this.store.scheme, definition;
+      if (scheme && this.store.scheme[key]) {
+        definition = scheme[key];
+
+        this.store[key] = value || definition.default;
+
+        if (typeof definition.calculate === 'function') {
+          this.store[key] = definition.calculate.call(this.store);
+        }
+
+        this.listener.emit('change');
+      } else {
+        throw 'Scheme should include the key ' + key + ' you wanted to set.';
+      }
+    };
+
+    // Removes the scheme format and standardizes all the shortcuts.
+    // If you run `formatScheme({name: 'joe'})` it will return you
+    // `{name: {default: 'joe'}}`. Also if you run `formatScheme({fullname: function () {}})`
+    // it will return `{fullname: {calculate: function () {}}}`.
+    Store.prototype.formatScheme = function (scheme) {
+      var formattedScheme = {};
+      for (var keyName in scheme) {
+        var definition = scheme[keyName], defaultValue, calculatedValue;
+
+        formattedScheme[keyName] = {default: null};
+
+        /* {key: 'value'} will be {key: {default: 'value'}} */
+        defaultValue = (typeof definition === 'object') ?
+                        definition.default : definition;
+        formattedScheme[keyName].default = defaultValue;
+
+        /* {key: function () {}} will be {key: {calculate: function () {}}} */
+        if (typeof definition.calculate === 'function') {
+          calculatedValue = definition.calculate;
+        } else if (typeof definition === 'function') {
+          calculatedValue = definition;
+        }
+        if (calculatedValue) {
+          formattedScheme[keyName].calculate = calculatedValue;
+        }
+      }
+      return formattedScheme;
+    };
+
+    /* Applying `scheme` to the store if exists. */
     Store.prototype.buildScheme = function () {
-      console.log(this.scheme);
+
+      var scheme, calculatedData, keyName, definition;
+      if (typeof this.store.scheme === 'object') {
+        /* Scheme must be formatted to standardize the keys. */
+        scheme = this.store.scheme = this.formatScheme(this.store.scheme);
+
+        /* Set the defaults first */
+        for (keyName in scheme) {
+          definition = scheme[keyName];
+          this.store[keyName] = definition.default;
+        }
+
+        /* Set the calculations */
+        for (keyName in scheme) {
+          definition = scheme[keyName];
+          if (definition.calculate) {
+            this.store[keyName] = definition.calculate.call(this.store);
+          }
+        }
+      }
+
     };
 
     // `bindActions` is semi-private method. You'll never need to call it from outside.
@@ -227,6 +295,7 @@
       this.store.emitRollback = this.listener.emit.bind(this.listener, 'rollback');
       this.store.rollback = this.listener.on.bind(this.listener, '__rollback');
       this.store.listenChanges = this.listenChanges.bind(this);
+      this.store.set = this.set.bind(this);
 
       // Stores must have a `actions` hash of `actionName: methodName`
       // `methodName` is the `this.store`'s prototype method..

@@ -260,20 +260,20 @@
     /* Applying `scheme` to the store if exists. */
     Store.prototype.buildScheme = function () {
 
-      var scheme, calculatedData;
+      var scheme, calculatedData, keyName, definition;
       if (typeof this.store.scheme === 'object') {
         /* Scheme must be formatted to standardize the keys. */
         scheme = this.store.scheme = this.formatScheme(this.store.scheme);
 
         /* Set the defaults first */
-        for (var keyName in scheme) {
-          var definition = scheme[keyName];
+        for (keyName in scheme) {
+          definition = scheme[keyName];
           this.store[keyName] = definition.default;
         }
 
         /* Set the calculations */
-        for (var keyName in scheme) {
-          var definition = scheme[keyName];
+        for (keyName in scheme) {
+          definition = scheme[keyName];
           if (definition.calculate) {
             this.store[keyName] = definition.calculate.call(this.store);
           }
