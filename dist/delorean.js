@@ -1,4 +1,4 @@
-/*! delorean.js - v0.7.2 - 2014-09-20 */
+/*! delorean.js - v0.7.2-1 - 2014-09-20 */
 (function (DeLorean) {
   'use strict';
 
@@ -13,7 +13,7 @@
   // Helper functions are private functions to be used in codebase.
   // It's better using two underscore at the beginning of the function.
 
-  // `__hasOwn` function is a shortcut for `Object#hasOwnProperty`.
+  /* `__hasOwn` function is a shortcut for `Object#hasOwnProperty` */
   function __hasOwn(object, prop) {
     return Object.prototype.hasOwnProperty.call(object, prop);
   }
@@ -26,9 +26,9 @@
   }
 
   // `__findDispatcher` is a private function for **React components**.
-  // `view` should be a component instance. If a component don't have
-  // any dispatcher, it tries to find a dispatcher from the parents.
   function __findDispatcher(view) {
+    /* `view` should be a component instance. If a component don't have
+        any dispatcher, it tries to find a dispatcher from the parents. */
     if (!view.props.dispatcher) {
       return __findDispatcher(view._owner);
     }
@@ -47,8 +47,7 @@
     // ### Dispatcher Helpers
 
     // Rollback listener adds a `rollback` event listener to the bunch of
-    // stores. If any of them fires `rollback` event, all of the stores
-    // will be emitted to be rolled back with `__rollback` event.
+    // stores.
     function __rollbackListener(stores) {
 
       function __listener() {
@@ -57,6 +56,8 @@
         }
       }
 
+      /* If any of them fires `rollback` event, all of the stores
+         will be emitted to be rolled back with `__rollback` event. */
       for (var j in stores) {
         stores[j].listener.on('rollback', __listener);
       }
@@ -70,7 +71,7 @@
       this.listener = new DeLorean.EventEmitter();
       this.stores = stores;
 
-      // Stores should be listened for rollback events.
+      /* Stores should be listened for rollback events. */
       __rollbackListener(Object.keys(stores).map(function (key) {
         return stores[key];
       }));
@@ -80,12 +81,12 @@
     Dispatcher.prototype.dispatch = function (actionName, data) {
       var self = this, stores, deferred;
 
-      // Stores are key-value pairs. Collect store instances into an array.
+      /* Stores are key-value pairs. Collect store instances into an array. */
       stores = (function () {
         var stores = [], store;
         for (var storeName in self.stores) {
           store = self.stores[storeName];
-          // Store value must be an _instance of Store_.
+          /* Store value must be an _instance of Store_. */
           if (!store instanceof Store) {
             throw 'Given store is not a store instance';
           }
@@ -98,12 +99,13 @@
       // stores are dispatched properly.
       deferred = this.waitFor(stores);
 
-      // Payload should send to all related stores.
+      /* Payload should send to all related stores. */
       for (var storeName in self.stores) {
         self.stores[storeName].dispatchAction(actionName, data);
       }
 
-      // And so you can just use **promise** for dispatching: `dispatch(..).then(..)`.
+      // `dispatch` returns deferred object you can just use **promise**
+      // for dispatching: `dispatch(..).then(..)`.
       return deferred;
     };
 
@@ -116,8 +118,8 @@
       promises = (function () {
         var __promises = [], promise;
 
-        // `__promiseGenerator` generates a simple promise that resolves itself when
-        // related store is changed.
+        /* `__promiseGenerator` generates a simple promise that resolves itself when
+            related store is changed. */
         function __promiseGenerator(store) {
           // `DeLorean.Promise` is `require('es6-promise').Promise` by default.
           // you can change it using `DeLorean.Flux.define('Promise', AnotherPromise)`
@@ -141,7 +143,7 @@
     // `registerAction` method adds a method to the prototype. So you can just use
     // `dispatcherInstance.actionName()`.
     Dispatcher.prototype.registerAction = function (action, callback) {
-      // The callback must be a function.
+      /* The callback must be a function. */
       if (typeof callback === 'function') {
         this[action] = callback.bind(this.stores);
       } else {
@@ -188,7 +190,7 @@
 
     // ### Store Prototype
     function Store(store, args) {
-      // store parameter must be an `object`
+      /* store parameter must be an `object` */
       if (typeof store !== 'object') {
         throw 'Stores should be defined by passing the definition to the constructor';
       }
@@ -197,11 +199,12 @@
       // you can change it using `DeLorean.Flux.define('EventEmitter', AnotherEventEmitter)`
       this.listener = new DeLorean.EventEmitter();
 
-      // Store is _hygenic_ object. DeLorean doesn't extend it, it uses it.
+      /* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */
       this.store = store;
       this.bindActions();
 
-      // `initialize` is the construction function.
+      // `initialize` is the construction function, you can define `initialize` method
+      // in your store definitions.
       if (typeof store.initialize === 'function') {
         store.initialize.apply(this.store, args);
       }
@@ -212,7 +215,8 @@
     Store.prototype.bindActions = function () {
       var callback;
 
-      // Some required methods can be used in **store definition**.
+      // Some required methods can be used in **store definition** like
+      // **`emit`**, **`emitChange`**, **`emitRollback`**, **`rollback`**, **`listenChanges`**
       this.store.emit = this.listener.emit.bind(this.listener);
       this.store.emitChange = this.listener.emit.bind(this.listener, 'change');
       this.store.emitRollback = this.listener.emit.bind(this.listener, 'rollback');
@@ -220,14 +224,14 @@
       this.store.listenChanges = this.listenChanges.bind(this);
 
       // Stores must have a `actions` hash of `actionName: methodName`
-      // `methodName` is the `this.store`'s prototype method. And `actionName`
-      // should be a name generated by `__generateActionName`.
+      // `methodName` is the `this.store`'s prototype method..
       for (var actionName in this.store.actions) {
         if (__hasOwn(this.store.actions, actionName)) {
           callback = this.store.actions[actionName];
           if (typeof this.store[callback] !== 'function') {
             throw 'Callback should be a method!';
           }
+          /* And `actionName` should be a name generated by `__generateActionName` */
           this.listener.on(__generateActionName(actionName),
                            this.store[callback].bind(this.store));
         }
@@ -280,7 +284,7 @@
     },
 
     // `createDispatcher` generates a dispatcher with actions to dispatch.
-    // `actionsToDispatch` should be an object.
+    /* `actionsToDispatch` should be an object. */
     createDispatcher: function (actionsToDispatch) {
       var actionsOfStores, dispatcher, callback;
 
@@ -289,13 +293,13 @@
         actionsOfStores = actionsToDispatch.getStores();
       }
 
-      // If there are no stores defined, it's an empty object.
+      /* If there are no stores defined, it's an empty object. */
       dispatcher = new Dispatcher(actionsOfStores || {});
 
-      // Now call `registerAction` method for every action.
+      /* Now call `registerAction` method for every action. */
       for (var actionName in actionsToDispatch) {
         if (__hasOwn(actionsToDispatch, actionName)) {
-          // `getStores` is the special function, it's not an action.
+          /* `getStores` is the special function, it's not an action. */
           if (actionName !== 'getStores') {
             callback = actionsToDispatch[actionName];
             dispatcher.registerAction(actionName, callback.bind(dispatcher));
@@ -328,24 +332,23 @@
       componentDidMount: function () {
         var self = this, store;
 
-        // `__changeHandler` is a **listener generator** to pass to the `onChange`
-        // function.
+        /* `__changeHandler` is a **listener generator** to pass to the `onChange` function. */
         function __changeHandler(store, storeName) {
           return function () {
             var state, args;
-            // Call the components `storeDidChanged` method if exists.
+            // When something changes it calls the components `storeDidChanged` method if exists.
             if (self.storeDidChange) {
               args = [storeName].concat(Array.prototype.slice.call(arguments, 0));
               self.storeDidChange.apply(self, args);
             }
-            // If the component is mounted, change state.
+            /* If the component is mounted, change state. */
             if (self.isMounted()) {
               self.setState(self.getStoreStates());
             }
           };
         }
 
-        // Generate and bind the change handlers to the stores.
+        /* Generate and bind the change handlers to the stores. */
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             store = this.stores[storeName];
@@ -354,12 +357,12 @@
         }
       },
 
-      // When a component unmounted, it should stop listening. (TODO)
+      // When a component unmounted, it should stop listening.
       componentWillUnmount: function () {
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             var store = this.stores[storeName];
-            // FIXME: What if another mounted view listening this store? Commenting out for now.
+            /* FIXME: What if another mounted view listening this store? Commenting out for now. */
             store.listener.removeAllListeners('change');
           }
         }
@@ -368,8 +371,8 @@
       getInitialState: function () {
         var self = this, state;
 
-        // The dispatcher should be easy to access and it should use `__findDispatcher`
-        // method to find the parent dispatchers.
+        /* The dispatcher should be easy to access and it should use `__findDispatcher`
+           method to find the parent dispatchers. */
         this.dispatcher = __findDispatcher(this);
 
         // If `storesDidChange` method presents, it'll be called after all the stores
@@ -381,6 +384,7 @@
         }
 
         // Since `dispatcher.stores` is harder to write, there's a shortcut for it.
+        // You can use `this.stores` from the React component.
         this.stores = this.dispatcher.stores;
 
         return this.getStoreStates();
@@ -389,7 +393,7 @@
       getStoreStates: function () {
         var state = {stores: {}};
 
-        // Set `state.stores` for all present stores with a `setState` method defined.
+        /* Set `state.stores` for all present stores with a `setState` method defined. */
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             if (this.stores[storeName]
