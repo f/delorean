@@ -1,5 +1,6 @@
 module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-docco');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -29,6 +30,14 @@ module.exports = function (grunt) {
         requireMultipleVarDecl: null
       }
     },
+    docco: {
+      dist: {
+        src: ['src/*.js'],
+        options: {
+          output: 'docs/api/'
+        }
+      }
+    },
     karma: {
       unit: {
         configFile: 'test/karma.conf.js'
@@ -37,7 +46,7 @@ module.exports = function (grunt) {
     browserify: {
       dist: {
         files: {
-          'dist/.tmp/delorean-requires.js': 'src/requires.js'
+          'dist/.tmp/delorean-requirements.js': 'src/requirements.js'
         }
       }
     },
@@ -48,7 +57,7 @@ module.exports = function (grunt) {
                 '<%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-        src: ['src/delorean.js', 'dist/.tmp/delorean-requires.js'],
+        src: ['src/delorean.js', 'dist/.tmp/delorean-requirements.js'],
         dest: 'dist/delorean.js'
       }
     },
@@ -91,6 +100,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('default', ['jscs', 'jshint', 'browserify', 'concat', 'uglify']);
+  grunt.registerTask('test', ['karma', 'docco']);
   grunt.registerTask('dev', ['connect', 'watch']);
 
 };
