@@ -7,7 +7,7 @@
 
   var Dispatcher, Store;
 
-  // ## Global Helper Functions
+  // ## Private Helper Functions
 
   // Helper functions are private functions to be used in codebase.
   // It's better using two underscore at the beginning of the function.

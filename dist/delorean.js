@@ -1,4 +1,4 @@
-/*! delorean.js - v0.7.2-1 - 2014-09-20 */
+/*! delorean.js - v0.7.2-2 - 2014-09-20 */
 (function (DeLorean) {
   'use strict';
 
@@ -8,7 +8,7 @@
 
   var Dispatcher, Store;
 
-  // ## Global Helper Functions
+  // ## Private Helper Functions
 
   // Helper functions are private functions to be used in codebase.
   // It's better using two underscore at the beginning of the function.
