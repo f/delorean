@@ -124,3 +124,31 @@ myStore.onChange(function () {
   });
 });
 ```
+
+### Step 5: Using `scheme`s
+
+You already know stores, now let's learn how to manage easier.
+
+```javascript
+var MyAppStore = DeLorean.Flux.createStore({
+  scheme: {
+    list: {
+      default: [],
+      calculate: function (value) {
+        return value.concat().map(function (item) {
+          return 'ITEM: ' + item;
+        });
+      }
+    }
+  },
+  actions: {
+    // Remember the `dispatch('addItem')`
+    'addItem': 'addItemMethod'
+  },
+  addItemMethod: function (data) {
+    // It automatically emits change event.
+    this.set('list', this.list.concat(data.random));
+  }
+});
+var myStore = new MyAppStore();
+```
