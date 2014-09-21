@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/deloreanjs/delorean.svg?branch=master)](https://travis-ci.org/deloreanjs/delorean)
  [![NPM version](https://badge.fury.io/js/delorean.js.svg)](http://badge.fury.io/js/delorean.js)
- ![Coverage](http://progressed.io/bar/82?title=coverage)
+ ![Coverage](http://progressed.io/bar/84?title=coverage)
 
 DeLorean is a tiny Flux pattern implementation.
 
@@ -10,7 +10,7 @@ DeLorean is a tiny Flux pattern implementation.
   - Automatically listens to data changes and keeps your data updated,
   - Makes data more **consistent** across your whole application,
   - It's framework agnostic, completely. There's **no view framework dependency**.
-  - Very small, just **4K** gzipped.
+  - Very small, just **5K** gzipped.
   - Built-in **React.js** integration, easy to use with **Flight.js** and **Ractive.js** and probably all others.
   - Improve your UI/data consistency using **rollbacks**.
 

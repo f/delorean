@@ -1,4 +1,4 @@
-/*! delorean.js - v0.7.2-4 - 2014-09-20 */
+/*! delorean.js - v0.7.2-4 - 2014-09-21 */
 (function (DeLorean) {
   'use strict';
 
@@ -23,6 +23,12 @@
   // `action:hello` for the Flux.
   function __generateActionName(name) {
     return 'action:' + name;
+  }
+
+  /* It's used by the schemes to save the original version (not calculated)
+     of the data. */
+  function __generateOriginalName(name) {
+    return 'original:' + name;
   }
 
   // `__findDispatcher` is a private function for **React components**.
@@ -202,7 +208,6 @@
       /* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */
       this.store = store;
       this.bindActions();
-
       this.buildScheme();
 
       // `initialize` is the construction function, you can define `initialize` method
@@ -220,13 +225,14 @@
         this.store[key] = value || definition.default;
 
         if (typeof definition.calculate === 'function') {
-          this.store[key] = definition.calculate.call(this.store);
+          this.store[__generateOriginalName(key)] = value;
+          this.store[key] = definition.calculate.call(this.store, value);
         }
-
-        this.listener.emit('change');
+        this.recalculate();
       } else {
         throw 'Scheme should include the key ' + key + ' you wanted to set.';
       }
+      return this.store[key];
     };
 
     // Removes the scheme format and standardizes all the shortcuts.
@@ -276,11 +282,24 @@
         for (keyName in scheme) {
           definition = scheme[keyName];
           if (definition.calculate) {
-            this.store[keyName] = definition.calculate.call(this.store);
+            this.store[__generateOriginalName(keyName)] = definition.default;
+            this.store[keyName] = definition.calculate.call(this.store, definition.default);
           }
         }
       }
 
+    };
+
+    Store.prototype.recalculate = function () {
+      var scheme = this.store.scheme, definition, keyName;
+      for (keyName in scheme) {
+        definition = scheme[keyName];
+        if (typeof definition.calculate === 'function') {
+          this.store[keyName] = definition.calculate.call(this.store,
+                                this.store[__generateOriginalName(keyName)] || definition.default);
+        }
+      }
+      this.listener.emit('change');
     };
 
     // `bindActions` is semi-private method. You'll never need to call it from outside.
@@ -475,8 +494,11 @@
             // If stores has `getState` method, it'll be pushed to the component's state.
             && this.stores[storeName].store.getState) {
               state.stores[storeName] = this.stores[storeName].store.getState();
-            } else {
-              console.log('state not found, getting scheme');
+            } else if (typeof this.stores[storeName].store.scheme === 'object') {
+              var scheme = this.stores[storeName].store.scheme;
+              for (var keyName in scheme) {
+                state.stores[storeName] = this.stores[storeName].store[keyName];
+              }
             }
           }
         }

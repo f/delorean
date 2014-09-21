@@ -11,10 +11,13 @@ var Router = require('director').Router;
 var TodoStore = Flux.createStore({
 
   scheme: {
-    firstname: 'unknown',
-    surname: 'name',
-    fullname: function () {
-      return this.firstname + ' ' + this.surname;
+    firstname: 'John',
+    surname: 'Doe',
+    fullname: {
+      default: 'woot',
+      calculate: function (value) {
+        return value.toUpperCase() + ' ' + this.firstname;
+      }
     },
     todos: {
       default: [
@@ -25,7 +28,7 @@ var TodoStore = Flux.createStore({
       calculate: function () {
         var self = this;
         return this.todos.map(function (todo) {
-          return {text: todo.text.toUpperCase()};
+          return {text: todo.text.toString().toUpperCase()};
         });
       }
     }
@@ -34,7 +37,7 @@ var TodoStore = Flux.createStore({
   initialize: function (todos) {
     var self = this;
     if (todos) {
-      this.todos = this.todos.concat(todos);
+      this.todos = this.set('todos', this.todos.concat(todos));
     }
 
     // Auto change
@@ -20533,6 +20536,12 @@ exports.now = now;
     return 'action:' + name;
   }
 
+  /* It's used by the schemes to save the original version (not calculated)
+     of the data. */
+  function __generateOriginalName(name) {
+    return 'original:' + name;
+  }
+
   // `__findDispatcher` is a private function for **React components**.
   function __findDispatcher(view) {
     /* `view` should be a component instance. If a component don't have
@@ -20710,7 +20719,6 @@ exports.now = now;
       /* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */
       this.store = store;
       this.bindActions();
-
       this.buildScheme();
 
       // `initialize` is the construction function, you can define `initialize` method
@@ -20728,13 +20736,14 @@ exports.now = now;
         this.store[key] = value || definition.default;
 
         if (typeof definition.calculate === 'function') {
-          this.store[key] = definition.calculate.call(this.store);
+          this.store[__generateOriginalName(key)] = value;
+          this.store[key] = definition.calculate.call(this.store, value);
         }
-
-        this.listener.emit('change');
+        this.recalculate();
       } else {
         throw 'Scheme should include the key ' + key + ' you wanted to set.';
       }
+      return this.store[key];
     };
 
     // Removes the scheme format and standardizes all the shortcuts.
@@ -20769,26 +20778,39 @@ exports.now = now;
     /* Applying `scheme` to the store if exists. */
     Store.prototype.buildScheme = function () {
 
-      var scheme, calculatedData;
+      var scheme, calculatedData, keyName, definition;
       if (typeof this.store.scheme === 'object') {
         /* Scheme must be formatted to standardize the keys. */
         scheme = this.store.scheme = this.formatScheme(this.store.scheme);
 
         /* Set the defaults first */
-        for (var keyName in scheme) {
-          var definition = scheme[keyName];
+        for (keyName in scheme) {
+          definition = scheme[keyName];
           this.store[keyName] = definition.default;
         }
 
         /* Set the calculations */
-        for (var keyName in scheme) {
-          var definition = scheme[keyName];
+        for (keyName in scheme) {
+          definition = scheme[keyName];
           if (definition.calculate) {
-            this.store[keyName] = definition.calculate.call(this.store);
+            this.store[__generateOriginalName(keyName)] = definition.default;
+            this.store[keyName] = definition.calculate.call(this.store, definition.default);
           }
         }
       }
 
+    };
+
+    Store.prototype.recalculate = function () {
+      var scheme = this.store.scheme, definition, keyName;
+      for (keyName in scheme) {
+        definition = scheme[keyName];
+        if (typeof definition.calculate === 'function') {
+          this.store[keyName] = definition.calculate.call(this.store,
+                                this.store[__generateOriginalName(keyName)] || definition.default);
+        }
+      }
+      this.listener.emit('change');
     };
 
     // `bindActions` is semi-private method. You'll never need to call it from outside.
@@ -20983,8 +21005,11 @@ exports.now = now;
             // If stores has `getState` method, it'll be pushed to the component's state.
             && this.stores[storeName].store.getState) {
               state.stores[storeName] = this.stores[storeName].store.getState();
-            } else {
-              console.log('state not found, getting scheme');
+            } else if (typeof this.stores[storeName].store.scheme === 'object') {
+              var scheme = this.stores[storeName].store.scheme;
+              for (var keyName in scheme) {
+                state.stores[storeName] = this.stores[storeName].store[keyName];
+              }
             }
           }
         }

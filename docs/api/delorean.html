@@ -122,6 +122,12 @@ E.g. If you create an action with name <code>hello</code> it will be
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__generateActionName</span><span class="hljs-params">(name)</span> </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-string">'action:'</span> + name;
+  }
+
+  <span class="hljs-comment">/* It's used by the schemes to save the original version (not calculated)
+     of the data. */</span>
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__generateOriginalName</span><span class="hljs-params">(name)</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'original:'</span> + name;
   }</pre></div></div>
             
         </li>
@@ -541,7 +547,6 @@ you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, Anoth
       <span class="hljs-comment">/* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */</span>
       <span class="hljs-keyword">this</span>.store = store;
       <span class="hljs-keyword">this</span>.bindActions();
-
       <span class="hljs-keyword">this</span>.buildScheme();</pre></div></div>
             
         </li>
@@ -571,13 +576,14 @@ in your store definitions.</p>
         <span class="hljs-keyword">this</span>.store[key] = value || definition.default;
 
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> definition.calculate === <span class="hljs-string">'function'</span>) {
-          <span class="hljs-keyword">this</span>.store[key] = definition.calculate.call(<span class="hljs-keyword">this</span>.store);
+          <span class="hljs-keyword">this</span>.store[__generateOriginalName(key)] = value;
+          <span class="hljs-keyword">this</span>.store[key] = definition.calculate.call(<span class="hljs-keyword">this</span>.store, value);
         }
-
-        <span class="hljs-keyword">this</span>.listener.emit(<span class="hljs-string">'change'</span>);
+        <span class="hljs-keyword">this</span>.recalculate();
       } <span class="hljs-keyword">else</span> {
         <span class="hljs-keyword">throw</span> <span class="hljs-string">'Scheme should include the key '</span> + key + <span class="hljs-string">' you wanted to set.'</span>;
       }
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.store[key];
     };</pre></div></div>
             
         </li>
@@ -639,11 +645,24 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         <span class="hljs-keyword">for</span> (keyName <span class="hljs-keyword">in</span> scheme) {
           definition = scheme[keyName];
           <span class="hljs-keyword">if</span> (definition.calculate) {
-            <span class="hljs-keyword">this</span>.store[keyName] = definition.calculate.call(<span class="hljs-keyword">this</span>.store);
+            <span class="hljs-keyword">this</span>.store[__generateOriginalName(keyName)] = definition.default;
+            <span class="hljs-keyword">this</span>.store[keyName] = definition.calculate.call(<span class="hljs-keyword">this</span>.store, definition.default);
           }
         }
       }
 
+    };
+
+    Store.prototype.recalculate = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+      <span class="hljs-keyword">var</span> scheme = <span class="hljs-keyword">this</span>.store.scheme, definition, keyName;
+      <span class="hljs-keyword">for</span> (keyName <span class="hljs-keyword">in</span> scheme) {
+        definition = scheme[keyName];
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> definition.calculate === <span class="hljs-string">'function'</span>) {
+          <span class="hljs-keyword">this</span>.store[keyName] = definition.calculate.call(<span class="hljs-keyword">this</span>.store,
+                                <span class="hljs-keyword">this</span>.store[__generateOriginalName(keyName)] || definition.default);
+        }
+      }
+      <span class="hljs-keyword">this</span>.listener.emit(<span class="hljs-string">'change'</span>);
     };</pre></div></div>
             
         </li>
@@ -1093,8 +1112,11 @@ You can use <code>this.stores</code> from the React component.</p>
             
             <div class="content"><div class='highlight'><pre>            &amp;&amp; <span class="hljs-keyword">this</span>.stores[storeName].store.getState) {
               state.stores[storeName] = <span class="hljs-keyword">this</span>.stores[storeName].store.getState();
-            } <span class="hljs-keyword">else</span> {
-              <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'state not found, getting scheme'</span>);
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-keyword">this</span>.stores[storeName].store.scheme === <span class="hljs-string">'object'</span>) {
+              <span class="hljs-keyword">var</span> scheme = <span class="hljs-keyword">this</span>.stores[storeName].store.scheme;
+              <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> keyName <span class="hljs-keyword">in</span> scheme) {
+                state.stores[storeName] = <span class="hljs-keyword">this</span>.stores[storeName].store[keyName];
+              }
             }
           }
         }

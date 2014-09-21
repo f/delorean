@@ -43,7 +43,7 @@ var TodoStore = Flux.createStore({
 
 ### `initialize`
 
-You may define an `initialize` function to run setup code on construction. In `initialize`, 
+You may define an `initialize` function to run setup code on construction. In `initialize`,
 you may **perform server actions**, *but **action creators** are a simpler entity for executing server actions.*
 
 ```javascript
@@ -69,11 +69,75 @@ var myTodos = new TodoStore('/todos');
 
 ### `getState()`
 
-You must define a `getState` method on your store. This method should return an object 
-containing the state data needed by your view(s). It is called by the React mixin on 
-`componentDidMount`, and the returned data is placed into `this.state.stores[storeName]` on 
-React components with the Delorean `storeListener` mixin applied (see the [View (or React Component)](./views.md) 
+You must define a `getState` method on your store. This method should return an object
+containing the state data needed by your view(s). It is called by the React mixin on
+`componentDidMount`, and the returned data is placed into `this.state.stores[storeName]` on
+React components with the Delorean `storeListener` mixin applied (see the [View (or React Component)](./views.md)
 documentation for more).
+
+### Advanced Data Structure with `scheme`
+
+Schemes are simply structure definitions of the DeLorean.
+
+```js
+var Artist = Flux.createStore({
+  scheme: {
+    firstName: {
+      default: 'Unknown'
+    },
+    lastName: {
+      default: 'Artist'
+    },
+    fullName: {
+      calculate: function () {
+        return this.firstName + ' ' + this.lastName;
+      }
+    }
+  }
+});
+```
+
+You can also write it simpler:
+
+```js
+var Artist = Flux.createStore({
+  scheme: {
+    firstName: 'Unknown',
+    lastName: 'Artist',
+    fullName: function () {
+      return this.firstName + ' ' + this.lastName;
+    }
+  }
+});
+```
+
+#### `set` method to change data defined at `scheme`
+
+You must use `set` method to mutate the data of the scheme. It'll change the
+data and calls `emit('change')`
+
+```js
+var artist = new Artist();
+artist.set('firstName', 'Michael');
+artist.set('lastName', 'Jackson');
+```
+
+*Note: If you try to set a value doesn't exist in `scheme` it'll throw an error.*
+
+In Todo example it may be better:
+
+```js
+var TodoStore = Flux.createStore({
+  scheme: {
+    todos: {
+      default: [],
+      calculate: function () {
+        return this.todos.concat().sort(function (a, b) { return a > b });
+      }
+    }
+  }
+});
+```
 
 ### `emitChange()` or `emit('change')`
 

@@ -98,4 +98,31 @@ describe('Flux', function () {
     expect(spy).not.toHaveBeenCalled();
   });
 
+  myStoreWithScheme = new (DeLorean.Flux.createStore({
+    scheme: {
+      x: 'hello',
+      y: 'world',
+      z: function () {
+        return this.x + ', ' + this.y;
+      },
+      t: {
+        default: 'def',
+        calculate: function (value) {
+          return value.toUpperCase() + ' ' + this.z;
+        }
+      }
+    }
+  }));
+
+  it('should be work with schemes', function () {
+    expect(myStoreWithScheme.store.z).toBe('hello, world');
+    myStoreWithScheme.set('y', 'moon');
+    expect(myStoreWithScheme.store.z).toBe('hello, moon');
+    myStoreWithScheme.set('x', 'salut');
+    expect(myStoreWithScheme.store.z).toBe('salut, moon');
+    expect(myStoreWithScheme.store.t).toBe('DEF salut, moon');
+    myStoreWithScheme.set('t', 'hey');
+    expect(myStoreWithScheme.store.t).toBe('HEY salut, moon');
+  });
+
 });

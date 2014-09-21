@@ -10,10 +10,13 @@ var Router = require('director').Router;
 var TodoStore = Flux.createStore({
 
   scheme: {
-    firstname: 'unknown',
-    surname: 'name',
-    fullname: function () {
-      return this.firstname + ' ' + this.surname;
+    firstname: 'John',
+    surname: 'Doe',
+    fullname: {
+      default: 'woot',
+      calculate: function (value) {
+        return value.toUpperCase() + ' ' + this.firstname;
+      }
     },
     todos: {
       default: [
@@ -24,7 +27,7 @@ var TodoStore = Flux.createStore({
       calculate: function () {
         var self = this;
         return this.todos.map(function (todo) {
-          return {text: todo.text.toUpperCase()};
+          return {text: todo.text.toString().toUpperCase()};
         });
       }
     }
@@ -33,7 +36,7 @@ var TodoStore = Flux.createStore({
   initialize: function (todos) {
     var self = this;
     if (todos) {
-      this.todos = this.todos.concat(todos);
+      this.todos = this.set('todos', this.todos.concat(todos));
     }
 
     // Auto change
