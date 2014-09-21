@@ -216,6 +216,7 @@
       }
     }
 
+    // `set` method updates the data defined at the `scheme` of the store.
     Store.prototype.set = function (key, value) {
       var scheme = this.store.scheme, definition;
       if (scheme && this.store.scheme[key]) {
@@ -229,6 +230,7 @@
         }
         this.recalculate();
       } else {
+        // Scheme **must** include the key you wanted to set.
         throw 'Scheme should include the key ' + key + ' you wanted to set.';
       }
       return this.store[key];
