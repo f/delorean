@@ -1,4 +1,4 @@
-/*! delorean.js - v0.7.2-4 - 2014-09-21 */
+/*! delorean.js - v0.8.0 - 2014-09-21 */
 (function (DeLorean) {
   'use strict';
 

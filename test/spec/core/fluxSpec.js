@@ -98,7 +98,7 @@ describe('Flux', function () {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  myStoreWithScheme = new (DeLorean.Flux.createStore({
+  MyStoreWithScheme = DeLorean.Flux.createStore({
     scheme: {
       x: 'hello',
       y: 'world',
@@ -112,7 +112,9 @@ describe('Flux', function () {
         }
       }
     }
-  }));
+  });
+
+  var myStoreWithScheme = new MyStoreWithScheme();
 
   it('should be work with schemes', function () {
     expect(myStoreWithScheme.store.z).toBe('hello, world');
