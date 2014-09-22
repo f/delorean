@@ -148,6 +148,7 @@ open index.html
   - Quang Van [@quangv](https://github.com/quangv)
   - James H. Edwards [@incrediblesound](https://github.com/incrediblesound)
   - Fehmi Can Sağlam [@fehmicansaglam](https://github.com/fehmicansaglam)
+  - Serge van den Oever [@svdoever](https://github.com/svdoever)
 
 ## Contribution
 
