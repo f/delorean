@@ -442,11 +442,15 @@
           };
         }
 
+        // Remember the change handlers so they can be removed later
+        this.__changeHandlers = {}
+
         /* Generate and bind the change handlers to the stores. */
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             store = this.stores[storeName];
-            store.onChange(__changeHandler(store, storeName));
+            this.__changeHandlers[storeName] = __changeHandler(store, storeName)
+            store.onChange(this.__changeHandlers[storeName]);
           }
         }
       },
@@ -456,8 +460,7 @@
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             var store = this.stores[storeName];
-            /* FIXME: What if another mounted view listening this store? Commenting out for now. */
-            store.listener.removeAllListeners('change');
+            store.listener.removeListener('change', this.__changeHandlers[storeName]);
           }
         }
       },
