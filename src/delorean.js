@@ -443,13 +443,13 @@
         }
 
         // Remember the change handlers so they can be removed later
-        this.__changeHandlers = {}
+        this.__changeHandlers = {};
 
         /* Generate and bind the change handlers to the stores. */
         for (var storeName in this.stores) {
           if (__hasOwn(this.stores, storeName)) {
             store = this.stores[storeName];
-            this.__changeHandlers[storeName] = __changeHandler(store, storeName)
+            this.__changeHandlers[storeName] = __changeHandler(store, storeName);
             store.onChange(this.__changeHandlers[storeName]);
           }
         }
