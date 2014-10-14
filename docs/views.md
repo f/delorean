@@ -68,6 +68,26 @@ var TodoListView = React.createClass({
 });
 ```
 
+### `watchStores`
+  
+In larger applicaitons, it may become inefficient to watch all stores for changes. The `watchStores` property 
+is an array, defined on your component, containing the names of stores you want the component to watch for changes.
+This property is optional, and when omitted, all stores associated with the passed `dispatcher` will be watched. 
+Store name strings should match the keys of the stores returned in the `dispatchers`'s `getStores` method.
+
+
+```js
+var TodoListView = React.createClass({
+
+  mixins: [Flux.mixins.storeListener],
+
+  // Only watch the todoStore, omitting this property will watch all stores on passed dispatcher
+  watchStores: ['todoStore'],
+  
+  ...
+```
+
+
 ### `getStore(storeName)`
 
 It returns the related store to the component.

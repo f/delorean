@@ -32,6 +32,10 @@
 
   // `__findDispatcher` is a private function for **React components**.
   function __findDispatcher(view) {
+     // Provide a useful error message if no dispatcher is found in the chain
+    if (view == null) {
+      throw "No disaptcher found. The DeLoreanJS mixin requires a 'dispatcher' property to be passed to a component, or one of it's ancestors."
+    }
     /* `view` should be a component instance. If a component don't have
         any dispatcher, it tries to find a dispatcher from the parents. */
     if (!view.props.dispatcher) {
@@ -424,7 +428,7 @@
 
       // After the component mounted, listen changes of the related stores
       componentDidMount: function () {
-        var self = this, store;
+        var self = this, store, watchStores;
 
         /* `__changeHandler` is a **listener generator** to pass to the `onChange` function. */
         function __changeHandler(store, storeName) {
@@ -445,8 +449,18 @@
         // Remember the change handlers so they can be removed later
         this.__changeHandlers = {};
 
+        if (this.watchStores != null) {
+          watchStores = this.watchStores;
+        }
+        else {
+          watchStores = this.stores;
+          if (console != null) {
+            console.warn("Your component is watching changes on all stores, you may want to define a 'watchStores' property in order to only watch stores relevant to this component.");
+          }
+        }
+
         /* Generate and bind the change handlers to the stores. */
-        for (var storeName in this.stores) {
+        for (var storeName in watchStores) {
           if (__hasOwn(this.stores, storeName)) {
             store = this.stores[storeName];
             this.__changeHandlers[storeName] = __changeHandler(store, storeName);
@@ -457,7 +471,7 @@
 
       // When a component unmounted, it should stop listening.
       componentWillUnmount: function () {
-        for (var storeName in this.stores) {
+        for (var storeName in this.__changeHandlers) {
           if (__hasOwn(this.stores, storeName)) {
             var store = this.stores[storeName];
             store.listener.removeListener('change', this.__changeHandlers[storeName]);
@@ -479,6 +493,8 @@
             self.storesDidChange();
           });
         }
+
+
 
         // Since `dispatcher.stores` is harder to write, there's a shortcut for it.
         // You can use `this.stores` from the React component.
