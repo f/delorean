@@ -384,7 +384,7 @@
     // `createDispatcher` generates a dispatcher with actions to dispatch.
     /* `actionsToDispatch` should be an object. */
     createDispatcher: function (actionsToDispatch) {
-      var actionsOfStores, dispatcher, callback;
+      var actionsOfStores, dispatcher, callback, triggers, triggerMethod;
 
       // If it has `getStores` method it should be get and pass to the `Dispatcher`
       if (typeof actionsToDispatch.getStores === 'function') {
@@ -397,10 +397,24 @@
       /* Now call `registerAction` method for every action. */
       for (var actionName in actionsToDispatch) {
         if (__hasOwn(actionsToDispatch, actionName)) {
-          /* `getStores` is the special function, it's not an action. */
-          if (actionName !== 'getStores') {
+          /* `getStores` & `viewTriggers` are special properties, it's not an action. */
+          if (actionName !== 'getStores' && actionName != 'viewTriggers') {
             callback = actionsToDispatch[actionName];
             dispatcher.registerAction(actionName, callback.bind(dispatcher));
+          }
+        }
+      }
+
+      /* Bind triggers */
+      triggers = actionsToDispatch.viewTriggers;
+      for (var triggerName in triggers) {
+        triggerMethod = triggers[triggerName];
+        if (typeof dispatcher[triggerMethod] === 'function') {
+          dispatcher.on(triggerName, dispatcher[triggerMethod]);
+        }
+        else {
+          if (console != null) {
+            console.warn(triggerMethod + ' should be a method defined on your dispatcher. The ' + triggerName + ' trigger will not be bound to any method.');
           }
         }
       }
@@ -425,6 +439,10 @@
     // used in Flux.
     // Simply `mixin: [Flux.mixins.storeListener]` will work.
     storeListener: {
+
+      trigger: function () {
+        this.__dispatcher.emit.apply(this.__dispatcher, arguments);
+      },
 
       // After the component mounted, listen changes of the related stores
       componentDidMount: function () {
@@ -484,12 +502,12 @@
 
         /* The dispatcher should be easy to access and it should use `__findDispatcher`
            method to find the parent dispatchers. */
-        this.dispatcher = __findDispatcher(this);
+        this.__dispatcher = __findDispatcher(this);
 
         // If `storesDidChange` method presents, it'll be called after all the stores
         // were changed.
         if (this.storesDidChange) {
-          this.dispatcher.on('change:all', function () {
+          this.__dispatcher.on('change:all', function () {
             self.storesDidChange();
           });
         }
@@ -498,7 +516,7 @@
 
         // Since `dispatcher.stores` is harder to write, there's a shortcut for it.
         // You can use `this.stores` from the React component.
-        this.stores = this.dispatcher.stores;
+        this.stores = this.__dispatcher.stores;
 
         return this.getStoreStates();
       },
