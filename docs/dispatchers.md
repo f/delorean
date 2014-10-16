@@ -79,3 +79,56 @@ generated from each store's `getState` method).
 ```js
 TodoListApp.getStore('todoStore'); // This will return `myTodos.store`
 ```
+
+#### `viewTriggers`
+
+When working in React, view triggers offer a clean and simple API for exposing actions that are intended to be triggered 
+from a view. This is a React specific feature, as it relies on **`Flux.mixins.storeListener`**. `viewTriggers` is a hash you define on your dispatcher, the keys are trigger names, and the values are handler method names (as strings), which you have defined on the dispatcher. The React **`Flux.mixins.storeListener`** will then expose a `trigger` method on components.
+`trigger` takes the trigger name as the first parameter, and `0` - `n` additoinal parameters you want to pass to you handler
+method.
+
+
+```js
+var TodoListApp = Flux.createDispatcher({
+  
+  viewTriggers: {
+    'getTodos': 'getTodos'
+  },
+
+  getStores: function () {
+    return {
+      todoStore: myTodos
+    }
+  },
+
+  getTodos: function () {
+    // code to GET todos 
+  },
+
+});
+
+
+var TodoListView = React.createClass({
+
+  mixins: [Flux.mixins.storeListener],
+
+  render: function () {
+    var self = this;
+    return <ul>
+      {this.getStore('todoStore').todos.map(function (todo) {
+        return <TodoItemView todo={todo}></TodoItemView>
+      })}
+    </ul>
+  },
+
+  componentDidMount: function() {
+    // `trigger` method is added by the storeListener mixin
+    // The first parameter is the viewTrigger name, additonal optional parameters can be passed after that
+    this.trigger('getTodos');
+  }
+
+});
+
+```
+
+
