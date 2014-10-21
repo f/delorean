@@ -446,7 +446,7 @@
 
       // After the component mounted, listen changes of the related stores
       componentDidMount: function () {
-        var self = this, store, watchStores;
+        var self = this, watchStores = {}, store, storeName;
 
         /* `__changeHandler` is a **listener generator** to pass to the `onChange` function. */
         function __changeHandler(store, storeName) {
@@ -468,7 +468,10 @@
         this.__changeHandlers = {};
 
         if (this.watchStores != null) {
-          watchStores = this.watchStores;
+          for(var i = 0; i < this.watchStores.length;  i++) {
+            storeName = this.watchStores[i]
+            watchStores[storeName] = this.stores[storeName];
+          }
         }
         else {
           watchStores = this.stores;
