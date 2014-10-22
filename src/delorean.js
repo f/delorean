@@ -106,7 +106,7 @@
 
       // Store instances should wait for finish. So you can know if all the
       // stores are dispatched properly.
-      deferred = this.waitFor(stores);
+      deferred = this.waitFor(stores, actionName);
 
       /* Payload should send to all related stores. */
       for (var storeName in self.stores) {
@@ -122,7 +122,7 @@
     // and you don't need to call it from outside most of the times. It takes
     // array of store instances (`[Store, Store, Store, ...]`). It will create
     // a promise and return it. _Whenever store changes, it resolves the promise_.
-    Dispatcher.prototype.waitFor = function (stores) {
+    Dispatcher.prototype.waitFor = function (stores, actionName) {
       var self = this, promises;
       promises = (function () {
         var __promises = [], promise;
@@ -138,8 +138,11 @@
         }
 
         for (var i in stores) {
-          promise = __promiseGenerator(stores[i]);
-          __promises.push(promise);
+          // Only generate promises for stores that ae listening for this action
+          if (stores[i].store.actions[actionName] != null) {
+            promise = __promiseGenerator(stores[i]);
+            __promises.push(promise);
+          }
         }
         return __promises;
       }());
