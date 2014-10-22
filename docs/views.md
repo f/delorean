@@ -87,6 +87,11 @@ var TodoListView = React.createClass({
   ...
 ```
 
+### `trigger`
+
+`trigger` is a method exposed by the **`Flux.mixins.storeListener`**. It is a simple way to trigger action from a component.
+See the [Dispatcher docs](./dispatchers.md) for more.
+
 
 ### `getStore(storeName)`
 
