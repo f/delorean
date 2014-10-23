@@ -255,12 +255,12 @@
         formattedScheme[keyName] = {default: null};
 
         /* {key: 'value'} will be {key: {default: 'value'}} */
-        defaultValue = (typeof definition === 'object') ?
+        defaultValue = (definition && typeof definition === 'object') ?
                         definition.default : definition;
         formattedScheme[keyName].default = defaultValue;
 
         /* {key: function () {}} will be {key: {calculate: function () {}}} */
-        if (typeof definition.calculate === 'function') {
+        if (definition && typeof definition.calculate === 'function') {
           calculatedValue = definition.calculate;
         } else if (typeof definition === 'function') {
           calculatedValue = definition;
