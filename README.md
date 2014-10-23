@@ -149,6 +149,7 @@ open index.html
   - James H. Edwards [@incrediblesound](https://github.com/incrediblesound)
   - Fehmi Can Sağlam [@fehmicansaglam](https://github.com/fehmicansaglam)
   - Serge van den Oever [@svdoever](https://github.com/svdoever)
+  - Markus Ast [@rkusa](https://github.com/rkusa)
 
 ## Contribution
 
