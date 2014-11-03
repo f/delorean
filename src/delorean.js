@@ -449,7 +449,7 @@
 
       // After the component mounted, listen changes of the related stores
       componentDidMount: function () {
-        var self = this, watchStores = {}, store, storeName;
+        var self = this, store, storeName;
 
         /* `__changeHandler` is a **listener generator** to pass to the `onChange` function. */
         function __changeHandler(store, storeName) {
@@ -470,21 +470,8 @@
         // Remember the change handlers so they can be removed later
         this.__changeHandlers = {};
 
-        if (this.watchStores != null) {
-          for(var i = 0; i < this.watchStores.length;  i++) {
-            storeName = this.watchStores[i]
-            watchStores[storeName] = this.stores[storeName];
-          }
-        }
-        else {
-          watchStores = this.stores;
-          if (console != null) {
-            console.warn("Your component is watching changes on all stores, you may want to define a 'watchStores' property in order to only watch stores relevant to this component.");
-          }
-        }
-
         /* Generate and bind the change handlers to the stores. */
-        for (var storeName in watchStores) {
+        for (var storeName in this.__watchStores) {
           if (__hasOwn(this.stores, storeName)) {
             store = this.stores[storeName];
             this.__changeHandlers[storeName] = __changeHandler(store, storeName);
@@ -504,7 +491,7 @@
       },
 
       getInitialState: function () {
-        var self = this, state;
+        var self = this, state, storeName;
 
         /* The dispatcher should be easy to access and it should use `__findDispatcher`
            method to find the parent dispatchers. */
@@ -518,30 +505,40 @@
           });
         }
 
-
-
         // Since `dispatcher.stores` is harder to write, there's a shortcut for it.
         // You can use `this.stores` from the React component.
         this.stores = this.__dispatcher.stores;
+
+        this.__watchStores = {}
+        if (this.watchStores != null) {
+          for(var i = 0; i < this.watchStores.length;  i++) {
+            storeName = this.watchStores[i]
+            this.__watchStores[storeName] = this.stores[storeName];
+          }
+        }
+        else {
+          this.__watchStores = this.stores;
+          if (console != null && Object.keys != null && Object.keys(this.stores).length > 4) {
+            console.warn("Your component is watching changes on all stores, you may want to define a 'watchStores' property in order to only watch stores relevant to this component.");
+          }
+        }
 
         return this.getStoreStates();
       },
 
       getStoreStates: function () {
-        var state = {stores: {}};
+        var state = {stores: {}}, store;
 
         /* Set `state.stores` for all present stores with a `setState` method defined. */
-        for (var storeName in this.stores) {
+        for (var storeName in this.__watchStores) {
           if (__hasOwn(this.stores, storeName)) {
-            if (this.stores[storeName]
-            && this.stores[storeName].store
-            // If stores has `getState` method, it'll be pushed to the component's state.
-            && this.stores[storeName].store.getState) {
-              state.stores[storeName] = this.stores[storeName].store.getState();
-            } else if (typeof this.stores[storeName].store.scheme === 'object') {
-              var scheme = this.stores[storeName].store.scheme;
+            store = this.__watchStores[storeName].store
+            if (store && store.getState) {
+              state.stores[storeName] = store.getState();
+            } else if (typeof store.scheme === 'object') {
+              var scheme = store.scheme;
               for (var keyName in scheme) {
-                state.stores[storeName] = this.stores[storeName].store[keyName];
+                state.stores[storeName] = store[keyName];
               }
             }
           }
