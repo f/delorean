@@ -89,6 +89,7 @@ var Artist = Flux.createStore({
       default: 'Artist'
     },
     fullName: {
+      deps: ['firstName', 'lastName'],
       calculate: function () {
         return this.firstName + ' ' + this.lastName;
       }
@@ -97,29 +98,68 @@ var Artist = Flux.createStore({
 });
 ```
 
-You can also write it simpler:
+Supported Scheme Options
+
+**`default`**: Value of the specified property will be set to this value, and applied as `state`, even when never manually set.
+
+**`calculate`**: A function that returns a computed value. This feature can be used to generate a value off of two other store
+properties, or used to parse data into a more desirable format for your components or views. It is passed the value
+passed to `set`, and is called in the context of your store. It is also re-called whenever any of it's dependencies
+(`deps`) changes.
+
+**`deps`**: An array of other property names from `scheme`, whose changes should cause the property to recalculate.. `deps`
+allows delorean to efficiently recalculate properties only when necessary. The `calculate` function will only be 
+called when the store is created, and when one of the property in it's `deps` is `set` or calculated. Note: a calculated
+property can be dependent on another calculatd property, but circular dependencies are not supported, so be careful!
+
+
+For basic schemes, there is a shorthand syntax where you can set the `default` value or `calculate` method 
+directly on the property name. Note that when this syntax is used, `calculate` will only be called when the
+property is `set` directly. It is best used for parsing (data transforms) on properties or for calculated
+properties where dependencies will not change.
 
 ```js
 var Artist = Flux.createStore({
   scheme: {
     firstName: 'Unknown',
     lastName: 'Artist',
-    fullName: function () {
+    fullName: function (value) {
       return this.firstName + ' ' + this.lastName;
+    }
+  }
+});
+
+var UserSearch = Flux.createStore({
+  scheme: {
+    // Defining a scheme property as a function provides a standard way to do data transforms (when required)
+    results: function (serverResponse) {
+      var user;
+      for (var i = 0; i < serverResponse.length; i++) {
+        user = serverResponse[i];
+        user.fullName = user.firstName + ' ' + user.lastName;
+      }
+      return serverResposne;
     }
   }
 });
 ```
 
-#### `set` method to change data defined at `scheme`
+#### `set` method to change data defined on `scheme`
 
-You must use `set` method to mutate the data of the scheme. It'll change the
-data and calls `emit('change')`
+You must use the `set` method to mutate the data of the scheme. It'll change the
+data, recalculate the appropriate properties and calls `emit('change')` so your
+views or component update. `set` accepts a key and value, or an object with all the
+key/value pairs being set.
 
 ```js
 var artist = new Artist();
 artist.set('firstName', 'Michael');
 artist.set('lastName', 'Jackson');
+
+artist.set({
+  firstName: 'Salvador',
+  lastName: 'Dali'
+});
 ```
 
 *Note: If you try to set a value doesn't exist in `scheme` it'll throw an error.*
