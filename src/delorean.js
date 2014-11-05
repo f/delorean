@@ -34,7 +34,7 @@
   function __findDispatcher(view) {
      // Provide a useful error message if no dispatcher is found in the chain
     if (view == null) {
-      throw "No disaptcher found. The DeLoreanJS mixin requires a 'dispatcher' property to be passed to a component, or one of it's ancestors."
+      throw 'No disaptcher found. The DeLoreanJS mixin requires a "dispatcher" property to be passed to a component, or one of it\'s ancestors.'
     }
     /* `view` should be a component instance. If a component don't have
         any dispatcher, it tries to find a dispatcher from the parents. */
@@ -223,8 +223,23 @@
       }
     }
 
+     // `set` method updates the data defined at the `scheme` of the store.
+    Store.prototype.set = function (arg1, value) {
+      var changedProps = [];
+      if (typeof arg1 === 'object') {
+        for (var keyName in arg1) {
+          changedProps.push(keyName)
+          this.setValue(keyName, arg1[keyName]);
+        }
+      } else {
+        changedProps.push(arg1);
+        this.setValue(arg1, value);
+      }
+      this.recalculate(changedProps);
+    },
+
     // `set` method updates the data defined at the `scheme` of the store.
-    Store.prototype.set = function (key, value) {
+    Store.prototype.setValue = function (key, value) {
       var scheme = this.store.scheme, definition;
       if (scheme && this.store.scheme[key]) {
         definition = scheme[key];
@@ -235,10 +250,11 @@
           this.store[__generateOriginalName(key)] = value;
           this.store[key] = definition.calculate.call(this.store, value);
         }
-        this.recalculate();
       } else {
         // Scheme **must** include the key you wanted to set.
-        throw 'Scheme should include the key ' + key + ' you wanted to set.';
+        if (console != null) {
+          console.warn('Scheme must include the key, ' + key + ', you are trying to set. ' + key + ' will NOT be set on the store.');
+        }
       }
       return this.store[key];
     };
@@ -248,9 +264,9 @@
     // `{name: {default: 'joe'}}`. Also if you run `formatScheme({fullname: function () {}})`
     // it will return `{fullname: {calculate: function () {}}}`.
     Store.prototype.formatScheme = function (scheme) {
-      var formattedScheme = {};
+      var formattedScheme = {}, definition, defaultValue, calculatedValue;
       for (var keyName in scheme) {
-        var definition = scheme[keyName], defaultValue, calculatedValue;
+        definition = scheme[keyName], defaultValue = null, calculatedValue = null;
 
         formattedScheme[keyName] = {default: null};
 
@@ -262,6 +278,13 @@
         /* {key: function () {}} will be {key: {calculate: function () {}}} */
         if (definition && typeof definition.calculate === 'function') {
           calculatedValue = definition.calculate;
+          /* Put a dependency array on formattedSchemes with calculate defined */
+          if (definition.deps) {
+            formattedScheme[keyName].deps = definition.deps;
+          } else {
+            formattedScheme[keyName].deps = []
+          }
+
         } else if (typeof definition === 'function') {
           calculatedValue = definition;
         }
@@ -274,11 +297,12 @@
 
     /* Applying `scheme` to the store if exists. */
     Store.prototype.buildScheme = function () {
+      var scheme, calculatedData, keyName, definition, dependencyMap, dependents, dep, changedProps = [];
 
-      var scheme, calculatedData, keyName, definition;
       if (typeof this.store.scheme === 'object') {
         /* Scheme must be formatted to standardize the keys. */
         scheme = this.store.scheme = this.formatScheme(this.store.scheme);
+        dependencyMap = this.store.__dependencyMap = {};
 
         /* Set the defaults first */
         for (keyName in scheme) {
@@ -290,22 +314,55 @@
         for (keyName in scheme) {
           definition = scheme[keyName];
           if (definition.calculate) {
+            // Create a dependency map - {keyName: [arrayOfKeysThatDependOnIt]}
+            dependents = definition.deps || [];
+
+            for (var i = 0; i < dependents.length; i++) {
+              dep = dependents[i];
+              if (dependencyMap[dep] == null) {
+                dependencyMap[dep] = [];
+              }
+              dependencyMap[dep].push(keyName)
+            }
+
             this.store[__generateOriginalName(keyName)] = definition.default;
             this.store[keyName] = definition.calculate.call(this.store, definition.default);
+            changedProps.push(keyName);
           }
         }
+        // Recalculate any properties dependent on those that were just set
+        this.recalculate(changedProps);
       }
-
     };
 
-    Store.prototype.recalculate = function () {
-      var scheme = this.store.scheme, definition, keyName;
-      for (keyName in scheme) {
-        definition = scheme[keyName];
-        if (typeof definition.calculate === 'function') {
-          this.store[keyName] = definition.calculate.call(this.store,
-                                this.store[__generateOriginalName(keyName)] || definition.default);
+    Store.prototype.recalculate = function (changedProps) {
+      var scheme = this.store.scheme, dependencyMap = this.store.__dependencyMap, didRun = [], definition, keyName, dependents, dep;
+      // Only iterate over the properties that just changed
+      for (var i = 0; i < changedProps.length; i++) {
+        dependents = dependencyMap[changedProps[i]];
+        // If there are no properties dependent on this property, do nothing
+        if (dependents == null) {
+          continue;
         }
+        // Iterate over the dependendent properties
+        for (var d = 0; d < dependents.length; d++) {
+          dep = dependents[d];
+          // Do nothing if this value has already been recalculated on this change batch
+          if (didRun.indexOf(dep) !== -1) {
+            continue;
+          }
+          // Calculate this value
+          definition = scheme[dep];
+          this.store[dep] = definition.calculate.call(this.store,
+                                this.store[__generateOriginalName(dep)] || definition.default);
+
+          // Make sure this does not get calculated again in this change batch
+          didRun.push(dep);
+        }
+      }
+      // Update Any deps on the deps
+      if (didRun.length > 0) {
+        this.recalculate(didRun);
       }
       this.listener.emit('change');
     };
@@ -414,8 +471,7 @@
         triggerMethod = triggers[triggerName];
         if (typeof dispatcher[triggerMethod] === 'function') {
           dispatcher.on(triggerName, dispatcher[triggerMethod]);
-        }
-        else {
+        } else {
           if (console != null) {
             console.warn(triggerMethod + ' should be a method defined on your dispatcher. The ' + triggerName + ' trigger will not be bound to any method.');
           }
@@ -511,15 +567,14 @@
 
         this.__watchStores = {}
         if (this.watchStores != null) {
-          for(var i = 0; i < this.watchStores.length;  i++) {
+          for (var i = 0; i < this.watchStores.length;  i++) {
             storeName = this.watchStores[i]
             this.__watchStores[storeName] = this.stores[storeName];
           }
-        }
-        else {
+        } else {
           this.__watchStores = this.stores;
           if (console != null && Object.keys != null && Object.keys(this.stores).length > 4) {
-            console.warn("Your component is watching changes on all stores, you may want to define a 'watchStores' property in order to only watch stores relevant to this component.");
+            console.warn('Your component is watching changes on all stores, you may want to define a "watchStores" property in order to only watch stores relevant to this component.');
           }
         }
 
