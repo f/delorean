@@ -261,6 +261,8 @@ store on the same dispatcher will be informed**.
   },
 
   addTodo: function (data) {
+    var self = this;
+
     // Let's backup the data
     self.oldTodos = self.todos.slice(0);
 
