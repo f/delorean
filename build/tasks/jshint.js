@@ -3,7 +3,9 @@
 module.exports = function(grunt) {
   grunt.config('jshint', {
     options: {
-      laxbreak: true
+      laxbreak: true,
+      node: true,
+      eqnull: true
     },
     all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js', '!test/vendor/**/*.js']
   });
