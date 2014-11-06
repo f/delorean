@@ -1,6 +1,6 @@
 {
   "name": "delorean",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "Flux Library",
   "main": "src/delorean.js",
   "scripts": {
