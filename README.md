@@ -142,6 +142,7 @@ open index.html
   - Fatih Kadir Akin [@f](https://github.com/f)
   - Burak Can [@burakcan](https://github.com/burakcan)
   - Darcy Adams [@darcyadams](https://github.com/darcyadams)
+  - Tim Branyen [@tbranyen](https://github.com/tbranyen)
 
 ## Contributors
 
