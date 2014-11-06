@@ -117,7 +117,7 @@ describe('Flux', function () {
         return {
           a: value.b,
           b: value.a
-        }
+        };
       },
       randomProp: 'random',
       anotherCalculated: {
@@ -128,7 +128,7 @@ describe('Flux', function () {
       dependentOnCalculated: {
         deps: ['greetPlace'],
         calculate: function () {
-          return this.greetPlace
+          return this.greetPlace;
         }
       }
     }
@@ -150,7 +150,7 @@ describe('Flux', function () {
       var input = {
         a: 'a',
         b: 'b'
-      }
+      };
       myStoreWithScheme.set('parsedValue', input);
       expect(myStoreWithScheme.store.parsedValue.a).toBe(input.b);
     });
@@ -166,9 +166,9 @@ describe('Flux', function () {
     });
 
     it('should call calculate only in instantiation and when a dependency is set', function () {
-      expect(calculateSpy.calls.length).toBe(1) // should have been called once on intantiation
+      expect(calculateSpy.calls.length).toBe(1); // should have been called once on intantiation
       myStoreWithScheme.set('otherPlace', 'hey');
-      expect(calculateSpy.calls.length).toBe(1) // should not have been called again, because otherPlace is not a dep
+      expect(calculateSpy.calls.length).toBe(1); // should not have been called again, because otherPlace is not a dep
     });
 
     it('should allow setting calculated properties directly', function () {
