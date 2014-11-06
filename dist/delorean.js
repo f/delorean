@@ -1,4 +1,4 @@
-/*! delorean.js - v0.8.2 - 2014-09-28 */
+/*! delorean - v0.8.5 - 2014-11-06 */
 (function (DeLorean) {
   'use strict';
 
@@ -33,6 +33,10 @@
 
   // `__findDispatcher` is a private function for **React components**.
   function __findDispatcher(view) {
+     // Provide a useful error message if no dispatcher is found in the chain
+    if (view == null) {
+      throw 'No disaptcher found. The DeLoreanJS mixin requires a "dispatcher" property to be passed to a component, or one of it\'s ancestors.';
+    }
     /* `view` should be a component instance. If a component don't have
         any dispatcher, it tries to find a dispatcher from the parents. */
     if (!view.props.dispatcher) {
@@ -103,7 +107,7 @@
 
       // Store instances should wait for finish. So you can know if all the
       // stores are dispatched properly.
-      deferred = this.waitFor(stores);
+      deferred = this.waitFor(stores, actionName);
 
       /* Payload should send to all related stores. */
       for (var storeName in self.stores) {
@@ -119,7 +123,7 @@
     // and you don't need to call it from outside most of the times. It takes
     // array of store instances (`[Store, Store, Store, ...]`). It will create
     // a promise and return it. _Whenever store changes, it resolves the promise_.
-    Dispatcher.prototype.waitFor = function (stores) {
+    Dispatcher.prototype.waitFor = function (stores, actionName) {
       var self = this, promises;
       promises = (function () {
         var __promises = [], promise;
@@ -135,8 +139,11 @@
         }
 
         for (var i in stores) {
-          promise = __promiseGenerator(stores[i]);
-          __promises.push(promise);
+          // Only generate promises for stores that ae listening for this action
+          if (stores[i].store.actions[actionName] != null) {
+            promise = __promiseGenerator(stores[i]);
+            __promises.push(promise);
+          }
         }
         return __promises;
       }());
@@ -217,8 +224,23 @@
       }
     }
 
+     // `set` method updates the data defined at the `scheme` of the store.
+    Store.prototype.set = function (arg1, value) {
+      var changedProps = [];
+      if (typeof arg1 === 'object') {
+        for (var keyName in arg1) {
+          changedProps.push(keyName);
+          this.setValue(keyName, arg1[keyName]);
+        }
+      } else {
+        changedProps.push(arg1);
+        this.setValue(arg1, value);
+      }
+      this.recalculate(changedProps);
+    };
+
     // `set` method updates the data defined at the `scheme` of the store.
-    Store.prototype.set = function (key, value) {
+    Store.prototype.setValue = function (key, value) {
       var scheme = this.store.scheme, definition;
       if (scheme && this.store.scheme[key]) {
         definition = scheme[key];
@@ -229,10 +251,11 @@
           this.store[__generateOriginalName(key)] = value;
           this.store[key] = definition.calculate.call(this.store, value);
         }
-        this.recalculate();
       } else {
         // Scheme **must** include the key you wanted to set.
-        throw 'Scheme should include the key ' + key + ' you wanted to set.';
+        if (console != null) {
+          console.warn('Scheme must include the key, ' + key + ', you are trying to set. ' + key + ' will NOT be set on the store.');
+        }
       }
       return this.store[key];
     };
@@ -242,20 +265,29 @@
     // `{name: {default: 'joe'}}`. Also if you run `formatScheme({fullname: function () {}})`
     // it will return `{fullname: {calculate: function () {}}}`.
     Store.prototype.formatScheme = function (scheme) {
-      var formattedScheme = {};
+      var formattedScheme = {}, definition, defaultValue, calculatedValue;
       for (var keyName in scheme) {
-        var definition = scheme[keyName], defaultValue, calculatedValue;
+        definition = scheme[keyName];
+        defaultValue = null;
+        calculatedValue = null;
 
         formattedScheme[keyName] = {default: null};
 
         /* {key: 'value'} will be {key: {default: 'value'}} */
-        defaultValue = (typeof definition === 'object') ?
+        defaultValue = (definition && typeof definition === 'object') ?
                         definition.default : definition;
         formattedScheme[keyName].default = defaultValue;
 
         /* {key: function () {}} will be {key: {calculate: function () {}}} */
-        if (typeof definition.calculate === 'function') {
+        if (definition && typeof definition.calculate === 'function') {
           calculatedValue = definition.calculate;
+          /* Put a dependency array on formattedSchemes with calculate defined */
+          if (definition.deps) {
+            formattedScheme[keyName].deps = definition.deps;
+          } else {
+            formattedScheme[keyName].deps = [];
+          }
+
         } else if (typeof definition === 'function') {
           calculatedValue = definition;
         }
@@ -268,11 +300,12 @@
 
     /* Applying `scheme` to the store if exists. */
     Store.prototype.buildScheme = function () {
+      var scheme, calculatedData, keyName, definition, dependencyMap, dependents, dep, changedProps = [];
 
-      var scheme, calculatedData, keyName, definition;
       if (typeof this.store.scheme === 'object') {
         /* Scheme must be formatted to standardize the keys. */
         scheme = this.store.scheme = this.formatScheme(this.store.scheme);
+        dependencyMap = this.store.__dependencyMap = {};
 
         /* Set the defaults first */
         for (keyName in scheme) {
@@ -284,22 +317,55 @@
         for (keyName in scheme) {
           definition = scheme[keyName];
           if (definition.calculate) {
+            // Create a dependency map - {keyName: [arrayOfKeysThatDependOnIt]}
+            dependents = definition.deps || [];
+
+            for (var i = 0; i < dependents.length; i++) {
+              dep = dependents[i];
+              if (dependencyMap[dep] == null) {
+                dependencyMap[dep] = [];
+              }
+              dependencyMap[dep].push(keyName);
+            }
+
             this.store[__generateOriginalName(keyName)] = definition.default;
             this.store[keyName] = definition.calculate.call(this.store, definition.default);
+            changedProps.push(keyName);
           }
         }
+        // Recalculate any properties dependent on those that were just set
+        this.recalculate(changedProps);
       }
-
     };
 
-    Store.prototype.recalculate = function () {
-      var scheme = this.store.scheme, definition, keyName;
-      for (keyName in scheme) {
-        definition = scheme[keyName];
-        if (typeof definition.calculate === 'function') {
-          this.store[keyName] = definition.calculate.call(this.store,
-                                this.store[__generateOriginalName(keyName)] || definition.default);
+    Store.prototype.recalculate = function (changedProps) {
+      var scheme = this.store.scheme, dependencyMap = this.store.__dependencyMap, didRun = [], definition, keyName, dependents, dep;
+      // Only iterate over the properties that just changed
+      for (var i = 0; i < changedProps.length; i++) {
+        dependents = dependencyMap[changedProps[i]];
+        // If there are no properties dependent on this property, do nothing
+        if (dependents == null) {
+          continue;
         }
+        // Iterate over the dependendent properties
+        for (var d = 0; d < dependents.length; d++) {
+          dep = dependents[d];
+          // Do nothing if this value has already been recalculated on this change batch
+          if (didRun.indexOf(dep) !== -1) {
+            continue;
+          }
+          // Calculate this value
+          definition = scheme[dep];
+          this.store[dep] = definition.calculate.call(this.store,
+                                this.store[__generateOriginalName(dep)] || definition.default);
+
+          // Make sure this does not get calculated again in this change batch
+          didRun.push(dep);
+        }
+      }
+      // Update Any deps on the deps
+      if (didRun.length > 0) {
+        this.recalculate(didRun);
       }
       this.listener.emit('change');
     };
@@ -324,7 +390,7 @@
         if (__hasOwn(this.store.actions, actionName)) {
           callback = this.store.actions[actionName];
           if (typeof this.store[callback] !== 'function') {
-            throw 'Callback "' + callback + '" defined for action "' + actionName + '" should be a method defined on the store!';
+            throw 'Callback \'' + callback + '\' defined for action \'' + actionName + '\' should be a method defined on the store!';
           }
           /* And `actionName` should be a name generated by `__generateActionName` */
           this.listener.on(__generateActionName(actionName),
@@ -381,7 +447,7 @@
     // `createDispatcher` generates a dispatcher with actions to dispatch.
     /* `actionsToDispatch` should be an object. */
     createDispatcher: function (actionsToDispatch) {
-      var actionsOfStores, dispatcher, callback;
+      var actionsOfStores, dispatcher, callback, triggers, triggerMethod;
 
       // If it has `getStores` method it should be get and pass to the `Dispatcher`
       if (typeof actionsToDispatch.getStores === 'function') {
@@ -394,10 +460,23 @@
       /* Now call `registerAction` method for every action. */
       for (var actionName in actionsToDispatch) {
         if (__hasOwn(actionsToDispatch, actionName)) {
-          /* `getStores` is the special function, it's not an action. */
-          if (actionName !== 'getStores') {
+          /* `getStores` & `viewTriggers` are special properties, it's not an action. */
+          if (actionName !== 'getStores' && actionName != 'viewTriggers') {
             callback = actionsToDispatch[actionName];
             dispatcher.registerAction(actionName, callback.bind(dispatcher));
+          }
+        }
+      }
+
+      /* Bind triggers */
+      triggers = actionsToDispatch.viewTriggers;
+      for (var triggerName in triggers) {
+        triggerMethod = triggers[triggerName];
+        if (typeof dispatcher[triggerMethod] === 'function') {
+          dispatcher.on(triggerName, dispatcher[triggerMethod]);
+        } else {
+          if (console != null) {
+            console.warn(triggerMethod + ' should be a method defined on your dispatcher. The ' + triggerName + ' trigger will not be bound to any method.');
           }
         }
       }
@@ -423,22 +502,26 @@
     // Simply `mixin: [Flux.mixins.storeListener]` will work.
     storeListener: {
 
+      trigger: function () {
+        this.__dispatcher.emit.apply(this.__dispatcher, arguments);
+      },
+
       // After the component mounted, listen changes of the related stores
       componentDidMount: function () {
-        var self = this, store;
+        var self = this, store, storeName;
 
         /* `__changeHandler` is a **listener generator** to pass to the `onChange` function. */
         function __changeHandler(store, storeName) {
           return function () {
             var state, args;
+            /* If the component is mounted, change state. */
+            if (self.isMounted()) {
+              self.setState(self.getStoreStates());
+            }
             // When something changes it calls the components `storeDidChanged` method if exists.
             if (self.storeDidChange) {
               args = [storeName].concat(Array.prototype.slice.call(arguments, 0));
               self.storeDidChange.apply(self, args);
-            }
-            /* If the component is mounted, change state. */
-            if (self.isMounted()) {
-              self.setState(self.getStoreStates());
             }
           };
         }
@@ -447,7 +530,7 @@
         this.__changeHandlers = {};
 
         /* Generate and bind the change handlers to the stores. */
-        for (var storeName in this.stores) {
+        for (storeName in this.__watchStores) {
           if (__hasOwn(this.stores, storeName)) {
             store = this.stores[storeName];
             this.__changeHandlers[storeName] = __changeHandler(store, storeName);
@@ -458,7 +541,7 @@
 
       // When a component unmounted, it should stop listening.
       componentWillUnmount: function () {
-        for (var storeName in this.stores) {
+        for (var storeName in this.__changeHandlers) {
           if (__hasOwn(this.stores, storeName)) {
             var store = this.stores[storeName];
             store.listener.removeListener('change', this.__changeHandlers[storeName]);
@@ -467,42 +550,54 @@
       },
 
       getInitialState: function () {
-        var self = this, state;
+        var self = this, state, storeName;
 
         /* The dispatcher should be easy to access and it should use `__findDispatcher`
            method to find the parent dispatchers. */
-        this.dispatcher = __findDispatcher(this);
+        this.__dispatcher = __findDispatcher(this);
 
         // If `storesDidChange` method presents, it'll be called after all the stores
         // were changed.
         if (this.storesDidChange) {
-          this.dispatcher.on('change:all', function () {
+          this.__dispatcher.on('change:all', function () {
             self.storesDidChange();
           });
         }
 
         // Since `dispatcher.stores` is harder to write, there's a shortcut for it.
         // You can use `this.stores` from the React component.
-        this.stores = this.dispatcher.stores;
+        this.stores = this.__dispatcher.stores;
+
+        this.__watchStores = {};
+        if (this.watchStores != null) {
+          for (var i = 0; i < this.watchStores.length;  i++) {
+            storeName = this.watchStores[i];
+            this.__watchStores[storeName] = this.stores[storeName];
+          }
+        } else {
+          this.__watchStores = this.stores;
+          if (console != null && Object.keys != null && Object.keys(this.stores).length > 4) {
+            console.warn('Your component is watching changes on all stores, you may want to define a "watchStores" property in order to only watch stores relevant to this component.');
+          }
+        }
 
         return this.getStoreStates();
       },
 
       getStoreStates: function () {
-        var state = {stores: {}};
+        var state = {stores: {}}, store;
 
         /* Set `state.stores` for all present stores with a `setState` method defined. */
-        for (var storeName in this.stores) {
+        for (var storeName in this.__watchStores) {
           if (__hasOwn(this.stores, storeName)) {
-            if (this.stores[storeName]
-            && this.stores[storeName].store
-            // If stores has `getState` method, it'll be pushed to the component's state.
-            && this.stores[storeName].store.getState) {
-              state.stores[storeName] = this.stores[storeName].store.getState();
-            } else if (typeof this.stores[storeName].store.scheme === 'object') {
-              var scheme = this.stores[storeName].store.scheme;
+            state.stores[storeName] = {};
+            store = this.__watchStores[storeName].store;
+            if (store && store.getState) {
+              state.stores[storeName] = store.getState();
+            } else if (typeof store.scheme === 'object') {
+              var scheme = store.scheme;
               for (var keyName in scheme) {
-                state.stores[storeName] = this.stores[storeName].store[keyName];
+                state.stores[storeName][keyName] = store[keyName];
               }
             }
           }
@@ -541,7 +636,7 @@
   }
 
 })({});
-;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 var Promise = require("./promise/promise").Promise;
 var polyfill = require("./promise/polyfill").polyfill;
@@ -704,8 +799,8 @@ function asap(callback, arg) {
 }
 
 exports.asap = asap;
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":12}],4:[function(require,module,exports){
+}).call(this,require("JkpR2F"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"JkpR2F":12}],4:[function(require,module,exports){
 "use strict";
 var config = {
   instrument: false
@@ -761,7 +856,7 @@ function polyfill() {
 }
 
 exports.polyfill = polyfill;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./promise":6,"./utils":10}],6:[function(require,module,exports){
 "use strict";
 var config = require("./config").config;
@@ -1211,10 +1306,8 @@ EventEmitter.prototype.emit = function(type) {
       er = arguments[1];
       if (er instanceof Error) {
         throw er; // Unhandled 'error' event
-      } else {
-        throw TypeError('Uncaught, unspecified "error" event.');
       }
-      return false;
+      throw TypeError('Uncaught, unspecified "error" event.');
     }
   }
 

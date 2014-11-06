@@ -589,7 +589,7 @@
         /* Set `state.stores` for all present stores with a `setState` method defined. */
         for (var storeName in this.__watchStores) {
           if (__hasOwn(this.stores, storeName)) {
-            state.stores[storeName] = {}
+            state.stores[storeName] = {};
             store = this.__watchStores[storeName].store;
             if (store && store.getState) {
               state.stores[storeName] = store.getState();
