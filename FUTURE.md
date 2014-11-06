@@ -61,6 +61,12 @@ var Actions = {
   setData(data) {
     Dispatcher.setData(data);
   }
+  
+  getDataFromServer() {
+    fetch('/somewhere', (data)=> {
+      Dispatcher.setData(data);
+    });
+  }
 }
 ```
 
