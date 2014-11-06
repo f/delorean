@@ -1,5 +1,5 @@
 {
-  "name": "delorean.js",
+  "name": "delorean",
   "version": "0.8.5",
   "description": "Flux Library",
   "main": "src/delorean.js",

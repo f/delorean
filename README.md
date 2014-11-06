@@ -37,7 +37,7 @@ bower install delorean
 You can also install by NPM to use with **Browserify** *(recommended)*
 
 ```bash
-npm install delorean.js
+npm install delorean
 ```
 
 ## Usage
@@ -45,7 +45,7 @@ npm install delorean.js
 Hipster way:
 
 ```js
-var Flux = require('delorean.js').Flux;
+var Flux = require('delorean').Flux;
 // ...
 ```
 
