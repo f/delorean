@@ -7,6 +7,11 @@
     "test": "./node_modules/.bin/grunt karma"
   },
   "author": "Fatih Kadir Akin",
+  "homepage": "http://deloreanjs.com",
+  "repository" : { 
+    "type" : "git",
+     "url" : "git://github.com/deloreanjs/delorean.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "grunt": "^0.4.5",
