@@ -177,3 +177,8 @@ When it's all OK, [open a pull request](https://github.com/deloreanjs/delorean/c
 ## Name
 
 The **flux capacitor** was the core component of Doctor Emmett Brown's **DeLorean time machine**
+
+## Links about DeLorean.js
+
+ - [http://dailyjs.com/2014/08/19/delorean-cash/](http://dailyjs.com/2014/08/19/delorean-cash/)
+ - [https://reactjsnews.com/the-state-of-flux/](https://reactjsnews.com/the-state-of-flux/)
