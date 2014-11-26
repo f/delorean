@@ -44,7 +44,7 @@ var TodoListView = React.createClass({
 These methods are triggered when a store is changed, and all stores are changed. You can use
 these methods in your components to perform specific actions after a store changes. Please note
 that the **`Flux.mixins.storeListener`** will automatically update your component's `state` and force
-a render, so it is not required that you define these methods to peform routine re-renders.
+a render, so it is not required that you define these methods to perform routine re-renders.
 
 ```js
 var TodoListView = React.createClass({
@@ -70,7 +70,7 @@ var TodoListView = React.createClass({
 
 ### `watchStores`
   
-In larger applicaitons, it may become inefficient to watch all stores for changes. The `watchStores` property 
+In larger applications, it may become inefficient to watch all stores for changes. The `watchStores` property 
 is an array, defined on your component, containing the names of stores you want the component to watch for changes.
 This property is optional, and when omitted, all stores associated with the passed `dispatcher` will be watched. 
 Store name strings should match the keys of the stores returned in the `dispatchers`'s `getStores` method.
