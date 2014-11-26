@@ -12,7 +12,7 @@ to the top level component in the tree. Delorean will then search up the tree fo
 dispatchers. This means that any component with the Flux React mixin applied,
 that is downstream from a component passed a `dispatcher` prop, will get the
 `state` of the dispatcher's stores. Small apps generally only require a single
-dispatcher, but it may be desirable to use multiple dispathcers in a larger app,
+dispatcher, but it may be desirable to use multiple dispatchers in a larger app,
 each responsible for data flows in a different section or module.
 
 ## `Flux.createDispatcher`
