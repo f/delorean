@@ -35,6 +35,28 @@ var TodoListApp = Flux.createDispatcher({
 });
 ```
 
+### Callback Registration and Dispatching
+
+#### Action `register`
+
+You can register global callbacks:
+
+```js
+TodoDispatcher.register(function (actionName, payload) {
+  switch (actionName) {
+    case 'todo:add':
+      console.log('New todo add dispatched with payload:', payload);
+      break;
+  }
+});
+```
+
+And you can say:
+
+```js
+TodoDispatcher.dispatch('todo:add', {text: 'Do your homework!'});
+```
+
 #### Action `dispatch`
 
 When an action is dispatched, all the stores know about the status and
@@ -80,9 +102,19 @@ generated from each store's `getState` method).
 TodoListApp.getStore('todoStore'); // This will return `myTodos.store`
 ```
 
+#### `waitFor([stores], event)`
+
+`waitFor` function takes arguments and the event name, and returns a promise.
+
+```js
+TodoDispaatcher.waitFor([todoStore, anotherStore], 'todo:add').then(function () {
+  console.log('todoStore and anotherStore are changed now.');
+});
+```
+
 #### `viewTriggers`
 
-When working in React, view triggers offer a clean and simple API for exposing actions that are intended to be triggered 
+When working in React, view triggers offer a clean and simple API for exposing actions that are intended to be triggered
 from a view. This is a React specific feature, as it relies on **`Flux.mixins.storeListener`**. `viewTriggers` is a hash you define on your dispatcher, the keys are trigger names, and the values are handler method names (as strings), which you have defined on the dispatcher. The React **`Flux.mixins.storeListener`** will then expose a `trigger` method on components.
 `trigger` takes the trigger name as the first parameter, and `0` - `n` additoinal parameters you want to pass to you handler
 method.
@@ -90,7 +122,7 @@ method.
 
 ```js
 var TodoListApp = Flux.createDispatcher({
-  
+
   viewTriggers: {
     'getTodos': 'getTodos'
   },
@@ -102,7 +134,7 @@ var TodoListApp = Flux.createDispatcher({
   },
 
   getTodos: function () {
-    // code to GET todos 
+    // code to GET todos
   },
 
 });
@@ -130,5 +162,3 @@ var TodoListView = React.createClass({
 });
 
 ```
-
-
