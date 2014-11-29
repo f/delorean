@@ -1,4 +1,4 @@
-/*! delorean - v0.8.6 - 2014-11-29 */
+/*! delorean - v0.8.7 - 2014-11-29 */
 (function (DeLorean) {
   'use strict';
 
@@ -91,6 +91,7 @@
     Dispatcher.prototype.dispatch = function (actionName, data) {
       var self = this, stores, deferred;
 
+      this.listener.emit('dispatch', actionName, data);
       /* Stores are key-value pairs. Collect store instances into an array. */
       stores = (function () {
         var stores = [], store;
@@ -161,6 +162,16 @@
         this[action] = callback.bind(this.stores);
       } else {
         throw 'Action callback should be a function.';
+      }
+    };
+
+    // `register` method adds an global action callback to the dispatcher.
+    Dispatcher.prototype.register = function (callback) {
+      /* The callback must be a function. */
+      if (typeof callback === 'function') {
+        this.listener.on('dispatch', callback);
+      } else {
+        throw 'Global callback should be a function.';
       }
     };
 
