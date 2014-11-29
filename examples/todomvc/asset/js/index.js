@@ -14,6 +14,7 @@ var TodoStore = Flux.createStore({
     surname: 'Doe',
     fullname: {
       default: 'woot',
+      deps: ['firstname', 'surname'],
       calculate: function (value) {
         return value.toUpperCase() + ' ' + this.firstname;
       }
@@ -218,10 +219,10 @@ var ApplicationView = React.createClass({displayName: 'ApplicationView',
   render: function () {
     var self = this;
     return React.DOM.div(null, 
-      React.DOM.span(null, this.dispatcher.getStore('todoStore').fullname), 
+      React.DOM.span(null, this.getStore('todoStore').fullname), 
       TodoListView(null), 
       TodoFormView(null), 
-      React.DOM.span(null, "There are ", this.dispatcher.getStore('todoStore').todos.length, " todos.")
+      React.DOM.span(null, "There are ", this.getStore('todoStore').todos.length, " todos.")
     )
   }
 

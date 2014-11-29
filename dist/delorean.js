@@ -1,4 +1,4 @@
-/*! delorean - v0.8.5 - 2014-11-06 */
+/*! delorean - v0.8.6 - 2014-11-29 */
 (function (DeLorean) {
   'use strict';
 
@@ -237,6 +237,7 @@
         this.setValue(arg1, value);
       }
       this.recalculate(changedProps);
+      return this.store[arg1];
     };
 
     // `set` method updates the data defined at the `scheme` of the store.

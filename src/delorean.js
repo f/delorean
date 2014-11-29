@@ -236,6 +236,7 @@
         this.setValue(arg1, value);
       }
       this.recalculate(changedProps);
+      return this.store[arg1];
     };
 
     // `set` method updates the data defined at the `scheme` of the store.
