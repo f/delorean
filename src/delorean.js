@@ -638,7 +638,12 @@
   // to the `window`.
   } else {
     if (typeof define === 'function' && define.amd) {
-      define([], function () {
+      define(['./requirements.js'], function (requirements) {
+        // Import Modules in require.js pattern
+        for (var requirement in requirements) {
+          DeLorean.Flux.define(requirement, requirements[requirement]);
+        }
+        
         return DeLorean;
       });
     } else {
