@@ -12,8 +12,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     Promise: require('es6-promise').Promise
   };
 }
-
-if (typeof define === 'function' && define.amd) {
+else if (typeof define === 'function' && define.amd) {
   define(function(require, exports, module) {
     var events = require('events'),
         promise = require('es6-promise');
