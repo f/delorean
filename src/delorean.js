@@ -44,6 +44,18 @@
     return view.props.dispatcher;
   }
 
+  // `__clone` creates a copy of an object.
+  function __clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+      if (__hasOwn(obj, attr)) {
+        copy[attr] = obj[attr];
+      }
+    }
+    return copy;
+  }
+
   // ## Dispatcher
 
   // The dispatcher is **the central hub** that **manages all data flow** in
@@ -223,7 +235,7 @@
       this.listener = new DeLorean.EventEmitter();
 
       /* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */
-      this.store = store;
+      this.store = __clone(store);
       this.bindActions();
       this.buildScheme();
 
@@ -643,7 +655,7 @@
         for (var requirement in requirements) {
           DeLorean.Flux.define(requirement, requirements[requirement]);
         }
-        
+
         return DeLorean;
       });
     } else {

@@ -185,4 +185,19 @@ describe('Flux', function () {
     });
   });
 
+  describe('multiple stores', function () {
+    var MyStore = DeLorean.Flux.createStore({
+      hello: null
+    });
+
+    it('should not share state', function() {
+      var store1 = MyStore().store;
+      store1.hello = 'world';
+      expect(store1.hello).toEqual('world');
+
+      var store2 = MyStore().store;
+      expect(store2.hello).toEqual(null);
+    });
+  });
+
 });
