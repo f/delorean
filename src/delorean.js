@@ -44,13 +44,13 @@
     return view.props.dispatcher;
   }
 
-  // `__clone` creates a copy of an object.
+  // `__clone` creates a deep copy of an object.
   function __clone(obj) {
     if (null == obj || "object" != typeof obj) return obj;
     var copy = obj.constructor();
     for (var attr in obj) {
       if (__hasOwn(obj, attr)) {
-        copy[attr] = obj[attr];
+        copy[attr] = __clone(obj[attr]);
       }
     }
     return copy;
@@ -298,7 +298,7 @@
 
         /* {key: 'value'} will be {key: {default: 'value'}} */
         defaultValue = (definition && typeof definition === 'object') ?
-                        definition.default : definition;
+                        __clone(definition.default) : definition;
         formattedScheme[keyName].default = defaultValue;
 
         /* {key: function () {}} will be {key: {calculate: function () {}}} */
