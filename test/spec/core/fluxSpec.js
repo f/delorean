@@ -130,6 +130,11 @@ describe('Flux', function () {
         calculate: function () {
           return this.greetPlace;
         }
+      },
+      objectDefault: {
+        default: {
+          name: 'Test default objects get cloned'
+        }
       }
     }
   });
@@ -139,6 +144,10 @@ describe('Flux', function () {
       expect(myStoreWithScheme.store.greeting).toBe('hello');
       expect(myStoreWithScheme.store.place).toBe('world');
       expect(myStoreWithScheme.store.greetPlace).toBe('HEY hello, world');
+    });
+
+    it('should clone defaults that are objects, rather than applying them direclty', function () {
+      expect(myStoreWithScheme.store.scheme.objectDefault.default).not.toBe(myStoreWithScheme.store.objectDefault);
     });
 
     it('should re-calculate scheme properties with #calculate and deps defined', function () {

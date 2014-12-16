@@ -298,7 +298,7 @@
 
         /* {key: 'value'} will be {key: {default: 'value'}} */
         defaultValue = (definition && typeof definition === 'object') ?
-                        __clone(definition.default) : definition;
+                        definition.default : definition;
         formattedScheme[keyName].default = defaultValue;
 
         /* {key: function () {}} will be {key: {calculate: function () {}}} */
@@ -333,7 +333,7 @@
         /* Set the defaults first */
         for (keyName in scheme) {
           definition = scheme[keyName];
-          this.store[keyName] = definition.default;
+          this.store[keyName] = __clone(definition.default);
         }
 
         /* Set the calculations */
