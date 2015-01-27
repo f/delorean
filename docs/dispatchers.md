@@ -107,7 +107,7 @@ TodoListApp.getStore('todoStore'); // This will return `myTodos.store`
 `waitFor` function takes arguments and the event name, and returns a promise.
 
 ```js
-TodoDispaatcher.waitFor([todoStore, anotherStore], 'todo:add').then(function () {
+TodoDispatcher.waitFor([todoStore, anotherStore], 'todo:add').then(function () {
   console.log('todoStore and anotherStore are changed now.');
 });
 ```
