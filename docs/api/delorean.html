@@ -178,9 +178,20 @@ E.g. If you create an action with name <code>hello</code> it will be
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <h2 id="dispatcher">Dispatcher</h2>
+              <p><code>__clone</code> creates a deep copy of an object.</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__clone</span><span class="hljs-params">(obj)</span> </span>{
+    <span class="hljs-keyword">if</span> (obj === <span class="hljs-literal">null</span> || <span class="hljs-keyword">typeof</span> obj !== <span class="hljs-string">'object'</span>) { <span class="hljs-keyword">return</span> obj; }
+    <span class="hljs-keyword">var</span> copy = obj.constructor();
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> attr <span class="hljs-keyword">in</span> obj) {
+      <span class="hljs-keyword">if</span> (__hasOwn(obj, attr)) {
+        copy[attr] = __clone(obj[attr]);
+      }
+    }
+    <span class="hljs-keyword">return</span> copy;
+  }</pre></div></div>
             
         </li>
         
@@ -190,6 +201,19 @@ E.g. If you create an action with name <code>hello</code> it will be
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <h2 id="dispatcher">Dispatcher</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p>The dispatcher is <strong>the central hub</strong> that <strong>manages all data flow</strong> in
 a Flux application. It is essentially a <em>registry of callbacks into the
@@ -204,11 +228,11 @@ the data payload provided by the action via the callbacks in the registry.</p>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <h3 id="dispatcher-helpers">Dispatcher Helpers</h3>
 
@@ -217,11 +241,11 @@ the data payload provided by the action via the callbacks in the registry.</p>
         </li>
         
         
-        <li id="section-11">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>Rollback listener adds a <code>rollback</code> event listener to the bunch of
 stores.</p>
@@ -246,11 +270,11 @@ stores.</p>
         </li>
         
         
-        <li id="section-12">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <h3 id="dispatcher-prototype">Dispatcher Prototype</h3>
 
@@ -262,11 +286,11 @@ stores.</p>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p><code>DeLorean.EventEmitter</code> is <code>require(&#39;events&#39;).EventEmitter</code> by default.
 you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, AnotherEventEmitter)</code></p>
@@ -285,11 +309,11 @@ you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, Anoth
         </li>
         
         
-        <li id="section-14">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p><code>dispatch</code> method dispatch the event with <code>data</code> (or <strong>payload</strong>)</p>
 
@@ -298,6 +322,7 @@ you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, Anoth
             <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.dispatch = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(actionName, data)</span> </span>{
       <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>, stores, deferred;
 
+      <span class="hljs-keyword">this</span>.listener.emit(<span class="hljs-string">'dispatch'</span>, actionName, data);
       <span class="hljs-comment">/* Stores are key-value pairs. Collect store instances into an array. */</span>
       stores = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">var</span> stores = [], store;
@@ -315,11 +340,11 @@ you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, Anoth
         </li>
         
         
-        <li id="section-15">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>Store instances should wait for finish. So you can know if all the
 stores are dispatched properly.</p>
@@ -336,11 +361,11 @@ stores are dispatched properly.</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p><code>dispatch</code> returns deferred object you can just use <strong>promise</strong>
 for dispatching: <code>dispatch(..).then(..)</code>.</p>
@@ -353,11 +378,11 @@ for dispatching: <code>dispatch(..).then(..)</code>.</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p><code>waitFor</code> is actually a <em>semi-private</em> method. Because it’s kind of internal
 and you don’t need to call it from outside most of the times. It takes
@@ -378,11 +403,11 @@ a promise and return it. <em>Whenever store changes, it resolves the promise</em
         </li>
         
         
-        <li id="section-18">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p><code>DeLorean.Promise</code> is <code>require(&#39;es6-promise&#39;).Promise</code> by default.
 you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPromise)</code></p>
@@ -399,11 +424,11 @@ you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPro
         </li>
         
         
-        <li id="section-19">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p>Only generate promises for stores that ae listening for this action</p>
 
@@ -420,11 +445,11 @@ you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPro
         </li>
         
         
-        <li id="section-20">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>When all the promises are resolved, dispatcher emits <code>change:all</code> event.</p>
 
@@ -438,11 +463,11 @@ you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPro
         </li>
         
         
-        <li id="section-21">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p><code>registerAction</code> method adds a method to the prototype. So you can just use
 <code>dispatcherInstance.actionName()</code>.</p>
@@ -461,11 +486,33 @@ you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPro
         </li>
         
         
-        <li id="section-22">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p><code>register</code> method adds an global action callback to the dispatcher.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.register = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(callback)</span> </span>{
+      <span class="hljs-comment">/* The callback must be a function. */</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> callback === <span class="hljs-string">'function'</span>) {
+        <span class="hljs-keyword">this</span>.listener.on(<span class="hljs-string">'dispatch'</span>, callback);
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Global callback should be a function.'</span>;
+      }
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p><code>getStore</code> returns the store from stores hash.
 You can also use <code>dispatcherInstance.stores[storeName]</code> but
@@ -483,11 +530,11 @@ it checks if the store really exists.</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <h3 id="shortcuts">Shortcuts</h3>
 
@@ -512,11 +559,11 @@ it checks if the store really exists.</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <h2 id="store">Store</h2>
 
@@ -525,11 +572,11 @@ it checks if the store really exists.</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Stores contain the application state and logic. Their role is somewhat similar
 to a model in a traditional MVC, but they manage the state of many objects.
@@ -545,11 +592,11 @@ domain within the application.</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <h3 id="store-prototype">Store Prototype</h3>
 
@@ -564,11 +611,11 @@ domain within the application.</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p><code>DeLorean.EventEmitter</code> is <code>require(&#39;events&#39;).EventEmitter</code> by default.
 you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, AnotherEventEmitter)</code></p>
@@ -578,18 +625,18 @@ you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, Anoth
             <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.listener = <span class="hljs-keyword">new</span> DeLorean.EventEmitter();
 
       <span class="hljs-comment">/* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */</span>
-      <span class="hljs-keyword">this</span>.store = store;
+      <span class="hljs-keyword">this</span>.store = __clone(store);
       <span class="hljs-keyword">this</span>.bindActions();
       <span class="hljs-keyword">this</span>.buildScheme();</pre></div></div>
             
         </li>
         
         
-        <li id="section-28">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p><code>initialize</code> is the construction function, you can define <code>initialize</code> method
 in your store definitions.</p>
@@ -604,11 +651,11 @@ in your store definitions.</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <p><code>set</code> method updates the data defined at the <code>scheme</code> of the store.</p>
 
@@ -632,11 +679,11 @@ in your store definitions.</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p><code>set</code> method updates the data defined at the <code>scheme</code> of the store.</p>
 
@@ -658,11 +705,11 @@ in your store definitions.</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Scheme <strong>must</strong> include the key you wanted to set.</p>
 
@@ -678,11 +725,11 @@ in your store definitions.</p>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Removes the scheme format and standardizes all the shortcuts.
 If you run <code>formatScheme({name: &#39;joe&#39;})</code> it will return you
@@ -737,7 +784,7 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         <span class="hljs-comment">/* Set the defaults first */</span>
         <span class="hljs-keyword">for</span> (keyName <span class="hljs-keyword">in</span> scheme) {
           definition = scheme[keyName];
-          <span class="hljs-keyword">this</span>.store[keyName] = definition.default;
+          <span class="hljs-keyword">this</span>.store[keyName] = __clone(definition.default);
         }
 
         <span class="hljs-comment">/* Set the calculations */</span>
@@ -748,11 +795,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>Create a dependency map - {keyName: [arrayOfKeysThatDependOnIt]}</p>
 
@@ -777,11 +824,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>Recalculate any properties dependent on those that were just set</p>
 
@@ -797,11 +844,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>Only iterate over the properties that just changed</p>
 
@@ -813,11 +860,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-36">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>If there are no properties dependent on this property, do nothing</p>
 
@@ -830,11 +877,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-37">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>Iterate over the dependendent properties</p>
 
@@ -846,11 +893,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>Do nothing if this value has already been recalculated on this change batch</p>
 
@@ -863,11 +910,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-39">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <p>Calculate this value</p>
 
@@ -880,11 +927,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-40">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-40">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <p>Make sure this does not get calculated again in this change batch</p>
 
@@ -897,11 +944,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-41">
+        <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-41">&#182;</a>
+                <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
               <p>Update Any deps on the deps</p>
 
@@ -916,11 +963,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-42">
+        <li id="section-44">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-42">&#182;</a>
+                <a class="pilcrow" href="#section-44">&#182;</a>
               </div>
               <p><code>bindActions</code> is semi-private method. You’ll never need to call it from outside.
 It powers up the <code>this.store</code> object.</p>
@@ -933,11 +980,11 @@ It powers up the <code>this.store</code> object.</p>
         </li>
         
         
-        <li id="section-43">
+        <li id="section-45">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-43">&#182;</a>
+                <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
               <p>Some required methods can be used in <strong>store definition</strong> like
 <strong><code>emit</code></strong>, <strong><code>emitChange</code></strong>, <strong><code>emitRollback</code></strong>, <strong><code>rollback</code></strong>, <strong><code>listenChanges</code></strong></p>
@@ -954,11 +1001,11 @@ It powers up the <code>this.store</code> object.</p>
         </li>
         
         
-        <li id="section-44">
+        <li id="section-46">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-44">&#182;</a>
+                <a class="pilcrow" href="#section-46">&#182;</a>
               </div>
               <p>Stores must have a <code>actions</code> hash of <code>actionName: methodName</code>
 <code>methodName</code> is the <code>this.store</code>‘s prototype method..</p>
@@ -981,11 +1028,11 @@ It powers up the <code>this.store</code> object.</p>
         </li>
         
         
-        <li id="section-45">
+        <li id="section-47">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-45">&#182;</a>
+                <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
               <p><code>dispatchAction</code> called from a dispatcher. You can also call anywhere but
 you probably won’t need to do. It simply <strong>emits an event with a payload</strong>.</p>
@@ -999,11 +1046,11 @@ you probably won’t need to do. It simply <strong>emits an event with a payload
         </li>
         
         
-        <li id="section-46">
+        <li id="section-48">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-46">&#182;</a>
+                <a class="pilcrow" href="#section-48">&#182;</a>
               </div>
               <h3 id="shortcuts">Shortcuts</h3>
 
@@ -1012,11 +1059,11 @@ you probably won’t need to do. It simply <strong>emits an event with a payload
         </li>
         
         
-        <li id="section-47">
+        <li id="section-49">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-47">&#182;</a>
+                <a class="pilcrow" href="#section-49">&#182;</a>
               </div>
               <p><code>listenChanges</code> is a shortcut for <code>Object.observe</code> usage. You can just use
 <code>Object.observe(object, function () { ... })</code> but everytime you use it you
@@ -1041,11 +1088,11 @@ repeat yourself. DeLorean has a shortcut doing this properly.</p>
         </li>
         
         
-        <li id="section-48">
+        <li id="section-50">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-48">&#182;</a>
+                <a class="pilcrow" href="#section-50">&#182;</a>
               </div>
               <p><code>onChange</code> simply listens changes and calls a callback. Shortcut for
 a <code>on(&#39;change&#39;)</code> command.</p>
@@ -1062,11 +1109,11 @@ a <code>on(&#39;change&#39;)</code> command.</p>
         </li>
         
         
-        <li id="section-49">
+        <li id="section-51">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-49">&#182;</a>
+                <a class="pilcrow" href="#section-51">&#182;</a>
               </div>
               <h3 id="flux-wrapper">Flux Wrapper</h3>
 
@@ -1077,11 +1124,11 @@ a <code>on(&#39;change&#39;)</code> command.</p>
         </li>
         
         
-        <li id="section-50">
+        <li id="section-52">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-50">&#182;</a>
+                <a class="pilcrow" href="#section-52">&#182;</a>
               </div>
               <p><code>createStore</code> <strong>creates a function to create a store</strong>. So it’s like
 a factory.</p>
@@ -1097,11 +1144,11 @@ a factory.</p>
         </li>
         
         
-        <li id="section-51">
+        <li id="section-53">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-51">&#182;</a>
+                <a class="pilcrow" href="#section-53">&#182;</a>
               </div>
               <p><code>createDispatcher</code> generates a dispatcher with actions to dispatch.</p>
 
@@ -1114,11 +1161,11 @@ a factory.</p>
         </li>
         
         
-        <li id="section-52">
+        <li id="section-54">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-52">&#182;</a>
+                <a class="pilcrow" href="#section-54">&#182;</a>
               </div>
               <p>If it has <code>getStores</code> method it should be get and pass to the <code>Dispatcher</code></p>
 
@@ -1161,11 +1208,11 @@ a factory.</p>
         </li>
         
         
-        <li id="section-53">
+        <li id="section-55">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-53">&#182;</a>
+                <a class="pilcrow" href="#section-55">&#182;</a>
               </div>
               <h3 id="-delorean-flux-define-"><code>DeLorean.Flux.define</code></h3>
 <p>It’s a key to <em>hack</em> DeLorean easily. You can just inject something
@@ -1181,11 +1228,11 @@ you want to define.</p>
         </li>
         
         
-        <li id="section-54">
+        <li id="section-56">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-54">&#182;</a>
+                <a class="pilcrow" href="#section-56">&#182;</a>
               </div>
               <p>Store and Dispatcher are the only base classes of DeLorean.</p>
 
@@ -1197,11 +1244,11 @@ you want to define.</p>
         </li>
         
         
-        <li id="section-55">
+        <li id="section-57">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-55">&#182;</a>
+                <a class="pilcrow" href="#section-57">&#182;</a>
               </div>
               <h2 id="built-in-react-mixin">Built-in React Mixin</h2>
 
@@ -1212,11 +1259,11 @@ you want to define.</p>
         </li>
         
         
-        <li id="section-56">
+        <li id="section-58">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-56">&#182;</a>
+                <a class="pilcrow" href="#section-58">&#182;</a>
               </div>
               <p>It should be inserted to the React components which
 used in Flux.
@@ -1233,11 +1280,11 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
         </li>
         
         
-        <li id="section-57">
+        <li id="section-59">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-57">&#182;</a>
+                <a class="pilcrow" href="#section-59">&#182;</a>
               </div>
               <p>After the component mounted, listen changes of the related stores</p>
 
@@ -1258,11 +1305,11 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
         </li>
         
         
-        <li id="section-58">
+        <li id="section-60">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-58">&#182;</a>
+                <a class="pilcrow" href="#section-60">&#182;</a>
               </div>
               <p>When something changes it calls the components <code>storeDidChanged</code> method if exists.</p>
 
@@ -1278,11 +1325,11 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
         </li>
         
         
-        <li id="section-59">
+        <li id="section-61">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-59">&#182;</a>
+                <a class="pilcrow" href="#section-61">&#182;</a>
               </div>
               <p>Remember the change handlers so they can be removed later</p>
 
@@ -1303,11 +1350,11 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
         </li>
         
         
-        <li id="section-60">
+        <li id="section-62">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-60">&#182;</a>
+                <a class="pilcrow" href="#section-62">&#182;</a>
               </div>
               <p>When a component unmounted, it should stop listening.</p>
 
@@ -1332,11 +1379,11 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
         </li>
         
         
-        <li id="section-61">
+        <li id="section-63">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-61">&#182;</a>
+                <a class="pilcrow" href="#section-63">&#182;</a>
               </div>
               <p>If <code>storesDidChange</code> method presents, it’ll be called after all the stores
 were changed.</p>
@@ -1352,11 +1399,11 @@ were changed.</p>
         </li>
         
         
-        <li id="section-62">
+        <li id="section-64">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-62">&#182;</a>
+                <a class="pilcrow" href="#section-64">&#182;</a>
               </div>
               <p>Since <code>dispatcher.stores</code> is harder to write, there’s a shortcut for it.
 You can use <code>this.stores</code> from the React component.</p>
@@ -1405,11 +1452,11 @@ You can use <code>this.stores</code> from the React component.</p>
         </li>
         
         
-        <li id="section-63">
+        <li id="section-65">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-63">&#182;</a>
+                <a class="pilcrow" href="#section-65">&#182;</a>
               </div>
               <p><code>getStore</code> is a shortcut to get the store from the state.</p>
 
@@ -1424,11 +1471,11 @@ You can use <code>this.stores</code> from the React component.</p>
         </li>
         
         
-        <li id="section-64">
+        <li id="section-66">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-64">&#182;</a>
+                <a class="pilcrow" href="#section-66">&#182;</a>
               </div>
               <h2 id="delorean-api">DeLorean API</h2>
 <p>DeLorean can be used in <strong>CommonJS</strong> projects.</p>
@@ -1446,11 +1493,11 @@ You can use <code>this.stores</code> from the React component.</p>
         </li>
         
         
-        <li id="section-65">
+        <li id="section-67">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-65">&#182;</a>
+                <a class="pilcrow" href="#section-67">&#182;</a>
               </div>
               <p>It can be also used in <strong>AMD</strong> projects, too.
 And if there is no module system initialized, just pass the DeLorean
@@ -1460,7 +1507,25 @@ to the <code>window</code>.</p>
             
             <div class="content"><div class='highlight'><pre>  } <span class="hljs-keyword">else</span> {
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
-      define([], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+      define([<span class="hljs-string">'./requirements.js'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(requirements)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-68">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-68">&#182;</a>
+              </div>
+              <p>Import Modules in require.js pattern</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> requirement <span class="hljs-keyword">in</span> requirements) {
+          DeLorean.Flux.define(requirement, requirements[requirement]);
+        }
+
         <span class="hljs-keyword">return</span> DeLorean;
       });
     } <span class="hljs-keyword">else</span> {

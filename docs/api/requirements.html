@@ -68,7 +68,8 @@ two dependencies now: <code>EventEmitter</code> and <code>Promise</code></p>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> requirements;
 
-<span class="hljs-built_in">module</span>.exports = requirements = {</pre></div></div>
+<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> !== <span class="hljs-string">'undefined'</span> &amp;&amp; <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span>.exports !== <span class="hljs-string">'undefined'</span>) {
+  <span class="hljs-built_in">module</span>.exports = requirements = {</pre></div></div>
             
         </li>
         
@@ -83,7 +84,7 @@ two dependencies now: <code>EventEmitter</code> and <code>Promise</code></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  EventEmitter: <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>).EventEmitter,</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    EventEmitter: <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>).EventEmitter,</pre></div></div>
             
         </li>
         
@@ -98,8 +99,12 @@ two dependencies now: <code>EventEmitter</code> and <code>Promise</code></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  Promise: <span class="hljs-built_in">require</span>(<span class="hljs-string">'es6-promise'</span>).Promise
-};</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    Promise: <span class="hljs-built_in">require</span>(<span class="hljs-string">'es6-promise'</span>).Promise
+  };
+} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
+  define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> </span>{
+    <span class="hljs-keyword">var</span> events = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>),
+        promise = <span class="hljs-built_in">require</span>(<span class="hljs-string">'es6-promise'</span>);</pre></div></div>
             
         </li>
         
@@ -110,9 +115,12 @@ two dependencies now: <code>EventEmitter</code> and <code>Promise</code></p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>It’s better you don’t change them if you really need to.</p>
+              <p>Return the module value - <a href="http://requirejs.org/docs/api.html#cjsmodule">http://requirejs.org/docs/api.html#cjsmodule</a>
+Using simplified wrapper</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">return</span> {</pre></div></div>
             
         </li>
         
@@ -123,13 +131,62 @@ two dependencies now: <code>EventEmitter</code> and <code>Promise</code></p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
+              <p>DeLorean uses <strong>Node.js native EventEmitter</strong> for event emittion</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      EventEmitter: <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>).EventEmitter,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>and <strong>es6-promise</strong> for Deferred object management.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      Promise: <span class="hljs-built_in">require</span>(<span class="hljs-string">'es6-promise'</span>).Promise
+    };
+  });
+} <span class="hljs-keyword">else</span> {
+  <span class="hljs-built_in">window</span>.DeLorean = DeLorean;
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>It’s better you don’t change them if you really need to.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
               <p>This library needs to work for Browserify and also standalone.
 If DeLorean is defined, it means it’s called from the browser, not
 the browserify.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> DeLorean !== <span class="hljs-string">'undefined'</span>) {
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> DeLorean !== <span class="hljs-string">'undefined'</span>) {
   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> requirement <span class="hljs-keyword">in</span> requirements) {
     DeLorean.Flux.define(requirement, requirements[requirement]);
   }

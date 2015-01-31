@@ -199,7 +199,7 @@ describe('Flux', function () {
       hello: null
     });
 
-    it('should not share state', function() {
+    it('should not share state', function () {
       var store1 = MyStore().store;
       store1.hello = 'world';
       expect(store1.hello).toEqual('world');

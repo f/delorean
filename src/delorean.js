@@ -46,7 +46,7 @@
 
   // `__clone` creates a deep copy of an object.
   function __clone(obj) {
-    if (null == obj || "object" != typeof obj) return obj;
+    if (obj === null || typeof obj !== 'object') { return obj; }
     var copy = obj.constructor();
     for (var attr in obj) {
       if (__hasOwn(obj, attr)) {
