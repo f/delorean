@@ -11,15 +11,14 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     // and **es6-promise** for Deferred object management.
     Promise: require('es6-promise').Promise
   };
-}
-else if (typeof define === 'function' && define.amd) {
-  define(function(require, exports, module) {
+} else if (typeof define === 'function' && define.amd) {
+  define(function (require, exports, module) {
     var events = require('events'),
         promise = require('es6-promise');
-  
+
     // Return the module value - http://requirejs.org/docs/api.html#cjsmodule
     // Using simplified wrapper
-    return { 
+    return {
       // DeLorean uses **Node.js native EventEmitter** for event emittion
       EventEmitter: require('events').EventEmitter,
       // and **es6-promise** for Deferred object management.
@@ -30,10 +29,7 @@ else if (typeof define === 'function' && define.amd) {
   window.DeLorean = DeLorean;
 }
 
-
-
 // It's better you don't change them if you really need to.
-
 
 // This library needs to work for Browserify and also standalone.
 // If DeLorean is defined, it means it's called from the browser, not

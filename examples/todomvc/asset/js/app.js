@@ -20570,7 +20570,7 @@ exports.now = now;
   function __findDispatcher(view) {
      // Provide a useful error message if no dispatcher is found in the chain
     if (view == null) {
-      throw 'No disaptcher found. The DeLoreanJS mixin requires a "dispatcher" property to be passed to a component, or one of it\'s ancestors.';
+      throw 'No dispatcher found. The DeLoreanJS mixin requires a "dispatcher" property to be passed to a component, or one of it\'s ancestors.';
     }
     /* `view` should be a component instance. If a component don't have
         any dispatcher, it tries to find a dispatcher from the parents. */

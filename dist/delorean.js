@@ -1,4 +1,4 @@
-/*! delorean - v0.8.7 - 2014-11-29 */
+/*! delorean - v0.8.7 - 2015-01-31 */
 (function (DeLorean) {
   'use strict';
 
@@ -35,7 +35,7 @@
   function __findDispatcher(view) {
      // Provide a useful error message if no dispatcher is found in the chain
     if (view == null) {
-      throw 'No disaptcher found. The DeLoreanJS mixin requires a "dispatcher" property to be passed to a component, or one of it\'s ancestors.';
+      throw 'No dispatcher found. The DeLoreanJS mixin requires a "dispatcher" property to be passed to a component, or one of it\'s ancestors.';
     }
     /* `view` should be a component instance. If a component don't have
         any dispatcher, it tries to find a dispatcher from the parents. */
@@ -43,6 +43,18 @@
       return __findDispatcher(view._owner);
     }
     return view.props.dispatcher;
+  }
+
+  // `__clone` creates a deep copy of an object.
+  function __clone(obj) {
+    if (obj === null || typeof obj !== 'object') { return obj; }
+    var copy = obj.constructor();
+    for (var attr in obj) {
+      if (__hasOwn(obj, attr)) {
+        copy[attr] = __clone(obj[attr]);
+      }
+    }
+    return copy;
   }
 
   // ## Dispatcher
@@ -224,7 +236,7 @@
       this.listener = new DeLorean.EventEmitter();
 
       /* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */
-      this.store = store;
+      this.store = __clone(store);
       this.bindActions();
       this.buildScheme();
 
@@ -322,7 +334,7 @@
         /* Set the defaults first */
         for (keyName in scheme) {
           definition = scheme[keyName];
-          this.store[keyName] = definition.default;
+          this.store[keyName] = __clone(definition.default);
         }
 
         /* Set the calculations */
@@ -639,7 +651,12 @@
   // to the `window`.
   } else {
     if (typeof define === 'function' && define.amd) {
-      define([], function () {
+      define(['./requirements.js'], function (requirements) {
+        // Import Modules in require.js pattern
+        for (var requirement in requirements) {
+          DeLorean.Flux.define(requirement, requirements[requirement]);
+        }
+
         return DeLorean;
       });
     } else {
@@ -1633,17 +1650,37 @@ process.chdir = function (dir) {
 // two dependencies now: `EventEmitter` and `Promise`
 var requirements;
 
-module.exports = requirements = {
-  // DeLorean uses **Node.js native EventEmitter** for event emittion
-  EventEmitter: require('events').EventEmitter,
-  // and **es6-promise** for Deferred object management.
-  Promise: require('es6-promise').Promise
-};
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = requirements = {
+    // DeLorean uses **Node.js native EventEmitter** for event emittion
+    EventEmitter: require('events').EventEmitter,
+    // and **es6-promise** for Deferred object management.
+    Promise: require('es6-promise').Promise
+  };
+} else if (typeof define === 'function' && define.amd) {
+  define(function (require, exports, module) {
+    var events = require('events'),
+        promise = require('es6-promise');
+
+    // Return the module value - http://requirejs.org/docs/api.html#cjsmodule
+    // Using simplified wrapper
+    return {
+      // DeLorean uses **Node.js native EventEmitter** for event emittion
+      EventEmitter: require('events').EventEmitter,
+      // and **es6-promise** for Deferred object management.
+      Promise: require('es6-promise').Promise
+    };
+  });
+} else {
+  window.DeLorean = DeLorean;
+}
+
 // It's better you don't change them if you really need to.
 
 // This library needs to work for Browserify and also standalone.
 // If DeLorean is defined, it means it's called from the browser, not
 // the browserify.
+
 if (typeof DeLorean !== 'undefined') {
   for (var requirement in requirements) {
     DeLorean.Flux.define(requirement, requirements[requirement]);
