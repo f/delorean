@@ -484,8 +484,8 @@
       /* Now call `registerAction` method for every action. */
       for (var actionName in actionsToDispatch) {
         if (__hasOwn(actionsToDispatch, actionName)) {
-          /* `getStores` & `viewTriggers` are special properties, it's not an action. */
-          if (actionName !== 'getStores' && actionName != 'viewTriggers') {
+          /* `getStores` & `viewTriggers` are special properties, it's not an action. Also an extra check to make sure we're binding to a function */
+          if (actionName !== 'getStores' && actionName !== 'viewTriggers' && typeof actionsToDispatch[actionName] === 'function') {
             callback = actionsToDispatch[actionName];
             dispatcher.registerAction(actionName, callback.bind(dispatcher));
           }
