@@ -268,7 +268,8 @@
       if (scheme && this.store.scheme[key]) {
         definition = scheme[key];
 
-        this.store[key] = value || definition.default;
+        // This will allow you to directly set falsy values before falling back to the definition default
+        this.store[key] = (typeof value !== 'undefined') ? value : definition.default;
 
         if (typeof definition.calculate === 'function') {
           this.store[__generateOriginalName(key)] = value;
