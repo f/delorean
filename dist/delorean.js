@@ -1,4 +1,4 @@
-/*! delorean - v0.8.7 - 2015-01-31 */
+/*! delorean - v0.8.7 - 2015-02-03 */
 (function (DeLorean) {
   'use strict';
 
@@ -269,7 +269,8 @@
       if (scheme && this.store.scheme[key]) {
         definition = scheme[key];
 
-        this.store[key] = value || definition.default;
+        // This will allow you to directly set falsy values before falling back to the definition default
+        this.store[key] = (typeof value !== 'undefined') ? value : definition.default;
 
         if (typeof definition.calculate === 'function') {
           this.store[__generateOriginalName(key)] = value;
@@ -484,8 +485,8 @@
       /* Now call `registerAction` method for every action. */
       for (var actionName in actionsToDispatch) {
         if (__hasOwn(actionsToDispatch, actionName)) {
-          /* `getStores` & `viewTriggers` are special properties, it's not an action. */
-          if (actionName !== 'getStores' && actionName != 'viewTriggers') {
+          /* `getStores` & `viewTriggers` are special properties, it's not an action. Also an extra check to make sure we're binding to a function */
+          if (actionName !== 'getStores' && actionName !== 'viewTriggers' && typeof actionsToDispatch[actionName] === 'function') {
             callback = actionsToDispatch[actionName];
             dispatcher.registerAction(actionName, callback.bind(dispatcher));
           }
