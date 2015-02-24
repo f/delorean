@@ -5,37 +5,39 @@ describe('Flux', function () {
   var listenerSpy2 = jasmine.createSpy('change');
   var calculateSpy = jasmine.createSpy('calculate');
 
-  var MyAppStore = DeLorean.Flux.createStore({
-    list: [],
+  var myStore = DeLorean.Flux.createStore({
+    state: {
+      list: []
+    },
     initialize: initializeSpy,
     actions: {
       // Remember the `dispatch('addItem')`
       addItem: 'addItemMethod'
     },
     addItemMethod: function (data) {
-      this.list.push('ITEM: ' + data.random);
+      this.state.list.push('ITEM: ' + data.random);
 
       // You need to say your store is changed.
       this.emit('change');
     }
   });
-  var myStore = new MyAppStore();
 
-  var MyAppStore2 = DeLorean.Flux.createStore({
-    list: [],
+  var myStore2 = DeLorean.Flux.createStore({
+    state: {
+      list: []
+    },
     initialize: initializeSpy,
     actions: {
       // Remember the `dispatch('addItem')`
       addItem: 'addItemMethod'
     },
     addItemMethod: function (data) {
-      this.list.push('ANOTHER: ' + data.random);
+      this.state.list.push('ANOTHER: ' + data.random);
 
       // You need to say your store is changed.
       this.emit('change');
     }
   });
-  var myStore2 = new MyAppStore2();
 
   var MyAppDispatcher = DeLorean.Flux.createDispatcher({
     addItem: function (data) {
@@ -71,15 +73,15 @@ describe('Flux', function () {
   });
 
   it('should change data', function () {
-    expect(myStore.store.list.length).toBe(1);
-    expect(myStore2.store.list.length).toBe(1);
+    expect(myStore.getState().list.length).toBe(1);
+    expect(myStore2.getState().list.length).toBe(1);
 
     ActionCreator.addItem();
-    expect(myStore.store.list.length).toBe(2);
-    expect(myStore2.store.list.length).toBe(2);
+    expect(myStore.getState().list.length).toBe(2);
+    expect(myStore2.getState().list.length).toBe(2);
 
-    expect(myStore.store.list[0]).toBe('ITEM: hello world');
-    expect(myStore2.store.list[0]).toBe('ANOTHER: hello world');
+    expect(myStore.getState().list[0]).toBe('ITEM: hello world');
+    expect(myStore2.getState().list[0]).toBe('ANOTHER: hello world');
   });
 
   it('dispatcher can listen events', function () {
@@ -99,7 +101,8 @@ describe('Flux', function () {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  MyStoreWithScheme = DeLorean.Flux.createStore({
+  var myStoreWithScheme = DeLorean.Flux.createStore({
+    actions: {},
     scheme: {
       greeting: 'hello',
       place: {
@@ -138,21 +141,21 @@ describe('Flux', function () {
       }
     }
   });
-  var myStoreWithScheme = new MyStoreWithScheme();
+
   describe('scheme', function () {
     it('should cause default and calculated scheme properties to be created on instantiation', function () {
-      expect(myStoreWithScheme.store.greeting).toBe('hello');
-      expect(myStoreWithScheme.store.place).toBe('world');
-      expect(myStoreWithScheme.store.greetPlace).toBe('HEY hello, world');
+      expect(myStoreWithScheme.getState().greeting).toBe('hello');
+      expect(myStoreWithScheme.getState().place).toBe('world');
+      expect(myStoreWithScheme.getState().greetPlace).toBe('HEY hello, world');
     });
 
     it('should clone defaults that are objects, rather than applying them direclty', function () {
-      expect(myStoreWithScheme.store.scheme.objectDefault.default).not.toBe(myStoreWithScheme.store.objectDefault);
+      expect(myStoreWithScheme.scheme.objectDefault.default).not.toBe(myStoreWithScheme.store.objectDefault);
     });
 
     it('should re-calculate scheme properties with #calculate and deps defined', function () {
       myStoreWithScheme.set('greeting', 'goodbye');
-      expect(myStoreWithScheme.store.greetPlace).toBe('HEY goodbye, world');
+      expect(myStoreWithScheme.getState().greetPlace).toBe('HEY goodbye, world');
     });
 
     it('should set scheme set scheme properties that are functions to the return value', function () {
@@ -161,7 +164,7 @@ describe('Flux', function () {
         b: 'b'
       };
       myStoreWithScheme.set('parsedValue', input);
-      expect(myStoreWithScheme.store.parsedValue.a).toBe(input.b);
+      expect(myStoreWithScheme.getState().parsedValue.a).toBe(input.b);
     });
 
     it('should be able to accept an object when setting scheme', function () {
@@ -169,9 +172,9 @@ describe('Flux', function () {
         greeting: 'aloha',
         place: 'Hawaii'
       });
-      expect(myStoreWithScheme.store.greeting).toBe('aloha');
-      expect(myStoreWithScheme.store.place).toBe('Hawaii');
-      expect(myStoreWithScheme.store.greetPlace).toBe('HEY aloha, Hawaii');
+      expect(myStoreWithScheme.getState().greeting).toBe('aloha');
+      expect(myStoreWithScheme.getState().place).toBe('Hawaii');
+      expect(myStoreWithScheme.getState().greetPlace).toBe('HEY aloha, Hawaii');
     });
 
     it('should call calculate only in instantiation and when a dependency is set', function () {
@@ -196,6 +199,7 @@ describe('Flux', function () {
 
   describe('multiple stores', function () {
     var MyStore = DeLorean.Flux.createStore({
+      actions: {},
       hello: null
     });
 
