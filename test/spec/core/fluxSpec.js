@@ -84,6 +84,11 @@ describe('Flux', function () {
     expect(myStore2.getState().list[0]).toBe('ANOTHER: hello world');
   });
 
+  it('should clear data', function () {
+    myStore.clearState();
+    expect(myStore.getState()).toBe({});
+  });
+
   it('dispatcher can listen events', function () {
     var spy = jasmine.createSpy('dispatcher listener');
     MyAppDispatcher.on('hello', spy);
