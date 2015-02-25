@@ -149,8 +149,8 @@ describe('Flux', function () {
       expect(myStoreWithScheme.getState().greetPlace).toBe('HEY hello, world');
     });
 
-    it('should clone defaults that are objects, rather than applying them direclty', function () {
-      expect(myStoreWithScheme.scheme.objectDefault.default).not.toBe(myStoreWithScheme.store.objectDefault);
+    it('should clone defaults that are objects, rather than applying them directly', function () {
+      expect(myStoreWithScheme.scheme.objectDefault.default).not.toBe(myStoreWithScheme.getState().objectDefault);
     });
 
     it('should re-calculate scheme properties with #calculate and deps defined', function () {
@@ -185,7 +185,7 @@ describe('Flux', function () {
 
     it('should allow setting calculated properties directly', function () {
       myStoreWithScheme.set('greetPlace', 'Ahoy');
-      expect(myStoreWithScheme.store.greetPlace).toBe('AHOY aloha, Hawaii');
+      expect(myStoreWithScheme.getState().greetPlace).toBe('AHOY aloha, Hawaii');
     });
 
     it('should allow a calculated property to be dependent on another calculated property', function () {
@@ -193,24 +193,7 @@ describe('Flux', function () {
         greeting: 'hola',
         place: 'Spain'
       });
-      expect(myStoreWithScheme.store.dependentOnCalculated).toBe('AHOY hola, Spain');
+      expect(myStoreWithScheme.getState().dependentOnCalculated).toBe('AHOY hola, Spain');
     });
   });
-
-  describe('multiple stores', function () {
-    var MyStore = DeLorean.Flux.createStore({
-      actions: {},
-      hello: null
-    });
-
-    it('should not share state', function () {
-      var store1 = MyStore().store;
-      store1.hello = 'world';
-      expect(store1.hello).toEqual('world');
-
-      var store2 = MyStore().store;
-      expect(store2.hello).toEqual(null);
-    });
-  });
-
 });

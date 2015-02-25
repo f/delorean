@@ -236,13 +236,17 @@
 
     // ### Store Prototype
     function Store(args) {
-      this.state = {};
+      if (!this.state) {
+        this.state = {};
+      }
 
       // `DeLorean.EventEmitter` is `require('events').EventEmitter` by default.
       // you can change it using `DeLorean.Flux.define('EventEmitter', AnotherEventEmitter)`
       this.listener = new DeLorean.EventEmitter();
       this.bindActions();
       this.buildScheme();
+
+      this.initialize.apply(this, arguments);
     }
 
     Store.prototype.initialize = function () {
@@ -336,7 +340,7 @@
       if (typeof this.scheme === 'object') {
         /* Scheme must be formatted to standardize the keys. */
         scheme = this.scheme = this.formatScheme(this.scheme);
-        dependencyMap = this.state.__dependencyMap = {};
+        dependencyMap = this.__dependencyMap = {};
 
         /* Set the defaults first */
         for (keyName in scheme) {
@@ -360,7 +364,7 @@
             }
 
             this.state[__generateOriginalName(keyName)] = definition.default;
-            this.state[keyName] = definition.calculate.call(this.state, definition.default);
+            this.state[keyName] = definition.calculate(definition.default);
             changedProps.push(keyName);
           }
         }
@@ -370,7 +374,7 @@
     };
 
     Store.prototype.recalculate = function (changedProps) {
-      var scheme = this.scheme, dependencyMap = this.state.__dependencyMap, didRun = [], definition, keyName, dependents, dep;
+      var scheme = this.scheme, dependencyMap = this.__dependencyMap, didRun = [], definition, keyName, dependents, dep;
       // Only iterate over the properties that just changed
       for (var i = 0; i < changedProps.length; i++) {
         dependents = dependencyMap[changedProps[i]];
@@ -467,17 +471,22 @@
   // ### Flux Wrapper
   DeLorean.Flux = {
 
-    // `createStore` generates a store
+    // `createStore` generates a store based on the definition
     createStore: function (definition) {
       /* store parameter must be an `object` */
       if (typeof definition !== 'object') {
         throw 'Stores should be defined by passing the definition to the constructor';
       }
 
-      var store = new Store();
-      __extend(store, definition);
-      store.initialize();
-      return store;
+      // extends the store with the definition attributes
+      var Child = function () { return Store.apply(this, arguments); };
+      var Surrogate = function () { this.constructor = Child; };
+      Surrogate.prototype = Store.prototype;
+      Child.prototype = new Surrogate();
+
+      __extend(Child.prototype, definition);
+
+      return new Child();
     },
 
     // `createDispatcher` generates a dispatcher with actions to dispatch.
@@ -630,9 +639,8 @@
             store = this.__watchStores[storeName].store;
             if (store && store.getState) {
               state.stores[storeName] = store.getState();
-            } else if (typeof store.scheme === 'object') {
-              var scheme = store.scheme;
-              for (var keyName in scheme) {
+            } else if (typeof this.scheme === 'object') {
+              for (var keyName in this.scheme) {
                 state.stores[storeName][keyName] = store[keyName];
               }
             }

@@ -3,14 +3,16 @@ describe('React Test', function () {
   var storeSpy = jasmine.createSpy('store spy');
   var storesSpy = jasmine.createSpy('stores spy');
 
-  var MyAppStore = DeLorean.Flux.createStore({
-    list: [],
+  var myStore = DeLorean.Flux.createStore({
+    state: {
+      list: []
+    },
     actions: {
       // Remember the `dispatch('addItem')`
       addItem: 'addItemMethod'
     },
     addItemMethod: function (data) {
-      this.list.push('ITEM: ' + data.random);
+      this.state.list.push('ITEM: ' + data.random);
 
       // You need to say your store is changed.
       this.emit('change');
@@ -19,16 +21,17 @@ describe('React Test', function () {
       return {list: this.list};
     }
   });
-  var myStore = new MyAppStore();
 
-  var MyAppStore2 = DeLorean.Flux.createStore({
-    list: [],
+  var myStore2 = DeLorean.Flux.createStore({
+    state: {
+      list: []
+    },
     actions: {
       // Remember the `dispatch('addItem')`
       addItem: 'addItemMethod'
     },
     addItemMethod: function (data) {
-      this.list.push('ANOTHER: ' + data.random);
+      this.state.list.push('ANOTHER: ' + data.random);
 
       // You need to say your store is changed.
       this.emit('change');
@@ -37,7 +40,6 @@ describe('React Test', function () {
       return {list: this.list};
     }
   });
-  var myStore2 = new MyAppStore2();
 
   var MyAppDispatcher = DeLorean.Flux.createDispatcher({
     addItem: function (data) {
@@ -82,8 +84,8 @@ describe('React Test', function () {
                                       document.getElementById('test'));
 
   it('dispatcher can get stores itself', function () {
-    expect(MyAppDispatcher.getStore('myStore')).toBe(myStore.store);
-    expect(MyAppDispatcher.getStore('myStore2')).toBe(myStore2.store);
+    expect(MyAppDispatcher.getStore('myStore')).toBe(myStore.getState());
+    expect(MyAppDispatcher.getStore('myStore2')).toBe(myStore2.getState());
   });
 
   it('should be no item before add', function () {
