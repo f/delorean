@@ -2,7 +2,7 @@
   "name": "delorean",
   "version": "0.8.7",
   "description": "Flux Library",
-  "main": "src/delorean.js",
+  "main": "dist/delorean.js",
   "scripts": {
     "test": "./node_modules/.bin/grunt karma"
   },
