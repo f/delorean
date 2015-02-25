@@ -409,7 +409,7 @@
       return this.state;
     };
 
-    Store.prototype.clear = function () {
+    Store.prototype.clearState = function () {
       this.state = {};
       return this;
     };

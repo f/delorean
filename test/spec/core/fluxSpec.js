@@ -86,7 +86,7 @@ describe('Flux', function () {
 
   it('should clear data', function () {
     myStore.clearState();
-    expect(myStore.getState()).toBe({});
+    expect(myStore.getState()).toEqual({});
   });
 
   it('dispatcher can listen events', function () {
