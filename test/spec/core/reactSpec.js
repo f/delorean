@@ -16,9 +16,6 @@ describe('React Test', function () {
 
       // You need to say your store is changed.
       this.emit('change');
-    },
-    getState: function () {
-      return {list: this.list};
     }
   });
 
@@ -35,9 +32,6 @@ describe('React Test', function () {
 
       // You need to say your store is changed.
       this.emit('change');
-    },
-    getState: function () {
-      return {list: this.list};
     }
   });
 

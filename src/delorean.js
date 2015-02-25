@@ -163,7 +163,7 @@
 
         for (var i in stores) {
           // Only generate promises for stores that ae listening for this action
-          if (stores[i].store.actions[actionName] != null) {
+          if (stores[i].actions && stores[i].actions[actionName] != null) {
             promise = __promiseGenerator(stores[i]);
             __promises.push(promise);
           }
@@ -204,7 +204,7 @@
       if (!this.stores[storeName]) {
         throw 'Store ' + storeName + ' does not exist.';
       }
-      return this.stores[storeName].store;
+      return this.stores[storeName].getState();
     };
 
     // ### Shortcuts
@@ -364,7 +364,7 @@
             }
 
             this.state[__generateOriginalName(keyName)] = definition.default;
-            this.state[keyName] = definition.calculate(definition.default);
+            this.state[keyName] = definition.calculate.call(this.state, definition.default);
             changedProps.push(keyName);
           }
         }
@@ -409,18 +409,15 @@
       return this.state;
     };
 
-    Store.prototype.emitChange = function () {
-      this.listener.emit('change');
-    };
-
-    Store.prototype.emitRollback = function () {
-      this.listener.emit('rollback');
-    };
-
     // Stores must have a `actions` hash of `actionName: methodName`
     // `methodName` is the `this.store`'s prototype method..
     Store.prototype.bindActions = function () {
       var callback;
+
+      this.emitChange = this.listener.emit.bind(this.listener, 'change');
+      this.emitRollback = this.listener.emit.bind(this.listener, 'rollback');
+      this.rollback = this.listener.on.bind(this.listener, '__rollback');
+      this.emit = this.listener.emit.bind(this.listener);
 
       for (var actionName in this.actions) {
         if (__hasOwn(this.actions, actionName)) {
@@ -635,15 +632,7 @@
         /* Set `state.stores` for all present stores with a `setState` method defined. */
         for (var storeName in this.__watchStores) {
           if (__hasOwn(this.stores, storeName)) {
-            state.stores[storeName] = {};
-            store = this.__watchStores[storeName].store;
-            if (store && store.getState) {
-              state.stores[storeName] = store.getState();
-            } else if (typeof this.scheme === 'object') {
-              for (var keyName in this.scheme) {
-                state.stores[storeName][keyName] = store[keyName];
-              }
-            }
+            state.stores[storeName] = this.__watchStores[storeName].getState();
           }
         }
         return state;
