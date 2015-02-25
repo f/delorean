@@ -164,7 +164,7 @@
 
         for (var i in stores) {
           // Only generate promises for stores that ae listening for this action
-          if (stores[i].store.actions[actionName] != null) {
+          if (stores[i].actions && stores[i].actions[actionName] != null) {
             promise = __promiseGenerator(stores[i]);
             __promises.push(promise);
           }
@@ -205,7 +205,7 @@
       if (!this.stores[storeName]) {
         throw 'Store ' + storeName + ' does not exist.';
       }
-      return this.stores[storeName].store;
+      return this.stores[storeName].getState();
     };
 
     // ### Shortcuts
@@ -237,13 +237,17 @@
 
     // ### Store Prototype
     function Store(args) {
-      this.state = {};
+      if (!this.state) {
+        this.state = {};
+      }
 
       // `DeLorean.EventEmitter` is `require('events').EventEmitter` by default.
       // you can change it using `DeLorean.Flux.define('EventEmitter', AnotherEventEmitter)`
       this.listener = new DeLorean.EventEmitter();
       this.bindActions();
       this.buildScheme();
+
+      this.initialize.apply(this, arguments);
     }
 
     Store.prototype.initialize = function () {
@@ -337,7 +341,7 @@
       if (typeof this.scheme === 'object') {
         /* Scheme must be formatted to standardize the keys. */
         scheme = this.scheme = this.formatScheme(this.scheme);
-        dependencyMap = this.state.__dependencyMap = {};
+        dependencyMap = this.__dependencyMap = {};
 
         /* Set the defaults first */
         for (keyName in scheme) {
@@ -371,7 +375,7 @@
     };
 
     Store.prototype.recalculate = function (changedProps) {
-      var scheme = this.scheme, dependencyMap = this.state.__dependencyMap, didRun = [], definition, keyName, dependents, dep;
+      var scheme = this.scheme, dependencyMap = this.__dependencyMap, didRun = [], definition, keyName, dependents, dep;
       // Only iterate over the properties that just changed
       for (var i = 0; i < changedProps.length; i++) {
         dependents = dependencyMap[changedProps[i]];
@@ -406,18 +410,20 @@
       return this.state;
     };
 
-    Store.prototype.emitChange = function () {
-      this.listener.emit('change');
-    };
-
-    Store.prototype.emitRollback = function () {
-      this.listener.emit('rollback');
+    Store.prototype.clearState = function () {
+      this.state = {};
+      return this;
     };
 
     // Stores must have a `actions` hash of `actionName: methodName`
     // `methodName` is the `this.store`'s prototype method..
     Store.prototype.bindActions = function () {
       var callback;
+
+      this.emitChange = this.listener.emit.bind(this.listener, 'change');
+      this.emitRollback = this.listener.emit.bind(this.listener, 'rollback');
+      this.rollback = this.listener.on.bind(this.listener, '__rollback');
+      this.emit = this.listener.emit.bind(this.listener);
 
       for (var actionName in this.actions) {
         if (__hasOwn(this.actions, actionName)) {
@@ -468,17 +474,22 @@
   // ### Flux Wrapper
   DeLorean.Flux = {
 
-    // `createStore` generates a store
+    // `createStore` generates a store based on the definition
     createStore: function (definition) {
       /* store parameter must be an `object` */
       if (typeof definition !== 'object') {
         throw 'Stores should be defined by passing the definition to the constructor';
       }
 
-      var store = new Store();
-      __extend(store, definition);
-      store.initialize();
-      return store;
+      // extends the store with the definition attributes
+      var Child = function () { return Store.apply(this, arguments); };
+      var Surrogate = function () { this.constructor = Child; };
+      Surrogate.prototype = Store.prototype;
+      Child.prototype = new Surrogate();
+
+      __extend(Child.prototype, definition);
+
+      return new Child();
     },
 
     // `createDispatcher` generates a dispatcher with actions to dispatch.
@@ -627,16 +638,7 @@
         /* Set `state.stores` for all present stores with a `setState` method defined. */
         for (var storeName in this.__watchStores) {
           if (__hasOwn(this.stores, storeName)) {
-            state.stores[storeName] = {};
-            store = this.__watchStores[storeName].store;
-            if (store && store.getState) {
-              state.stores[storeName] = store.getState();
-            } else if (typeof store.scheme === 'object') {
-              var scheme = store.scheme;
-              for (var keyName in scheme) {
-                state.stores[storeName][keyName] = store[keyName];
-              }
-            }
+            state.stores[storeName] = this.__watchStores[storeName].getState();
           }
         }
         return state;
