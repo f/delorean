@@ -118,7 +118,7 @@ describe('Flux', function () {
         deps: ['greeting', 'place'],
         default: 'hey',
         calculate: function (value) {
-          return value.toUpperCase() + ' ' + this.greeting + ', ' + this.place;
+          return value.toUpperCase() + ' ' + this.state.greeting + ', ' + this.state.place;
         }
       },
       parsedValue: function (value) {
@@ -136,7 +136,7 @@ describe('Flux', function () {
       dependentOnCalculated: {
         deps: ['greetPlace'],
         calculate: function () {
-          return this.greetPlace;
+          return this.state.greetPlace;
         }
       },
       objectDefault: {
