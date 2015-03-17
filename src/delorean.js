@@ -414,6 +414,12 @@
       return this;
     };
 
+    Store.prototype.resetState = function () {
+      this.buildScheme();
+      this.listener.emit('change');
+      return this;
+    };
+
     // Stores must have a `actions` hash of `actionName: methodName`
     // `methodName` is the `this.store`'s prototype method..
     Store.prototype.bindActions = function () {
