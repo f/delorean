@@ -1,8 +1,11 @@
 # DeLorean.js
 
-[![Build Status](https://travis-ci.org/deloreanjs/delorean.svg?branch=master)](https://travis-ci.org/deloreanjs/delorean)
- [![NPM version](https://badge.fury.io/js/delorean.js.svg)](http://badge.fury.io/js/delorean.js)
- ![Coverage](http://progressed.io/bar/84?title=coverage)
+[![Build Status](https://travis-ci.org/tommoor/delorean.svg?branch=master)](https://travis-ci.org/deloreanjs/delorean)
+
+This is my personal branch of DeLorean as there are several decisions in the core branch that I'm not a fan of. This includes stores as singletons and not mixing the store state with methods.
+
+
+### Introduction
 
 DeLorean is a tiny Flux pattern implementation.
 

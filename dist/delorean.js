@@ -1,4 +1,4 @@
-/*! delorean - v0.8.7 - 2015-02-03 */
+/*! delorean - v0.8.7 - 2015-02-24 */
 (function (DeLorean) {
   'use strict';
 
@@ -55,6 +55,17 @@
       }
     }
     return copy;
+  }
+
+  // `__extend` adds props to obj
+  function __extend(obj, props) {
+    props = __clone(props);
+    for (var prop in props) {
+      if (props.hasOwnProperty(prop)) {
+        obj[prop] = props[prop];
+      }
+    }
+    return obj;
   }
 
   // ## Dispatcher
@@ -153,7 +164,7 @@
 
         for (var i in stores) {
           // Only generate promises for stores that ae listening for this action
-          if (stores[i].store.actions[actionName] != null) {
+          if (stores[i].actions && stores[i].actions[actionName] != null) {
             promise = __promiseGenerator(stores[i]);
             __promises.push(promise);
           }
@@ -194,7 +205,7 @@
       if (!this.stores[storeName]) {
         throw 'Store ' + storeName + ' does not exist.';
       }
-      return this.stores[storeName].store;
+      return this.stores[storeName].getState();
     };
 
     // ### Shortcuts
@@ -225,29 +236,29 @@
   Store = (function () {
 
     // ### Store Prototype
-    function Store(store, args) {
-      /* store parameter must be an `object` */
-      if (typeof store !== 'object') {
-        throw 'Stores should be defined by passing the definition to the constructor';
+    function Store(args) {
+      if (!this.state) {
+        this.state = {};
       }
 
       // `DeLorean.EventEmitter` is `require('events').EventEmitter` by default.
       // you can change it using `DeLorean.Flux.define('EventEmitter', AnotherEventEmitter)`
       this.listener = new DeLorean.EventEmitter();
-
-      /* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */
-      this.store = __clone(store);
       this.bindActions();
       this.buildScheme();
 
-      // `initialize` is the construction function, you can define `initialize` method
-      // in your store definitions.
-      if (typeof store.initialize === 'function') {
-        store.initialize.apply(this.store, args);
-      }
+      this.initialize.apply(this, arguments);
     }
 
-     // `set` method updates the data defined at the `scheme` of the store.
+    Store.prototype.initialize = function () {
+
+    };
+
+    Store.prototype.get = function (arg) {
+      return this.state[arg];
+    };
+
+    // `set` method updates the data defined at the `scheme` of the store.
     Store.prototype.set = function (arg1, value) {
       var changedProps = [];
       if (typeof arg1 === 'object') {
@@ -260,21 +271,21 @@
         this.setValue(arg1, value);
       }
       this.recalculate(changedProps);
-      return this.store[arg1];
+      return this.state[arg1];
     };
 
     // `set` method updates the data defined at the `scheme` of the store.
     Store.prototype.setValue = function (key, value) {
-      var scheme = this.store.scheme, definition;
-      if (scheme && this.store.scheme[key]) {
+      var scheme = this.scheme, definition;
+      if (scheme && this.scheme[key]) {
         definition = scheme[key];
 
         // This will allow you to directly set falsy values before falling back to the definition default
-        this.store[key] = (typeof value !== 'undefined') ? value : definition.default;
+        this.state[key] = (typeof value !== 'undefined') ? value : definition.default;
 
         if (typeof definition.calculate === 'function') {
-          this.store[__generateOriginalName(key)] = value;
-          this.store[key] = definition.calculate.call(this.store, value);
+          this.state[__generateOriginalName(key)] = value;
+          this.state[key] = definition.calculate.call(this.state, value);
         }
       } else {
         // Scheme **must** include the key you wanted to set.
@@ -282,7 +293,7 @@
           console.warn('Scheme must include the key, ' + key + ', you are trying to set. ' + key + ' will NOT be set on the store.');
         }
       }
-      return this.store[key];
+      return this.state[key];
     };
 
     // Removes the scheme format and standardizes all the shortcuts.
@@ -327,15 +338,15 @@
     Store.prototype.buildScheme = function () {
       var scheme, calculatedData, keyName, definition, dependencyMap, dependents, dep, changedProps = [];
 
-      if (typeof this.store.scheme === 'object') {
+      if (typeof this.scheme === 'object') {
         /* Scheme must be formatted to standardize the keys. */
-        scheme = this.store.scheme = this.formatScheme(this.store.scheme);
-        dependencyMap = this.store.__dependencyMap = {};
+        scheme = this.scheme = this.formatScheme(this.scheme);
+        dependencyMap = this.__dependencyMap = {};
 
         /* Set the defaults first */
         for (keyName in scheme) {
           definition = scheme[keyName];
-          this.store[keyName] = __clone(definition.default);
+          this.state[keyName] = __clone(definition.default);
         }
 
         /* Set the calculations */
@@ -353,8 +364,8 @@
               dependencyMap[dep].push(keyName);
             }
 
-            this.store[__generateOriginalName(keyName)] = definition.default;
-            this.store[keyName] = definition.calculate.call(this.store, definition.default);
+            this.state[__generateOriginalName(keyName)] = definition.default;
+            this.state[keyName] = definition.calculate.call(this.state, definition.default);
             changedProps.push(keyName);
           }
         }
@@ -364,7 +375,7 @@
     };
 
     Store.prototype.recalculate = function (changedProps) {
-      var scheme = this.store.scheme, dependencyMap = this.store.__dependencyMap, didRun = [], definition, keyName, dependents, dep;
+      var scheme = this.scheme, dependencyMap = this.__dependencyMap, didRun = [], definition, keyName, dependents, dep;
       // Only iterate over the properties that just changed
       for (var i = 0; i < changedProps.length; i++) {
         dependents = dependencyMap[changedProps[i]];
@@ -381,8 +392,8 @@
           }
           // Calculate this value
           definition = scheme[dep];
-          this.store[dep] = definition.calculate.call(this.store,
-                                this.store[__generateOriginalName(dep)] || definition.default);
+          this.state[dep] = definition.calculate.call(this.state,
+                            this.state[__generateOriginalName(dep)] || definition.default);
 
           // Make sure this does not get calculated again in this change batch
           didRun.push(dep);
@@ -395,31 +406,33 @@
       this.listener.emit('change');
     };
 
-    // `bindActions` is semi-private method. You'll never need to call it from outside.
-    // It powers up the `this.store` object.
+    Store.prototype.getState = function () {
+      return this.state;
+    };
+
+    Store.prototype.clearState = function () {
+      this.state = {};
+      return this;
+    };
+
+    // Stores must have a `actions` hash of `actionName: methodName`
+    // `methodName` is the `this.store`'s prototype method..
     Store.prototype.bindActions = function () {
       var callback;
 
-      // Some required methods can be used in **store definition** like
-      // **`emit`**, **`emitChange`**, **`emitRollback`**, **`rollback`**, **`listenChanges`**
-      this.store.emit = this.listener.emit.bind(this.listener);
-      this.store.emitChange = this.listener.emit.bind(this.listener, 'change');
-      this.store.emitRollback = this.listener.emit.bind(this.listener, 'rollback');
-      this.store.rollback = this.listener.on.bind(this.listener, '__rollback');
-      this.store.listenChanges = this.listenChanges.bind(this);
-      this.store.set = this.set.bind(this);
+      this.emitChange = this.listener.emit.bind(this.listener, 'change');
+      this.emitRollback = this.listener.emit.bind(this.listener, 'rollback');
+      this.rollback = this.listener.on.bind(this.listener, '__rollback');
+      this.emit = this.listener.emit.bind(this.listener);
 
-      // Stores must have a `actions` hash of `actionName: methodName`
-      // `methodName` is the `this.store`'s prototype method..
-      for (var actionName in this.store.actions) {
-        if (__hasOwn(this.store.actions, actionName)) {
-          callback = this.store.actions[actionName];
-          if (typeof this.store[callback] !== 'function') {
+      for (var actionName in this.actions) {
+        if (__hasOwn(this.actions, actionName)) {
+          callback = this.actions[actionName];
+          if (typeof this[callback] !== 'function') {
             throw 'Callback \'' + callback + '\' defined for action \'' + actionName + '\' should be a method defined on the store!';
           }
           /* And `actionName` should be a name generated by `__generateActionName` */
-          this.listener.on(__generateActionName(actionName),
-                           this.store[callback].bind(this.store));
+          this.listener.on(__generateActionName(actionName), this[callback].bind(this));
         }
       }
     };
@@ -461,12 +474,22 @@
   // ### Flux Wrapper
   DeLorean.Flux = {
 
-    // `createStore` **creates a function to create a store**. So it's like
-    // a factory.
-    createStore: function (factoryDefinition) {
-      return function () {
-        return new Store(factoryDefinition, arguments);
-      };
+    // `createStore` generates a store based on the definition
+    createStore: function (definition) {
+      /* store parameter must be an `object` */
+      if (typeof definition !== 'object') {
+        throw 'Stores should be defined by passing the definition to the constructor';
+      }
+
+      // extends the store with the definition attributes
+      var Child = function () { return Store.apply(this, arguments); };
+      var Surrogate = function () { this.constructor = Child; };
+      Surrogate.prototype = Store.prototype;
+      Child.prototype = new Surrogate();
+
+      __extend(Child.prototype, definition);
+
+      return new Child();
     },
 
     // `createDispatcher` generates a dispatcher with actions to dispatch.
@@ -615,16 +638,7 @@
         /* Set `state.stores` for all present stores with a `setState` method defined. */
         for (var storeName in this.__watchStores) {
           if (__hasOwn(this.stores, storeName)) {
-            state.stores[storeName] = {};
-            store = this.__watchStores[storeName].store;
-            if (store && store.getState) {
-              state.stores[storeName] = store.getState();
-            } else if (typeof store.scheme === 'object') {
-              var scheme = store.scheme;
-              for (var keyName in scheme) {
-                state.stores[storeName][keyName] = store[keyName];
-              }
-            }
+            state.stores[storeName] = this.__watchStores[storeName].getState();
           }
         }
         return state;
