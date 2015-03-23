@@ -110,10 +110,12 @@
     }
 
     // `dispatch` method dispatch the event with `data` (or **payload**)
-    Dispatcher.prototype.dispatch = function (actionName, data) {
-      var self = this, stores, deferred;
-
-      this.listener.emit('dispatch', actionName, data);
+    Dispatcher.prototype.dispatch = function () {
+      var self = this, stores, deferred, args;
+      args = Array.prototype.slice.call(arguments);
+      
+      this.listener.emit.apply(this.listener, ['dispatch'].concat(args));
+      
       /* Stores are key-value pairs. Collect store instances into an array. */
       stores = (function () {
         var stores = [], store;
@@ -130,11 +132,11 @@
 
       // Store instances should wait for finish. So you can know if all the
       // stores are dispatched properly.
-      deferred = this.waitFor(stores, actionName);
+      deferred = this.waitFor(stores, args[0]);
 
       /* Payload should send to all related stores. */
       for (var storeName in self.stores) {
-        self.stores[storeName].dispatchAction(actionName, data);
+        self.stores[storeName].dispatchAction.apply(self.stores[storeName], args);
       }
 
       // `dispatch` returns deferred object you can just use **promise**
