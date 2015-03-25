@@ -1,4 +1,4 @@
-/*! delorean - v0.8.7 - 2015-02-24 */
+/*! delorean - v0.8.7 - 2015-03-24 */
 (function (DeLorean) {
   'use strict';
 
@@ -285,7 +285,7 @@
 
         if (typeof definition.calculate === 'function') {
           this.state[__generateOriginalName(key)] = value;
-          this.state[key] = definition.calculate.call(this.state, value);
+          this.state[key] = definition.calculate.call(this, value);
         }
       } else {
         // Scheme **must** include the key you wanted to set.
@@ -365,7 +365,7 @@
             }
 
             this.state[__generateOriginalName(keyName)] = definition.default;
-            this.state[keyName] = definition.calculate.call(this.state, definition.default);
+            this.state[keyName] = definition.calculate.call(this, definition.default);
             changedProps.push(keyName);
           }
         }
@@ -392,7 +392,7 @@
           }
           // Calculate this value
           definition = scheme[dep];
-          this.state[dep] = definition.calculate.call(this.state,
+          this.state[dep] = definition.calculate.call(this,
                             this.state[__generateOriginalName(dep)] || definition.default);
 
           // Make sure this does not get calculated again in this change batch
@@ -412,6 +412,12 @@
 
     Store.prototype.clearState = function () {
       this.state = {};
+      return this;
+    };
+
+    Store.prototype.resetState = function () {
+      this.buildScheme();
+      this.listener.emit('change');
       return this;
     };
 
