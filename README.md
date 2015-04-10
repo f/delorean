@@ -63,7 +63,7 @@ var Flux = DeLorean.Flux;
 
 ```javascript
 /*
- * Stores are simple data buckets which manages data.
+ * Stores are simple data buckets which manage data.
  */
 var Store = Flux.createStore({
   data: null,
