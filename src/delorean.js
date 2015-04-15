@@ -653,6 +653,13 @@
 
       // `getStore` is a shortcut to get the store from the state.
       getStore: function (storeName) {
+        if (console != null && typeof this.__watchStores[storeName] === 'undefined') {
+          var message;
+          message = 'Attempt to getStore ' + storeName + ' failed. ';
+          message += typeof this.stores[storeName] === 'undefined' ? 'It is not defined on the dispatcher. ' : 'It is not being watched by the component. '
+          message += this.constructor != null && this.constructor.displayName != null ? 'Check the ' + this.constructor.displayName + ' component.' : '';
+          console.warn(message);
+        }
         return this.state.stores[storeName];
       }
     }
