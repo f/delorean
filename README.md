@@ -20,10 +20,9 @@ You can learn Flux and DeLorean.js in minutes. [Read the tutorial](./docs/tutori
 
 ## Using with Frameworks
 
-  - [Try **React.js** example on JSFiddle](http://jsfiddle.net/fkadev/a2ms7rcc/)
-  - [Try **Flight.js** example on JSFiddle](http://jsfiddle.net/fkadev/1cw9Leau/)
-  - [Try **Ractive.js** example on JSFiddle](http://jsfiddle.net/PhilJ/2r1k2k90/2/)
-
+  - [Try **React.js** example on JSFiddle](http://jsfiddle.net/smadad/m2r0xo70/3/)
+  - [Try **Flight.js** example on JSFiddle](http://jsfiddle.net/smadad/hz9nahga/1/)
+  
 ---
 
 ## Install
