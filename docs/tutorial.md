@@ -8,7 +8,7 @@ First of all, let's create the DOM (view) we'll need.
 <!doctype html>
 <html>
   <head>
-    <script src="//rawgit.com/f/delorean/master/dist/delorean.min.js"></script>
+    <script src="https://cdn.rawgit.com/deloreanjs/delorean/master/dist/delorean.min.js"></script>
   </head>
   <body>
     <ul id="list"></ul>
