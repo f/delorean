@@ -4,8 +4,7 @@
 
 You bring all the flow together with the Views (or components), actually *the Action generators*.
 Use the **`Flux.mixins.storeListener`** mixin to get a component into the Flux system.
-Also pass `dispatcher={DispatcherName}` attribute to the *main* or *top level* React component. It will
-then pass the dispatcher to all the child component to which you have applied the `storeListener` mixin.
+All components to which you have applied the `storeListener` mixin will be able to access stores.
 
 ```js
 // Child components don't have to have the storeListener.
@@ -72,7 +71,7 @@ var TodoListView = React.createClass({
   
 In larger applications, it may become inefficient to watch all stores for changes. The `watchStores` property 
 is an array, defined on your component, containing the names of stores you want the component to watch for changes.
-This property is optional, and when omitted, all stores associated with the passed `dispatcher` will be watched. 
+This property is optional, and when omitted, all stores associated with the `dispatcher` will be watched. 
 Store name strings should match the keys of the stores returned in the `dispatchers`'s `getStores` method.
 
 
@@ -81,7 +80,7 @@ var TodoListView = React.createClass({
 
   mixins: [Flux.mixins.storeListener],
 
-  // Only watch the todoStore, omitting this property will watch all stores on passed dispatcher
+  // Only watch the todoStore, omitting this property will watch all stores on the dispatcher
   watchStores: ['todoStore'],
   
   ...
