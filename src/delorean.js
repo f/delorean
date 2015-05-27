@@ -32,16 +32,11 @@
 
   // `__findDispatcher` is a private function for **React components**.
   function __findDispatcher(view) {
-     // Provide a useful error message if no dispatcher is found in the chain
-    if (view == null) {
-      throw 'No dispatcher found. The DeLoreanJS mixin requires a "dispatcher" property to be passed to a component, or one of it\'s ancestors.';
+     // Provide a useful error message if no dispatcher is found
+    if (DeLorean.dispatcher == null) {
+      throw 'No dispatcher found. The DeLoreanJS mixin requires a "dispatcher" has been created using Flux.createDispatcher.';
     }
-    /* `view` should be a component instance. If a component don't have
-        any dispatcher, it tries to find a dispatcher from the parents. */
-    if (!view.props.dispatcher) {
-      return __findDispatcher(view._owner);
-    }
-    return view.props.dispatcher;
+    return DeLorean.dispatcher;
   }
 
   // `__clone` creates a deep copy of an object.
@@ -113,9 +108,9 @@
     Dispatcher.prototype.dispatch = function () {
       var self = this, stores, deferred, args;
       args = Array.prototype.slice.call(arguments);
-      
+
       this.listener.emit.apply(this.listener, ['dispatch'].concat(args));
-      
+
       /* Stores are key-value pairs. Collect store instances into an array. */
       stores = (function () {
         var stores = [], store;
@@ -536,6 +531,16 @@
         }
       }
 
+      // Allow only a single dispatcher
+      if (DeLorean.dispatcher != null) {
+        if (console != null) {
+          console.warn('You are attempting to create more than one dispatcher. DeLorean is intended to be used with a single dispatcher. This latest dispatcher created will overwrite any previous versions.');
+        }
+      }
+
+      // Create an internal reference to the dispathcer instance. This allows it to be found by the mixins.
+      DeLorean.dispatcher = dispatcher;
+
       return dispatcher;
     },
     // ### `DeLorean.Flux.define`
@@ -656,7 +661,7 @@
         if (console != null && typeof this.__watchStores[storeName] === 'undefined') {
           var message;
           message = 'Attempt to getStore ' + storeName + ' failed. ';
-          message += typeof this.stores[storeName] === 'undefined' ? 'It is not defined on the dispatcher. ' : 'It is not being watched by the component. '
+          message += typeof this.stores[storeName] === 'undefined' ? 'It is not defined on the dispatcher. ' : 'It is not being watched by the component. ';
           message += this.constructor != null && this.constructor.displayName != null ? 'Check the ' + this.constructor.displayName + ' component.' : '';
           console.warn(message);
         }

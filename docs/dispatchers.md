@@ -6,14 +6,10 @@ itself and provides a callback. When the dispatcher responds to an action,
 all stores in the application are sent the data payload provided by the
 action via the callbacks in the registry.
 
-When using the React mixin, you attach a component to a specific
-dispatcher's stores by passing the dispatcher instance as the `dispatcher` property
-to the top level component in the tree. Delorean will then search up the tree for
-dispatchers. This means that any component with the Flux React mixin applied,
-that is downstream from a component passed a `dispatcher` prop, will get the
-`state` of the dispatcher's stores. Small apps generally only require a single
-dispatcher, but it may be desirable to use multiple dispatchers in a larger app,
-each responsible for data flows in a different section or module.
+When using the React mixin, any component with the Flux React mixin applied, will get the `state` of the dispatcher's stores. In flux, the dispatcher is a singleton, and should be created when the page loads 
+with `Flux.createDispatcher` before calling `React.render`. Note: you can create multiple dispatchers
+with delorean, but as far as the mixin is concerned, the most recently created dispatcher is the one 
+and only.
 
 ## `Flux.createDispatcher`
 
