@@ -36,7 +36,6 @@
     if (DeLorean.dispatcher == null) {
       throw 'No dispatcher found. The DeLoreanJS mixin requires a "dispatcher" has been created using Flux.createDispatcher.';
     }
-    
     return DeLorean.dispatcher;
   }
 
@@ -109,9 +108,9 @@
     Dispatcher.prototype.dispatch = function () {
       var self = this, stores, deferred, args;
       args = Array.prototype.slice.call(arguments);
-      
+
       this.listener.emit.apply(this.listener, ['dispatch'].concat(args));
-      
+
       /* Stores are key-value pairs. Collect store instances into an array. */
       stores = (function () {
         var stores = [], store;
@@ -540,8 +539,8 @@
       }
 
       // Create an internal reference to the dispathcer instance. This allows it to be found by the mixins.
-      DeLorean.dispatcher = dispatcher
-      
+      DeLorean.dispatcher = dispatcher;
+
       return dispatcher;
     },
     // ### `DeLorean.Flux.define`
@@ -662,7 +661,7 @@
         if (console != null && typeof this.__watchStores[storeName] === 'undefined') {
           var message;
           message = 'Attempt to getStore ' + storeName + ' failed. ';
-          message += typeof this.stores[storeName] === 'undefined' ? 'It is not defined on the dispatcher. ' : 'It is not being watched by the component. '
+          message += typeof this.stores[storeName] === 'undefined' ? 'It is not defined on the dispatcher. ' : 'It is not being watched by the component. ';
           message += this.constructor != null && this.constructor.displayName != null ? 'Check the ' + this.constructor.displayName + ' component.' : '';
           console.warn(message);
         }
