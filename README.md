@@ -184,3 +184,5 @@ The **flux capacitor** was the core component of Doctor Emmett Brown's **DeLorea
  - [http://dailyjs.com/2014/08/19/delorean-cash/](http://dailyjs.com/2014/08/19/delorean-cash/)
  - [https://reactjsnews.com/the-state-of-flux/](https://reactjsnews.com/the-state-of-flux/)
  - [http://facebook.github.io/react/blog/2014/10/17/community-roundup-23.html](http://facebook.github.io/react/blog/2014/10/17/community-roundup-23.html)
+ - [https://scotch.io/tutorials/getting-to-know-flux-the-react-js-architecture](https://scotch.io/tutorials/getting-to-know-flux-the-react-js-architecture)
+ - [http://thewebplatform.libsyn.com/flux-application-architecture-react](http://thewebplatform.libsyn.com/flux-application-architecture-react)
