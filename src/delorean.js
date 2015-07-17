@@ -95,6 +95,7 @@
       var self = this;
       // `DeLorean.EventEmitter` is `require('events').EventEmitter` by default.
       // you can change it using `DeLorean.Flux.define('EventEmitter', AnotherEventEmitter)`
+      DeLorean.EventEmitter.defaultMaxListeners = 100;
       this.listener = new DeLorean.EventEmitter();
       this.stores = stores;
 
