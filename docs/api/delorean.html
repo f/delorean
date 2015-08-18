@@ -51,7 +51,7 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(DeLorean)</span> </span>{
+            <div class="content"><div class='highlight'><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">DeLorean</span>) </span>{
 <span class="hljs-pi">  'use strict'</span>;</pre></div></div>
             
         </li>
@@ -101,7 +101,7 @@ It’s better using two underscore at the beginning of the function.</p>
             
             <div class="content"><div class='highlight'><pre>
   <span class="hljs-comment">/* `__hasOwn` function is a shortcut for `Object#hasOwnProperty` */</span>
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__hasOwn</span><span class="hljs-params">(object, prop)</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__hasOwn</span>(<span class="hljs-params">object, prop</span>) </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.prototype.hasOwnProperty.call(object, prop);
   }</pre></div></div>
             
@@ -120,13 +120,13 @@ E.g. If you create an action with name <code>hello</code> it will be
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__generateActionName</span><span class="hljs-params">(name)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__generateActionName</span>(<span class="hljs-params">name</span>) </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-string">'action:'</span> + name;
   }
 
   <span class="hljs-comment">/* It's used by the schemes to save the original version (not calculated)
      of the data. */</span>
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__generateOriginalName</span><span class="hljs-params">(name)</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__generateOriginalName</span>(<span class="hljs-params">name</span>) </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-string">'original:'</span> + name;
   }</pre></div></div>
             
@@ -143,7 +143,7 @@ E.g. If you create an action with name <code>hello</code> it will be
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__findDispatcher</span><span class="hljs-params">(view)</span> </span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__findDispatcher</span>(<span class="hljs-params">view</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -154,19 +154,14 @@ E.g. If you create an action with name <code>hello</code> it will be
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Provide a useful error message if no dispatcher is found in the chain</p>
+              <p>Provide a useful error message if no dispatcher is found</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (view == <span class="hljs-literal">null</span>) {
-      <span class="hljs-keyword">throw</span> <span class="hljs-string">'No dispatcher found. The DeLoreanJS mixin requires a "dispatcher" property to be passed to a component, or one of it\'s ancestors.'</span>;
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (DeLorean.dispatcher == <span class="hljs-literal">null</span>) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-string">'No dispatcher found. The DeLoreanJS mixin requires a "dispatcher" has been created using Flux.createDispatcher.'</span>;
     }
-    <span class="hljs-comment">/* `view` should be a component instance. If a component don't have
-        any dispatcher, it tries to find a dispatcher from the parents. */</span>
-    <span class="hljs-keyword">if</span> (!view.props.dispatcher) {
-      <span class="hljs-keyword">return</span> __findDispatcher(view._owner);
-    }
-    <span class="hljs-keyword">return</span> view.props.dispatcher;
+    <span class="hljs-keyword">return</span> DeLorean.dispatcher;
   }</pre></div></div>
             
         </li>
@@ -182,7 +177,7 @@ E.g. If you create an action with name <code>hello</code> it will be
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__clone</span><span class="hljs-params">(obj)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__clone</span>(<span class="hljs-params">obj</span>) </span>{
     <span class="hljs-keyword">if</span> (obj === <span class="hljs-literal">null</span> || <span class="hljs-keyword">typeof</span> obj !== <span class="hljs-string">'object'</span>) { <span class="hljs-keyword">return</span> obj; }
     <span class="hljs-keyword">var</span> copy = obj.constructor();
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> attr <span class="hljs-keyword">in</span> obj) {
@@ -202,9 +197,19 @@ E.g. If you create an action with name <code>hello</code> it will be
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <h2 id="dispatcher">Dispatcher</h2>
+              <p><code>__extend</code> adds props to obj</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__extend</span>(<span class="hljs-params">obj, props</span>) </span>{
+    props = __clone(props);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> prop <span class="hljs-keyword">in</span> props) {
+      <span class="hljs-keyword">if</span> (props.hasOwnProperty(prop)) {
+        obj[prop] = props[prop];
+      }
+    }
+    <span class="hljs-keyword">return</span> obj;
+  }</pre></div></div>
             
         </li>
         
@@ -215,15 +220,9 @@ E.g. If you create an action with name <code>hello</code> it will be
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>The dispatcher is <strong>the central hub</strong> that <strong>manages all data flow</strong> in
-a Flux application. It is essentially a <em>registry of callbacks into the
-stores</em>. Each store registers itself and provides a callback. When the
-dispatcher responds to an action, all stores in the application are sent
-the data payload provided by the action via the callbacks in the registry.</p>
+              <h2 id="dispatcher">Dispatcher</h2>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>  Dispatcher = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{</pre></div></div>
             
         </li>
         
@@ -234,9 +233,15 @@ the data payload provided by the action via the callbacks in the registry.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <h3 id="dispatcher-helpers">Dispatcher Helpers</h3>
+              <p>The dispatcher is <strong>the central hub</strong> that <strong>manages all data flow</strong> in
+a Flux application. It is essentially a <em>registry of callbacks into the
+stores</em>. Each store registers itself and provides a callback. When the
+dispatcher responds to an action, all stores in the application are sent
+the data payload provided by the action via the callbacks in the registry.</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>  Dispatcher = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{</pre></div></div>
             
         </li>
         
@@ -247,14 +252,27 @@ the data payload provided by the action via the callbacks in the registry.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
+              <h3 id="dispatcher-helpers">Dispatcher Helpers</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
               <p>Rollback listener adds a <code>rollback</code> event listener to the bunch of
 stores.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__rollbackListener</span><span class="hljs-params">(stores)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__rollbackListener</span>(<span class="hljs-params">stores</span>) </span>{
 
-      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__listener</span><span class="hljs-params">()</span> </span>{
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__listener</span>(<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> stores) {
           stores[i].listener.emit(<span class="hljs-string">'__rollback'</span>);
         }
@@ -270,41 +288,18 @@ stores.</p>
         </li>
         
         
-        <li id="section-13">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
-              </div>
-              <h3 id="dispatcher-prototype">Dispatcher Prototype</h3>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Dispatcher</span><span class="hljs-params">(stores)</span> </span>{
-      <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;</pre></div></div>
-            
-        </li>
-        
-        
         <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p><code>DeLorean.EventEmitter</code> is <code>require(&#39;events&#39;).EventEmitter</code> by default.
-you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, AnotherEventEmitter)</code></p>
+              <h3 id="dispatcher-prototype">Dispatcher Prototype</h3>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.listener = <span class="hljs-keyword">new</span> DeLorean.EventEmitter();
-      <span class="hljs-keyword">this</span>.stores = stores;
-
-      <span class="hljs-comment">/* Stores should be listened for rollback events. */</span>
-      __rollbackListener(<span class="hljs-built_in">Object</span>.keys(stores).map(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key)</span> </span>{
-        <span class="hljs-keyword">return</span> stores[key];
-      }));
-    }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Dispatcher</span>(<span class="hljs-params">stores</span>) </span>{
+      <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;</pre></div></div>
             
         </li>
         
@@ -315,16 +310,42 @@ you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, Anoth
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
+              <p><code>DeLorean.EventEmitter</code> is <code>require(&#39;events&#39;).EventEmitter</code> by default.
+you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, AnotherEventEmitter)</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      DeLorean.EventEmitter.defaultMaxListeners = <span class="hljs-number">100</span>;
+      <span class="hljs-keyword">this</span>.listener = <span class="hljs-keyword">new</span> DeLorean.EventEmitter();
+      <span class="hljs-keyword">this</span>.stores = stores;
+
+      <span class="hljs-comment">/* Stores should be listened for rollback events. */</span>
+      __rollbackListener(<span class="hljs-built_in">Object</span>.keys(stores).map(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">key</span>) </span>{
+        <span class="hljs-keyword">return</span> stores[key];
+      }));
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
               <p><code>dispatch</code> method dispatch the event with <code>data</code> (or <strong>payload</strong>)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.dispatch = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(actionName, data)</span> </span>{
-      <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>, stores, deferred;
+            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.dispatch = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>, stores, deferred, args;
+      args = <span class="hljs-built_in">Array</span>.prototype.slice.call(<span class="hljs-built_in">arguments</span>);
 
-      <span class="hljs-keyword">this</span>.listener.emit(<span class="hljs-string">'dispatch'</span>, actionName, data);
+      <span class="hljs-keyword">this</span>.listener.emit.apply(<span class="hljs-keyword">this</span>.listener, [<span class="hljs-string">'dispatch'</span>].concat(args));
+
       <span class="hljs-comment">/* Stores are key-value pairs. Collect store instances into an array. */</span>
-      stores = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+      stores = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">var</span> stores = [], store;
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> storeName <span class="hljs-keyword">in</span> self.stores) {
           store = self.stores[storeName];
@@ -340,32 +361,32 @@ you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, Anoth
         </li>
         
         
-        <li id="section-16">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>Store instances should wait for finish. So you can know if all the
 stores are dispatched properly.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      deferred = <span class="hljs-keyword">this</span>.waitFor(stores, actionName);
+            <div class="content"><div class='highlight'><pre>      deferred = <span class="hljs-keyword">this</span>.waitFor(stores, args[<span class="hljs-number">0</span>]);
 
       <span class="hljs-comment">/* Payload should send to all related stores. */</span>
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> storeName <span class="hljs-keyword">in</span> self.stores) {
-        self.stores[storeName].dispatchAction(actionName, data);
+        self.stores[storeName].dispatchAction.apply(self.stores[storeName], args);
       }</pre></div></div>
             
         </li>
         
         
-        <li id="section-17">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p><code>dispatch</code> returns deferred object you can just use <strong>promise</strong>
 for dispatching: <code>dispatch(..).then(..)</code>.</p>
@@ -378,11 +399,11 @@ for dispatching: <code>dispatch(..).then(..)</code>.</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p><code>waitFor</code> is actually a <em>semi-private</em> method. Because it’s kind of internal
 and you don’t need to call it from outside most of the times. It takes
@@ -391,35 +412,14 @@ a promise and return it. <em>Whenever store changes, it resolves the promise</em
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.waitFor = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(stores, actionName)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.waitFor = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">stores, actionName</span>) </span>{
       <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>, promises;
-      promises = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+      promises = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">var</span> __promises = [], promise;
 
         <span class="hljs-comment">/* `__promiseGenerator` generates a simple promise that resolves itself when
             related store is changed. */</span>
-        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__promiseGenerator</span><span class="hljs-params">(store)</span> </span>{</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-19">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
-              </div>
-              <p><code>DeLorean.Promise</code> is <code>require(&#39;es6-promise&#39;).Promise</code> by default.
-you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPromise)</code></p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DeLorean.Promise(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(resolve, reject)</span> </span>{
-            store.listener.once(<span class="hljs-string">'change'</span>, resolve);
-          });
-        }
-
-        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> stores) {</pre></div></div>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__promiseGenerator</span>(<span class="hljs-params">store</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -430,17 +430,17 @@ you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPro
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
-              <p>Only generate promises for stores that ae listening for this action</p>
+              <p><code>DeLorean.Promise</code> is <code>require(&#39;es6-promise&#39;).Promise</code> by default.
+you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPromise)</code></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> (stores[i].store.actions[actionName] != <span class="hljs-literal">null</span>) {
-            promise = __promiseGenerator(stores[i]);
-            __promises.push(promise);
-          }
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DeLorean.Promise(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve, reject</span>) </span>{
+            store.listener.once(<span class="hljs-string">'change'</span>, resolve);
+          });
         }
-        <span class="hljs-keyword">return</span> __promises;
-      }());</pre></div></div>
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> stores) {</pre></div></div>
             
         </li>
         
@@ -451,14 +451,17 @@ you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPro
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
-              <p>When all the promises are resolved, dispatcher emits <code>change:all</code> event.</p>
+              <p>Only generate promises for stores that ae listening for this action</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">return</span> DeLorean.Promise.all(promises).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
-        self.listener.emit(<span class="hljs-string">'change:all'</span>);
-      });
-    };</pre></div></div>
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> (stores[i].actions &amp;&amp; stores[i].actions[actionName] != <span class="hljs-literal">null</span>) {
+            promise = __promiseGenerator(stores[i]);
+            __promises.push(promise);
+          }
+        }
+        <span class="hljs-keyword">return</span> __promises;
+      }());</pre></div></div>
             
         </li>
         
@@ -469,18 +472,13 @@ you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPro
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <p><code>registerAction</code> method adds a method to the prototype. So you can just use
-<code>dispatcherInstance.actionName()</code>.</p>
+              <p>When all the promises are resolved, dispatcher emits <code>change:all</code> event.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.registerAction = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(action, callback)</span> </span>{
-      <span class="hljs-comment">/* The callback must be a function. */</span>
-      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> callback === <span class="hljs-string">'function'</span>) {
-        <span class="hljs-keyword">this</span>[action] = callback.bind(<span class="hljs-keyword">this</span>.stores);
-      } <span class="hljs-keyword">else</span> {
-        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Action callback should be a function.'</span>;
-      }
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">return</span> DeLorean.Promise.all(promises).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        self.listener.emit(<span class="hljs-string">'change:all'</span>);
+      });
     };</pre></div></div>
             
         </li>
@@ -492,16 +490,17 @@ you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPro
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
-              <p><code>register</code> method adds an global action callback to the dispatcher.</p>
+              <p><code>registerAction</code> method adds a method to the prototype. So you can just use
+<code>dispatcherInstance.actionName()</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.register = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(callback)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.registerAction = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">action, callback</span>) </span>{
       <span class="hljs-comment">/* The callback must be a function. */</span>
       <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> callback === <span class="hljs-string">'function'</span>) {
-        <span class="hljs-keyword">this</span>.listener.on(<span class="hljs-string">'dispatch'</span>, callback);
+        <span class="hljs-keyword">this</span>[action] = callback.bind(<span class="hljs-keyword">this</span>.stores);
       } <span class="hljs-keyword">else</span> {
-        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Global callback should be a function.'</span>;
+        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Action callback should be a function.'</span>;
       }
     };</pre></div></div>
             
@@ -514,17 +513,17 @@ you can change it using <code>DeLorean.Flux.define(&#39;Promise&#39;, AnotherPro
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
-              <p><code>getStore</code> returns the store from stores hash.
-You can also use <code>dispatcherInstance.stores[storeName]</code> but
-it checks if the store really exists.</p>
+              <p><code>register</code> method adds an global action callback to the dispatcher.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.getStore = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(storeName)</span> </span>{
-      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.stores[storeName]) {
-        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Store '</span> + storeName + <span class="hljs-string">' does not exist.'</span>;
+            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.register = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">callback</span>) </span>{
+      <span class="hljs-comment">/* The callback must be a function. */</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> callback === <span class="hljs-string">'function'</span>) {
+        <span class="hljs-keyword">this</span>.listener.on(<span class="hljs-string">'dispatch'</span>, callback);
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Global callback should be a function.'</span>;
       }
-      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.stores[storeName].store;
     };</pre></div></div>
             
         </li>
@@ -536,25 +535,18 @@ it checks if the store really exists.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
-              <h3 id="shortcuts">Shortcuts</h3>
+              <p><code>getStore</code> returns the store from stores hash.
+You can also use <code>dispatcherInstance.stores[storeName]</code> but
+it checks if the store really exists.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>
-    Dispatcher.prototype.on = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
-      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.listener.on.apply(<span class="hljs-keyword">this</span>.listener, <span class="hljs-built_in">arguments</span>);
-    };
-
-    Dispatcher.prototype.off = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
-      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.listener.removeListener.apply(<span class="hljs-keyword">this</span>.listener, <span class="hljs-built_in">arguments</span>);
-    };
-
-    Dispatcher.prototype.emit = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
-      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.listener.emit.apply(<span class="hljs-keyword">this</span>.listener, <span class="hljs-built_in">arguments</span>);
-    };
-
-    <span class="hljs-keyword">return</span> Dispatcher;
-  }());</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    Dispatcher.prototype.getStore = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">storeName</span>) </span>{
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.stores[storeName]) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Store '</span> + storeName + <span class="hljs-string">' does not exist.'</span>;
+      }
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.stores[storeName].getState();
+    };</pre></div></div>
             
         </li>
         
@@ -565,9 +557,25 @@ it checks if the store really exists.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
-              <h2 id="store">Store</h2>
+              <h3 id="shortcuts">Shortcuts</h3>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>
+    Dispatcher.prototype.on = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.listener.on.apply(<span class="hljs-keyword">this</span>.listener, <span class="hljs-built_in">arguments</span>);
+    };
+
+    Dispatcher.prototype.off = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.listener.removeListener.apply(<span class="hljs-keyword">this</span>.listener, <span class="hljs-built_in">arguments</span>);
+    };
+
+    Dispatcher.prototype.emit = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.listener.emit.apply(<span class="hljs-keyword">this</span>.listener, <span class="hljs-built_in">arguments</span>);
+    };
+
+    <span class="hljs-keyword">return</span> Dispatcher;
+  }());</pre></div></div>
             
         </li>
         
@@ -578,16 +586,9 @@ it checks if the store really exists.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
-              <p>Stores contain the application state and logic. Their role is somewhat similar
-to a model in a traditional MVC, but they manage the state of many objects.
-Unlike MVC models, they are not instances of one object, nor are they the
-same as Backbone’s collections. More than simply managing a collection of
-ORM-style objects, stores manage the application state for a particular
-domain within the application.</p>
+              <h2 id="store">Store</h2>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>  Store = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{</pre></div></div>
             
         </li>
         
@@ -598,15 +599,16 @@ domain within the application.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
-              <h3 id="store-prototype">Store Prototype</h3>
+              <p>Stores contain the application state and logic. Their role is somewhat similar
+to a model in a traditional MVC, but they manage the state of many objects.
+Unlike MVC models, they are not instances of one object, nor are they the
+same as Backbone’s collections. More than simply managing a collection of
+ORM-style objects, stores manage the application state for a particular
+domain within the application.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Store</span><span class="hljs-params">(store, args)</span> </span>{
-      <span class="hljs-comment">/* store parameter must be an `object` */</span>
-      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> store !== <span class="hljs-string">'object'</span>) {
-        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Stores should be defined by passing the definition to the constructor'</span>;
-      }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  Store = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{</pre></div></div>
             
         </li>
         
@@ -617,17 +619,14 @@ domain within the application.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
-              <p><code>DeLorean.EventEmitter</code> is <code>require(&#39;events&#39;).EventEmitter</code> by default.
-you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, AnotherEventEmitter)</code></p>
+              <h3 id="store-prototype">Store Prototype</h3>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.listener = <span class="hljs-keyword">new</span> DeLorean.EventEmitter();
-
-      <span class="hljs-comment">/* Store is _hygenic_ object. DeLorean doesn't extend it, it uses it. */</span>
-      <span class="hljs-keyword">this</span>.store = __clone(store);
-      <span class="hljs-keyword">this</span>.bindActions();
-      <span class="hljs-keyword">this</span>.buildScheme();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Store</span>(<span class="hljs-params">args</span>) </span>{
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.state) {
+        <span class="hljs-keyword">this</span>.state = {};
+      }</pre></div></div>
             
         </li>
         
@@ -638,15 +637,25 @@ you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, Anoth
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
-              <p><code>initialize</code> is the construction function, you can define <code>initialize</code> method
-in your store definitions.</p>
+              <p><code>DeLorean.EventEmitter</code> is <code>require(&#39;events&#39;).EventEmitter</code> by default.
+you can change it using <code>DeLorean.Flux.define(&#39;EventEmitter&#39;, AnotherEventEmitter)</code></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> store.initialize === <span class="hljs-string">'function'</span>) {
-        store.initialize.apply(<span class="hljs-keyword">this</span>.store, args);
-      }
-    }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.listener = <span class="hljs-keyword">new</span> DeLorean.EventEmitter();
+      <span class="hljs-keyword">this</span>.bindActions();
+      <span class="hljs-keyword">this</span>.buildScheme();
+
+      <span class="hljs-keyword">this</span>.initialize.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+    }
+
+    Store.prototype.initialize = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+    };
+
+    Store.prototype.get = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">arg</span>) </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.state[arg];
+    };</pre></div></div>
             
         </li>
         
@@ -661,7 +670,7 @@ in your store definitions.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Store.prototype.set = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(arg1, value)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    Store.prototype.set = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">arg1, value</span>) </span>{
       <span class="hljs-keyword">var</span> changedProps = [];
       <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> arg1 === <span class="hljs-string">'object'</span>) {
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> keyName <span class="hljs-keyword">in</span> arg1) {
@@ -673,7 +682,7 @@ in your store definitions.</p>
         <span class="hljs-keyword">this</span>.setValue(arg1, value);
       }
       <span class="hljs-keyword">this</span>.recalculate(changedProps);
-      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.store[arg1];
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.state[arg1];
     };</pre></div></div>
             
         </li>
@@ -689,18 +698,10 @@ in your store definitions.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Store.prototype.setValue = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key, value)</span> </span>{
-      <span class="hljs-keyword">var</span> scheme = <span class="hljs-keyword">this</span>.store.scheme, definition;
-      <span class="hljs-keyword">if</span> (scheme &amp;&amp; <span class="hljs-keyword">this</span>.store.scheme[key]) {
-        definition = scheme[key];
-
-        <span class="hljs-keyword">this</span>.store[key] = value || definition.default;
-
-        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> definition.calculate === <span class="hljs-string">'function'</span>) {
-          <span class="hljs-keyword">this</span>.store[__generateOriginalName(key)] = value;
-          <span class="hljs-keyword">this</span>.store[key] = definition.calculate.call(<span class="hljs-keyword">this</span>.store, value);
-        }
-      } <span class="hljs-keyword">else</span> {</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    Store.prototype.setValue = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">key, value</span>) </span>{
+      <span class="hljs-keyword">var</span> scheme = <span class="hljs-keyword">this</span>.scheme, definition;
+      <span class="hljs-keyword">if</span> (scheme &amp;&amp; <span class="hljs-keyword">this</span>.scheme[key]) {
+        definition = scheme[key];</pre></div></div>
             
         </li>
         
@@ -711,16 +712,17 @@ in your store definitions.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
-              <p>Scheme <strong>must</strong> include the key you wanted to set.</p>
+              <p>This will allow you to directly set falsy values before falling back to the definition default</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">console</span> != <span class="hljs-literal">null</span>) {
-          <span class="hljs-built_in">console</span>.warn(<span class="hljs-string">'Scheme must include the key, '</span> + key + <span class="hljs-string">', you are trying to set. '</span> + key + <span class="hljs-string">' will NOT be set on the store.'</span>);
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.state[key] = (<span class="hljs-keyword">typeof</span> value !== <span class="hljs-string">'undefined'</span>) ? value : definition.default;
+
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> definition.calculate === <span class="hljs-string">'function'</span>) {
+          <span class="hljs-keyword">this</span>.state[__generateOriginalName(key)] = value;
+          <span class="hljs-keyword">this</span>.state[key] = definition.calculate.call(<span class="hljs-keyword">this</span>, value);
         }
-      }
-      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.store[key];
-    };</pre></div></div>
+      } <span class="hljs-keyword">else</span> {</pre></div></div>
             
         </li>
         
@@ -731,6 +733,26 @@ in your store definitions.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
+              <p>Scheme <strong>must</strong> include the key you wanted to set.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">console</span> != <span class="hljs-literal">null</span>) {
+          <span class="hljs-built_in">console</span>.warn(<span class="hljs-string">'Scheme must include the key, '</span> + key + <span class="hljs-string">', you are trying to set. '</span> + key + <span class="hljs-string">' will NOT be set on the store.'</span>);
+        }
+      }
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.state[key];
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
               <p>Removes the scheme format and standardizes all the shortcuts.
 If you run <code>formatScheme({name: &#39;joe&#39;})</code> it will return you
 <code>{name: {default: &#39;joe&#39;}}</code>. Also if you run <code>formatScheme({fullname: function () {}})</code>
@@ -738,7 +760,7 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Store.prototype.formatScheme = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(scheme)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    Store.prototype.formatScheme = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">scheme</span>) </span>{
       <span class="hljs-keyword">var</span> formattedScheme = {}, definition, defaultValue, calculatedValue;
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> keyName <span class="hljs-keyword">in</span> scheme) {
         definition = scheme[keyName];
@@ -773,18 +795,18 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
     };
 
     <span class="hljs-comment">/* Applying `scheme` to the store if exists. */</span>
-    Store.prototype.buildScheme = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    Store.prototype.buildScheme = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
       <span class="hljs-keyword">var</span> scheme, calculatedData, keyName, definition, dependencyMap, dependents, dep, changedProps = [];
 
-      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-keyword">this</span>.store.scheme === <span class="hljs-string">'object'</span>) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-keyword">this</span>.scheme === <span class="hljs-string">'object'</span>) {
         <span class="hljs-comment">/* Scheme must be formatted to standardize the keys. */</span>
-        scheme = <span class="hljs-keyword">this</span>.store.scheme = <span class="hljs-keyword">this</span>.formatScheme(<span class="hljs-keyword">this</span>.store.scheme);
-        dependencyMap = <span class="hljs-keyword">this</span>.store.__dependencyMap = {};
+        scheme = <span class="hljs-keyword">this</span>.scheme = <span class="hljs-keyword">this</span>.formatScheme(<span class="hljs-keyword">this</span>.scheme);
+        dependencyMap = <span class="hljs-keyword">this</span>.__dependencyMap = {};
 
         <span class="hljs-comment">/* Set the defaults first */</span>
         <span class="hljs-keyword">for</span> (keyName <span class="hljs-keyword">in</span> scheme) {
           definition = scheme[keyName];
-          <span class="hljs-keyword">this</span>.store[keyName] = __clone(definition.default);
+          <span class="hljs-keyword">this</span>.state[keyName] = __clone(definition.default);
         }
 
         <span class="hljs-comment">/* Set the calculations */</span>
@@ -795,11 +817,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>Create a dependency map - {keyName: [arrayOfKeysThatDependOnIt]}</p>
 
@@ -815,31 +837,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
               dependencyMap[dep].push(keyName);
             }
 
-            <span class="hljs-keyword">this</span>.store[__generateOriginalName(keyName)] = definition.default;
-            <span class="hljs-keyword">this</span>.store[keyName] = definition.calculate.call(<span class="hljs-keyword">this</span>.store, definition.default);
+            <span class="hljs-keyword">this</span>.state[__generateOriginalName(keyName)] = definition.default;
+            <span class="hljs-keyword">this</span>.state[keyName] = definition.calculate.call(<span class="hljs-keyword">this</span>, definition.default);
             changedProps.push(keyName);
           }
         }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-36">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
-              </div>
-              <p>Recalculate any properties dependent on those that were just set</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.recalculate(changedProps);
-      }
-    };
-
-    Store.prototype.recalculate = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(changedProps)</span> </span>{
-      <span class="hljs-keyword">var</span> scheme = <span class="hljs-keyword">this</span>.store.scheme, dependencyMap = <span class="hljs-keyword">this</span>.store.__dependencyMap, didRun = [], definition, keyName, dependents, dep;</pre></div></div>
             
         </li>
         
@@ -849,6 +851,26 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>Recalculate any properties dependent on those that were just set</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.recalculate(changedProps);
+      }
+    };
+
+    Store.prototype.recalculate = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">changedProps</span>) </span>{
+      <span class="hljs-keyword">var</span> scheme = <span class="hljs-keyword">this</span>.scheme, dependencyMap = <span class="hljs-keyword">this</span>.__dependencyMap, didRun = [], definition, keyName, dependents, dep;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>Only iterate over the properties that just changed</p>
 
@@ -860,11 +882,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>If there are no properties dependent on this property, do nothing</p>
 
@@ -877,11 +899,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-39">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>Iterate over the dependendent properties</p>
 
@@ -893,11 +915,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-40">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-40">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <p>Do nothing if this value has already been recalculated on this change batch</p>
 
@@ -910,28 +932,28 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-41">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-41">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <p>Calculate this value</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>          definition = scheme[dep];
-          <span class="hljs-keyword">this</span>.store[dep] = definition.calculate.call(<span class="hljs-keyword">this</span>.store,
-                                <span class="hljs-keyword">this</span>.store[__generateOriginalName(dep)] || definition.default);</pre></div></div>
+          <span class="hljs-keyword">this</span>.state[dep] = definition.calculate.call(<span class="hljs-keyword">this</span>,
+                            <span class="hljs-keyword">this</span>.state[__generateOriginalName(dep)] || definition.default);</pre></div></div>
             
         </li>
         
         
-        <li id="section-42">
+        <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-42">&#182;</a>
+                <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
               <p>Make sure this does not get calculated again in this change batch</p>
 
@@ -944,11 +966,11 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         </li>
         
         
-        <li id="section-43">
+        <li id="section-44">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-43">&#182;</a>
+                <a class="pilcrow" href="#section-44">&#182;</a>
               </div>
               <p>Update Any deps on the deps</p>
 
@@ -958,24 +980,22 @@ it will return <code>{fullname: {calculate: function () {}}}</code>.</p>
         <span class="hljs-keyword">this</span>.recalculate(didRun);
       }
       <span class="hljs-keyword">this</span>.listener.emit(<span class="hljs-string">'change'</span>);
-    };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-44">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-44">&#182;</a>
-              </div>
-              <p><code>bindActions</code> is semi-private method. You’ll never need to call it from outside.
-It powers up the <code>this.store</code> object.</p>
+    };
 
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    Store.prototype.bindActions = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
-      <span class="hljs-keyword">var</span> callback;</pre></div></div>
+    Store.prototype.getState = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.state;
+    };
+
+    Store.prototype.clearState = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">this</span>.state = {};
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    };
+
+    Store.prototype.resetState = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">this</span>.buildScheme();
+      <span class="hljs-keyword">this</span>.listener.emit(<span class="hljs-string">'change'</span>);
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    };</pre></div></div>
             
         </li>
         
@@ -986,17 +1006,30 @@ It powers up the <code>this.store</code> object.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
-              <p>Some required methods can be used in <strong>store definition</strong> like
-<strong><code>emit</code></strong>, <strong><code>emitChange</code></strong>, <strong><code>emitRollback</code></strong>, <strong><code>rollback</code></strong>, <strong><code>listenChanges</code></strong></p>
+              <p>Stores must have a <code>actions</code> hash of <code>actionName: methodName</code>
+<code>methodName</code> is the <code>this.store</code>‘s prototype method..</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.store.emit = <span class="hljs-keyword">this</span>.listener.emit.bind(<span class="hljs-keyword">this</span>.listener);
-      <span class="hljs-keyword">this</span>.store.emitChange = <span class="hljs-keyword">this</span>.listener.emit.bind(<span class="hljs-keyword">this</span>.listener, <span class="hljs-string">'change'</span>);
-      <span class="hljs-keyword">this</span>.store.emitRollback = <span class="hljs-keyword">this</span>.listener.emit.bind(<span class="hljs-keyword">this</span>.listener, <span class="hljs-string">'rollback'</span>);
-      <span class="hljs-keyword">this</span>.store.rollback = <span class="hljs-keyword">this</span>.listener.on.bind(<span class="hljs-keyword">this</span>.listener, <span class="hljs-string">'__rollback'</span>);
-      <span class="hljs-keyword">this</span>.store.listenChanges = <span class="hljs-keyword">this</span>.listenChanges.bind(<span class="hljs-keyword">this</span>);
-      <span class="hljs-keyword">this</span>.store.set = <span class="hljs-keyword">this</span>.set.bind(<span class="hljs-keyword">this</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    Store.prototype.bindActions = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">var</span> callback;
+
+      <span class="hljs-keyword">this</span>.emitChange = <span class="hljs-keyword">this</span>.listener.emit.bind(<span class="hljs-keyword">this</span>.listener, <span class="hljs-string">'change'</span>);
+      <span class="hljs-keyword">this</span>.emitRollback = <span class="hljs-keyword">this</span>.listener.emit.bind(<span class="hljs-keyword">this</span>.listener, <span class="hljs-string">'rollback'</span>);
+      <span class="hljs-keyword">this</span>.rollback = <span class="hljs-keyword">this</span>.listener.on.bind(<span class="hljs-keyword">this</span>.listener, <span class="hljs-string">'__rollback'</span>);
+      <span class="hljs-keyword">this</span>.emit = <span class="hljs-keyword">this</span>.listener.emit.bind(<span class="hljs-keyword">this</span>.listener);
+
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> actionName <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>.actions) {
+        <span class="hljs-keyword">if</span> (__hasOwn(<span class="hljs-keyword">this</span>.actions, actionName)) {
+          callback = <span class="hljs-keyword">this</span>.actions[actionName];
+          <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-keyword">this</span>[callback] !== <span class="hljs-string">'function'</span>) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-string">'Callback \''</span> + callback + <span class="hljs-string">'\' defined for action \''</span> + actionName + <span class="hljs-string">'\' should be a method defined on the store!'</span>;
+          }
+          <span class="hljs-comment">/* And `actionName` should be a name generated by `__generateActionName` */</span>
+          <span class="hljs-keyword">this</span>.listener.on(__generateActionName(actionName), <span class="hljs-keyword">this</span>[callback].bind(<span class="hljs-keyword">this</span>));
+        }
+      }
+    };</pre></div></div>
             
         </li>
         
@@ -1007,22 +1040,13 @@ It powers up the <code>this.store</code> object.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-46">&#182;</a>
               </div>
-              <p>Stores must have a <code>actions</code> hash of <code>actionName: methodName</code>
-<code>methodName</code> is the <code>this.store</code>‘s prototype method..</p>
+              <p><code>dispatchAction</code> called from a dispatcher. You can also call anywhere but
+you probably won’t need to do. It simply <strong>emits an event with a payload</strong>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> actionName <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>.store.actions) {
-        <span class="hljs-keyword">if</span> (__hasOwn(<span class="hljs-keyword">this</span>.store.actions, actionName)) {
-          callback = <span class="hljs-keyword">this</span>.store.actions[actionName];
-          <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-keyword">this</span>.store[callback] !== <span class="hljs-string">'function'</span>) {
-            <span class="hljs-keyword">throw</span> <span class="hljs-string">'Callback \''</span> + callback + <span class="hljs-string">'\' defined for action \''</span> + actionName + <span class="hljs-string">'\' should be a method defined on the store!'</span>;
-          }
-          <span class="hljs-comment">/* And `actionName` should be a name generated by `__generateActionName` */</span>
-          <span class="hljs-keyword">this</span>.listener.on(__generateActionName(actionName),
-                           <span class="hljs-keyword">this</span>.store[callback].bind(<span class="hljs-keyword">this</span>.store));
-        }
-      }
+            <div class="content"><div class='highlight'><pre>    Store.prototype.dispatchAction = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">actionName, data</span>) </span>{
+      <span class="hljs-keyword">this</span>.listener.emit(__generateActionName(actionName), data);
     };</pre></div></div>
             
         </li>
@@ -1034,14 +1058,9 @@ It powers up the <code>this.store</code> object.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
-              <p><code>dispatchAction</code> called from a dispatcher. You can also call anywhere but
-you probably won’t need to do. It simply <strong>emits an event with a payload</strong>.</p>
+              <h3 id="shortcuts">Shortcuts</h3>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>    Store.prototype.dispatchAction = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(actionName, data)</span> </span>{
-      <span class="hljs-keyword">this</span>.listener.emit(__generateActionName(actionName), data);
-    };</pre></div></div>
             
         </li>
         
@@ -1052,9 +1071,25 @@ you probably won’t need to do. It simply <strong>emits an event with a payload
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-48">&#182;</a>
               </div>
-              <h3 id="shortcuts">Shortcuts</h3>
+              <p><code>listenChanges</code> is a shortcut for <code>Object.observe</code> usage. You can just use
+<code>Object.observe(object, function () { ... })</code> but everytime you use it you
+repeat yourself. DeLorean has a shortcut doing this properly.</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>    Store.prototype.listenChanges = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">object</span>) </span>{
+      <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>, observer;
+      <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">Object</span>.observe) {
+        <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Store#listenChanges method uses Object.observe, you should fire changes manually.'</span>);
+        <span class="hljs-keyword">return</span>;
+      }
+
+      observer = <span class="hljs-built_in">Array</span>.isArray(object) ? <span class="hljs-built_in">Array</span>.observe : <span class="hljs-built_in">Object</span>.observe;
+
+      observer(object, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">changes</span>) </span>{
+        self.listener.emit(<span class="hljs-string">'change'</span>, changes);
+      });
+    };</pre></div></div>
             
         </li>
         
@@ -1065,25 +1100,17 @@ you probably won’t need to do. It simply <strong>emits an event with a payload
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-49">&#182;</a>
               </div>
-              <p><code>listenChanges</code> is a shortcut for <code>Object.observe</code> usage. You can just use
-<code>Object.observe(object, function () { ... })</code> but everytime you use it you
-repeat yourself. DeLorean has a shortcut doing this properly.</p>
+              <p><code>onChange</code> simply listens changes and calls a callback. Shortcut for
+a <code>on(&#39;change&#39;)</code> command.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Store.prototype.listenChanges = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(object)</span> </span>{
-      <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>, observer;
-      <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">Object</span>.observe) {
-        <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Store#listenChanges method uses Object.observe, you should fire changes manually.'</span>);
-        <span class="hljs-keyword">return</span>;
-      }
+            <div class="content"><div class='highlight'><pre>    Store.prototype.onChange = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">callback</span>) </span>{
+      <span class="hljs-keyword">this</span>.listener.on(<span class="hljs-string">'change'</span>, callback);
+    };
 
-      observer = <span class="hljs-built_in">Array</span>.isArray(object) ? <span class="hljs-built_in">Array</span>.observe : <span class="hljs-built_in">Object</span>.observe;
-
-      observer(object, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(changes)</span> </span>{
-        self.listener.emit(<span class="hljs-string">'change'</span>, changes);
-      });
-    };</pre></div></div>
+    <span class="hljs-keyword">return</span> Store;
+  }());</pre></div></div>
             
         </li>
         
@@ -1094,17 +1121,11 @@ repeat yourself. DeLorean has a shortcut doing this properly.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-50">&#182;</a>
               </div>
-              <p><code>onChange</code> simply listens changes and calls a callback. Shortcut for
-a <code>on(&#39;change&#39;)</code> command.</p>
+              <h3 id="flux-wrapper">Flux Wrapper</h3>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Store.prototype.onChange = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(callback)</span> </span>{
-      <span class="hljs-keyword">this</span>.listener.on(<span class="hljs-string">'change'</span>, callback);
-    };
-
-    <span class="hljs-keyword">return</span> Store;
-  }());</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  DeLorean.Flux = {</pre></div></div>
             
         </li>
         
@@ -1115,11 +1136,15 @@ a <code>on(&#39;change&#39;)</code> command.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-51">&#182;</a>
               </div>
-              <h3 id="flux-wrapper">Flux Wrapper</h3>
+              <p><code>createStore</code> generates a store based on the definition</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  DeLorean.Flux = {</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    createStore: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">definition</span>) </span>{
+      <span class="hljs-comment">/* store parameter must be an `object` */</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> definition !== <span class="hljs-string">'object'</span>) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Stores should be defined by passing the definition to the constructor'</span>;
+      }</pre></div></div>
             
         </li>
         
@@ -1130,15 +1155,18 @@ a <code>on(&#39;change&#39;)</code> command.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-52">&#182;</a>
               </div>
-              <p><code>createStore</code> <strong>creates a function to create a store</strong>. So it’s like
-a factory.</p>
+              <p>extends the store with the definition attributes</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    createStore: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(factoryDefinition)</span> </span>{
-      <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Store(factoryDefinition, <span class="hljs-built_in">arguments</span>);
-      };
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> Child = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> Store.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>); };
+      <span class="hljs-keyword">var</span> Surrogate = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">this</span>.constructor = Child; };
+      Surrogate.prototype = Store.prototype;
+      Child.prototype = <span class="hljs-keyword">new</span> Surrogate();
+
+      __extend(Child.prototype, definition);
+
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Child();
     },</pre></div></div>
             
         </li>
@@ -1155,7 +1183,7 @@ a factory.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-comment">/* `actionsToDispatch` should be an object. */</span>
-    createDispatcher: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(actionsToDispatch)</span> </span>{
+    createDispatcher: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">actionsToDispatch</span>) </span>{
       <span class="hljs-keyword">var</span> actionsOfStores, dispatcher, callback, triggers, triggerMethod;</pre></div></div>
             
         </li>
@@ -1181,8 +1209,8 @@ a factory.</p>
       <span class="hljs-comment">/* Now call `registerAction` method for every action. */</span>
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> actionName <span class="hljs-keyword">in</span> actionsToDispatch) {
         <span class="hljs-keyword">if</span> (__hasOwn(actionsToDispatch, actionName)) {
-          <span class="hljs-comment">/* `getStores` &amp; `viewTriggers` are special properties, it's not an action. */</span>
-          <span class="hljs-keyword">if</span> (actionName !== <span class="hljs-string">'getStores'</span> &amp;&amp; actionName != <span class="hljs-string">'viewTriggers'</span>) {
+          <span class="hljs-comment">/* `getStores` &amp; `viewTriggers` are special properties, it's not an action. Also an extra check to make sure we're binding to a function */</span>
+          <span class="hljs-keyword">if</span> (actionName !== <span class="hljs-string">'getStores'</span> &amp;&amp; actionName !== <span class="hljs-string">'viewTriggers'</span> &amp;&amp; <span class="hljs-keyword">typeof</span> actionsToDispatch[actionName] === <span class="hljs-string">'function'</span>) {
             callback = actionsToDispatch[actionName];
             dispatcher.registerAction(actionName, callback.bind(dispatcher));
           }
@@ -1200,10 +1228,7 @@ a factory.</p>
             <span class="hljs-built_in">console</span>.warn(triggerMethod + <span class="hljs-string">' should be a method defined on your dispatcher. The '</span> + triggerName + <span class="hljs-string">' trigger will not be bound to any method.'</span>);
           }
         }
-      }
-
-      <span class="hljs-keyword">return</span> dispatcher;
-    },</pre></div></div>
+      }</pre></div></div>
             
         </li>
         
@@ -1214,16 +1239,15 @@ a factory.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-55">&#182;</a>
               </div>
-              <h3 id="-delorean-flux-define-"><code>DeLorean.Flux.define</code></h3>
-<p>It’s a key to <em>hack</em> DeLorean easily. You can just inject something
-you want to define.</p>
+              <p>Allow only a single dispatcher</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    define: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key, value)</span> </span>{
-      DeLorean[key] = value;
-    }
-  };</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (DeLorean.dispatcher != <span class="hljs-literal">null</span>) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">console</span> != <span class="hljs-literal">null</span>) {
+          <span class="hljs-built_in">console</span>.warn(<span class="hljs-string">'You are attempting to create more than one dispatcher. DeLorean is intended to be used with a single dispatcher. This latest dispatcher created will overwrite any previous versions.'</span>);
+        }
+      }</pre></div></div>
             
         </li>
         
@@ -1233,6 +1257,44 @@ you want to define.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-56">&#182;</a>
+              </div>
+              <p>Create an internal reference to the dispathcer instance. This allows it to be found by the mixins.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      DeLorean.dispatcher = dispatcher;
+
+      <span class="hljs-keyword">return</span> dispatcher;
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-57">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-57">&#182;</a>
+              </div>
+              <h3 id="-delorean-flux-define-"><code>DeLorean.Flux.define</code></h3>
+<p>It’s a key to <em>hack</em> DeLorean easily. You can just inject something
+you want to define.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    define: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">key, value</span>) </span>{
+      DeLorean[key] = value;
+    }
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-58">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-58">&#182;</a>
               </div>
               <p>Store and Dispatcher are the only base classes of DeLorean.</p>
 
@@ -1244,11 +1306,11 @@ you want to define.</p>
         </li>
         
         
-        <li id="section-57">
+        <li id="section-59">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-57">&#182;</a>
+                <a class="pilcrow" href="#section-59">&#182;</a>
               </div>
               <h2 id="built-in-react-mixin">Built-in React Mixin</h2>
 
@@ -1259,11 +1321,11 @@ you want to define.</p>
         </li>
         
         
-        <li id="section-58">
+        <li id="section-60">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-58">&#182;</a>
+                <a class="pilcrow" href="#section-60">&#182;</a>
               </div>
               <p>It should be inserted to the React components which
 used in Flux.
@@ -1273,29 +1335,29 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
             
             <div class="content"><div class='highlight'><pre>    storeListener: {
 
-      trigger: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+      trigger: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">this</span>.__dispatcher.emit.apply(<span class="hljs-keyword">this</span>.__dispatcher, <span class="hljs-built_in">arguments</span>);
       },</pre></div></div>
             
         </li>
         
         
-        <li id="section-59">
+        <li id="section-61">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-59">&#182;</a>
+                <a class="pilcrow" href="#section-61">&#182;</a>
               </div>
               <p>After the component mounted, listen changes of the related stores</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      componentDidMount: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>      componentDidMount: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>, store, storeName;
 
         <span class="hljs-comment">/* `__changeHandler` is a **listener generator** to pass to the `onChange` function. */</span>
-        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__changeHandler</span><span class="hljs-params">(store, storeName)</span> </span>{
-          <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__changeHandler</span>(<span class="hljs-params">store, storeName</span>) </span>{
+          <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
             <span class="hljs-keyword">var</span> state, args;
             <span class="hljs-comment">/* If the component is mounted, change state. */</span>
             <span class="hljs-keyword">if</span> (self.isMounted()) {
@@ -1305,11 +1367,11 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
         </li>
         
         
-        <li id="section-60">
+        <li id="section-62">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-60">&#182;</a>
+                <a class="pilcrow" href="#section-62">&#182;</a>
               </div>
               <p>When something changes it calls the components <code>storeDidChanged</code> method if exists.</p>
 
@@ -1325,11 +1387,11 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
         </li>
         
         
-        <li id="section-61">
+        <li id="section-63">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-61">&#182;</a>
+                <a class="pilcrow" href="#section-63">&#182;</a>
               </div>
               <p>Remember the change handlers so they can be removed later</p>
 
@@ -1350,17 +1412,17 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
         </li>
         
         
-        <li id="section-62">
+        <li id="section-64">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-62">&#182;</a>
+                <a class="pilcrow" href="#section-64">&#182;</a>
               </div>
               <p>When a component unmounted, it should stop listening.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      componentWillUnmount: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>      componentWillUnmount: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> storeName <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>.__changeHandlers) {
           <span class="hljs-keyword">if</span> (__hasOwn(<span class="hljs-keyword">this</span>.stores, storeName)) {
             <span class="hljs-keyword">var</span> store = <span class="hljs-keyword">this</span>.stores[storeName];
@@ -1369,7 +1431,7 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
         }
       },
 
-      getInitialState: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+      getInitialState: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>, state, storeName;
 
         <span class="hljs-comment">/* The dispatcher should be easy to access and it should use `__findDispatcher`
@@ -1379,11 +1441,11 @@ Simply <code>mixin: [Flux.mixins.storeListener]</code> will work.</p>
         </li>
         
         
-        <li id="section-63">
+        <li id="section-65">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-63">&#182;</a>
+                <a class="pilcrow" href="#section-65">&#182;</a>
               </div>
               <p>If <code>storesDidChange</code> method presents, it’ll be called after all the stores
 were changed.</p>
@@ -1391,7 +1453,7 @@ were changed.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.storesDidChange) {
-          <span class="hljs-keyword">this</span>.__dispatcher.on(<span class="hljs-string">'change:all'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+          <span class="hljs-keyword">this</span>.__dispatcher.on(<span class="hljs-string">'change:all'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
             self.storesDidChange();
           });
         }</pre></div></div>
@@ -1399,11 +1461,11 @@ were changed.</p>
         </li>
         
         
-        <li id="section-64">
+        <li id="section-66">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-64">&#182;</a>
+                <a class="pilcrow" href="#section-66">&#182;</a>
               </div>
               <p>Since <code>dispatcher.stores</code> is harder to write, there’s a shortcut for it.
 You can use <code>this.stores</code> from the React component.</p>
@@ -1428,22 +1490,13 @@ You can use <code>this.stores</code> from the React component.</p>
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.getStoreStates();
       },
 
-      getStoreStates: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+      getStoreStates: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">var</span> state = {stores: {}}, store;
 
         <span class="hljs-comment">/* Set `state.stores` for all present stores with a `setState` method defined. */</span>
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> storeName <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>.__watchStores) {
           <span class="hljs-keyword">if</span> (__hasOwn(<span class="hljs-keyword">this</span>.stores, storeName)) {
-            state.stores[storeName] = {};
-            store = <span class="hljs-keyword">this</span>.__watchStores[storeName].store;
-            <span class="hljs-keyword">if</span> (store &amp;&amp; store.getState) {
-              state.stores[storeName] = store.getState();
-            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> store.scheme === <span class="hljs-string">'object'</span>) {
-              <span class="hljs-keyword">var</span> scheme = store.scheme;
-              <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> keyName <span class="hljs-keyword">in</span> scheme) {
-                state.stores[storeName][keyName] = store[keyName];
-              }
-            }
+            state.stores[storeName] = <span class="hljs-keyword">this</span>.__watchStores[storeName].getState();
           }
         }
         <span class="hljs-keyword">return</span> state;
@@ -1452,17 +1505,24 @@ You can use <code>this.stores</code> from the React component.</p>
         </li>
         
         
-        <li id="section-65">
+        <li id="section-67">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-65">&#182;</a>
+                <a class="pilcrow" href="#section-67">&#182;</a>
               </div>
               <p><code>getStore</code> is a shortcut to get the store from the state.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      getStore: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(storeName)</span> </span>{
+            <div class="content"><div class='highlight'><pre>      getStore: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">storeName</span>) </span>{
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">console</span> != <span class="hljs-literal">null</span> &amp;&amp; <span class="hljs-keyword">typeof</span> <span class="hljs-keyword">this</span>.__watchStores[storeName] === <span class="hljs-string">'undefined'</span>) {
+          <span class="hljs-keyword">var</span> message;
+          message = <span class="hljs-string">'Attempt to getStore '</span> + storeName + <span class="hljs-string">' failed. '</span>;
+          message += <span class="hljs-keyword">typeof</span> <span class="hljs-keyword">this</span>.stores[storeName] === <span class="hljs-string">'undefined'</span> ? <span class="hljs-string">'It is not defined on the dispatcher. '</span> : <span class="hljs-string">'It is not being watched by the component. '</span>;
+          message += <span class="hljs-keyword">this</span>.constructor != <span class="hljs-literal">null</span> &amp;&amp; <span class="hljs-keyword">this</span>.constructor.displayName != <span class="hljs-literal">null</span> ? <span class="hljs-string">'Check the '</span> + <span class="hljs-keyword">this</span>.constructor.displayName + <span class="hljs-string">' component.'</span> : <span class="hljs-string">''</span>;
+          <span class="hljs-built_in">console</span>.warn(message);
+        }
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.state.stores[storeName];
       }
     }
@@ -1471,11 +1531,11 @@ You can use <code>this.stores</code> from the React component.</p>
         </li>
         
         
-        <li id="section-66">
+        <li id="section-68">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-66">&#182;</a>
+                <a class="pilcrow" href="#section-68">&#182;</a>
               </div>
               <h2 id="delorean-api">DeLorean API</h2>
 <p>DeLorean can be used in <strong>CommonJS</strong> projects.</p>
@@ -1493,11 +1553,11 @@ You can use <code>this.stores</code> from the React component.</p>
         </li>
         
         
-        <li id="section-67">
+        <li id="section-69">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-67">&#182;</a>
+                <a class="pilcrow" href="#section-69">&#182;</a>
               </div>
               <p>It can be also used in <strong>AMD</strong> projects, too.
 And if there is no module system initialized, just pass the DeLorean
@@ -1507,16 +1567,16 @@ to the <code>window</code>.</p>
             
             <div class="content"><div class='highlight'><pre>  } <span class="hljs-keyword">else</span> {
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
-      define([<span class="hljs-string">'./requirements.js'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(requirements)</span> </span>{</pre></div></div>
+      define([<span class="hljs-string">'./requirements.js'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">requirements</span>) </span>{</pre></div></div>
             
         </li>
         
         
-        <li id="section-68">
+        <li id="section-70">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-68">&#182;</a>
+                <a class="pilcrow" href="#section-70">&#182;</a>
               </div>
               <p>Import Modules in require.js pattern</p>
 

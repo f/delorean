@@ -1,4 +1,4 @@
-/*! delorean - v0.8.7 - 2015-05-27 */
+/*! delorean - v0.9.4 - 2015-08-18 */
 (function (DeLorean) {
   'use strict';
 
@@ -96,6 +96,7 @@
       var self = this;
       // `DeLorean.EventEmitter` is `require('events').EventEmitter` by default.
       // you can change it using `DeLorean.Flux.define('EventEmitter', AnotherEventEmitter)`
+      DeLorean.EventEmitter.defaultMaxListeners = 100;
       this.listener = new DeLorean.EventEmitter();
       this.stores = stores;
 
@@ -863,8 +864,8 @@ function asap(callback, arg) {
 }
 
 exports.asap = asap;
-}).call(this,require("JkpR2F"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"JkpR2F":12}],4:[function(require,module,exports){
+}).call(this,require("+NscNm"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"+NscNm":12}],4:[function(require,module,exports){
 "use strict";
 var config = {
   instrument: false
