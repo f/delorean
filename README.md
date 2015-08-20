@@ -153,6 +153,7 @@ open index.html
   - Fehmi Can Sağlam [@fehmicansaglam](https://github.com/fehmicansaglam)
   - Serge van den Oever [@svdoever](https://github.com/svdoever)
   - Markus Ast [@rkusa](https://github.com/rkusa)
+  - Peter Rumenov Denev [@peterdenev](https://github.com/peterdenev)
 
 ## Contribution
 
