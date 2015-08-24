@@ -95,7 +95,7 @@
       var self = this;
       // `DeLorean.EventEmitter` is `require('events').EventEmitter` by default.
       // you can change it using `DeLorean.Flux.define('EventEmitter', AnotherEventEmitter)`
-      DeLorean.EventEmitter.defaultMaxListeners = 100;
+      DeLorean.EventEmitter.defaultMaxListeners = 50;
       this.listener = new DeLorean.EventEmitter();
       this.stores = stores;
 
@@ -152,10 +152,16 @@
         /* `__promiseGenerator` generates a simple promise that resolves itself when
             related store is changed. */
         function __promiseGenerator(store) {
-          // `DeLorean.Promise` is `require('es6-promise').Promise` by default.
-          // you can change it using `DeLorean.Flux.define('Promise', AnotherPromise)`
+          // resolve on change
+          // reject on rollback
+          // cleanup_{actionName} will be fired after the action handler (in store.dispatchAction) to cleanup unused events
           return new DeLorean.Promise(function (resolve, reject) {
             store.listener.once('change', resolve);
+            store.listener.once('rollback', reject);
+            store.listener.once('cleanup_' + actionName, function () {
+              store.listener.removeListener('change', resolve);
+              store.listener.removeListener('rollback', reject);
+            });
           });
         }
 
@@ -444,6 +450,8 @@
     // you probably won't need to do. It simply **emits an event with a payload**.
     Store.prototype.dispatchAction = function (actionName, data) {
       this.listener.emit(__generateActionName(actionName), data);
+      // The cleanup_{actionName} event removes any remaining listeners after the action was fully handled
+      this.listener.emit('cleanup_' + actionName);
     };
 
     // ### Shortcuts
