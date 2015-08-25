@@ -12,16 +12,15 @@ import {Store, Dispatcher} from "delorean";
 /*
  * Stores are simple data buckets which manages data.
  */
-class TodoStore extends Store {
+@Store({
+  actions: {
+    'incoming-data': 'setData'
+  }
+})
+class TodoStore {
 
   constructor() {
     this.data = null;
-  }
-
-  get actions() {
-    return {
-      'incoming-data': 'setData'
-    }
   }
 
   setData(data) {
@@ -37,14 +36,12 @@ class TodoStore extends Store {
  * Dispatchers are simple action dispatchers for stores.
  * Stores handle the related action.
  */
-class TodoDispatcher extends Dispatcher {
-
-  get stores() {
-    return {
-      'increment': store
-    }
+@Dispatcher({
+  stores: {
+    'increment': store
   }
-
+})
+class TodoDispatcher {
   setData(data) {
     this.dispatch('incoming-data', data);
   }
