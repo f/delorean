@@ -7,18 +7,23 @@ describe('Flux', function () {
 
   var myStore = DeLorean.Flux.createStore({
     state: {
-      list: []
+      list: [],
+      text: ''
     },
     initialize: initializeSpy,
     actions: {
       // Remember the `dispatch('addItem')`
-      addItem: 'addItemMethod'
+      addItem: 'addItemMethod',
+      noChange: 'noChangeEvent'
     },
     addItemMethod: function (data) {
       this.state.list.push('ITEM: ' + data.random);
 
       // You need to say your store is changed.
       this.emit('change');
+    },
+    noChangeEvent: function (data) {
+      this.state.text = data;
     }
   });
 
@@ -89,11 +94,27 @@ describe('Flux', function () {
     expect(myStore.getState()).toEqual({});
   });
 
+  it('should cleanup unused events after firing an action handler', function () {
+    MyAppDispatcher.dispatch('noChange', 'someText')
+    MyAppDispatcher.dispatch('noChange', 'someText')
+    MyAppDispatcher.dispatch('noChange', 'someText')
+    MyAppDispatcher.dispatch('noChange', 'someText')
+
+    changeListenerCount = myStore.listener.listeners('change').length;
+    rollbackListenerCount = myStore.listener.listeners('rollback').length;
+    
+    // Note that the 'cleanup_{actionName}' event has not fired yet and removed the last 2 events (change & rolback), so there will be one remaining of each event at this point.
+    // however, without the cleanup, there would be 4 of each after 4 calls
+    expect(changeListenerCount).toEqual(1);
+    expect(rollbackListenerCount).toEqual(1);
+
+  });
+
+
   it('dispatcher can listen events', function () {
     var spy = jasmine.createSpy('dispatcher listener');
     MyAppDispatcher.on('hello', spy);
     MyAppDispatcher.listener.emit('hello');
-
     expect(spy).toHaveBeenCalled();
   });
 
