@@ -9,7 +9,7 @@ var ActionCreator = {
   }
 };
 
-var MyAppStore = DeLorean.Flux.createStore({
+var myStore = DeLorean.Flux.createStore({
   list: [],
   actions: {
     // Remember the `dispatch('addItem')`
@@ -22,7 +22,6 @@ var MyAppStore = DeLorean.Flux.createStore({
     this.emit('change');
   }
 });
-var myStore = new MyAppStore();
 
 var MyAppDispatcher = DeLorean.Flux.createDispatcher({
   addItem: function (data) {
@@ -42,7 +41,7 @@ var list = document.getElementById('list');
 myStore.onChange(function () {
   list.innerHTML = ''; // Best thing for this example.
 
-  myStore.store.list.forEach(function (item) {
+  myStore.list.forEach(function (item) {
     var listItem = document.createElement('li');
     listItem.innerHTML = item;
     list.appendChild(listItem);
