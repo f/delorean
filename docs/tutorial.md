@@ -11,8 +11,8 @@ First of all, let's create the DOM (view) we'll need.
     <script src="https://cdn.rawgit.com/deloreanjs/delorean/master/dist/delorean.min.js"></script>
   </head>
   <body>
-    <ul id="list"></ul>
     <button id="addItem">Add Random Item</button>
+    <ul id="list"></ul>
 
     <script src="js/app.js"></script>
   </body>
@@ -90,7 +90,7 @@ with arguments.
 Also you have to call `this.emit('change')` when you update your data.
 
 ```javascript
-var MyAppStore = DeLorean.Flux.createStore({
+var myStore = DeLorean.Flux.createStore({
   list: [],
   actions: {
     // Remember the `dispatch('addItem')`
@@ -103,8 +103,9 @@ var MyAppStore = DeLorean.Flux.createStore({
     this.emit('change');
   }
 });
-var myStore = new MyAppStore();
 ```
+
+Make sure you put this code before the one from step 2 though, because we were using `myStore` in creating the `MyAppDispatcher`, and that will keep a reference to the store internally.
 
 ### Step 4: Completing the Cycle: Views
 
@@ -117,7 +118,7 @@ var list = document.getElementById('list');
 myStore.onChange(function () {
   list.innerHTML = ''; // Best thing for this example.
 
-  myStore.store.list.forEach(function (item) {
+  myStore.list.forEach(function (item) {
     var listItem = document.createElement('li');
     listItem.innerHTML = item;
     list.appendChild(listItem);
