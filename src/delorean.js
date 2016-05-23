@@ -566,6 +566,21 @@
 
   // ## Built-in React Mixin
   DeLorean.Flux.mixins = {
+
+    // This mixin adds the this.trigger method to the component
+    // Components can then trigger actions in flux w/out watching stores and having their state
+    trigger: {
+
+      componentWillMount: function () {
+        this.__dispatcher = __findDispatcher(this);
+      },
+
+      trigger: function () {
+        this.__dispatcher.emit.apply(this.__dispatcher, arguments);
+      }
+    
+    },
+
     // It should be inserted to the React components which
     // used in Flux.
     // Simply `mixin: [Flux.mixins.storeListener]` will work.
