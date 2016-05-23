@@ -95,21 +95,17 @@ describe('Flux', function () {
   });
 
   it('should cleanup unused events after firing an action handler', function () {
-    MyAppDispatcher.dispatch('noChange', 'someText')
-    MyAppDispatcher.dispatch('noChange', 'someText')
-    MyAppDispatcher.dispatch('noChange', 'someText')
-    MyAppDispatcher.dispatch('noChange', 'someText')
-
+    MyAppDispatcher.dispatch('noChange', 'someText');
+    MyAppDispatcher.dispatch('noChange', 'someText');
+    MyAppDispatcher.dispatch('noChange', 'someText');
+    MyAppDispatcher.dispatch('noChange', 'someText');
     changeListenerCount = myStore.listener.listeners('change').length;
     rollbackListenerCount = myStore.listener.listeners('rollback').length;
-    
     // Note that the 'cleanup_{actionName}' event has not fired yet and removed the last 2 events (change & rolback), so there will be one remaining of each event at this point.
     // however, without the cleanup, there would be 4 of each after 4 calls
     expect(changeListenerCount).toEqual(1);
     expect(rollbackListenerCount).toEqual(1);
-
   });
-
 
   it('dispatcher can listen events', function () {
     var spy = jasmine.createSpy('dispatcher listener');
