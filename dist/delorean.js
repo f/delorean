@@ -1,4 +1,4 @@
-/*! delorean - v0.9.6-0 - 2015-08-24 */
+/*! delorean - v0.9.8 - 2016-05-23 */
 (function (DeLorean) {
   'use strict';
 
@@ -99,7 +99,6 @@
       DeLorean.EventEmitter.defaultMaxListeners = 50;
       this.listener = new DeLorean.EventEmitter();
       this.stores = stores;
-
       /* Stores should be listened for rollback events. */
       __rollbackListener(Object.keys(stores).map(function (key) {
         return stores[key];
@@ -567,6 +566,17 @@
 
   // ## Built-in React Mixin
   DeLorean.Flux.mixins = {
+
+    // This mixin adds the this.trigger method to the component
+    // Components can then trigger actions in flux w/out watching stores and having their state
+    trigger: {
+      componentWillMount: function () {
+        this.__dispatcher = __findDispatcher(this);
+      },
+      trigger: function () {
+        this.__dispatcher.emit.apply(this.__dispatcher, arguments);
+      }
+    },
     // It should be inserted to the React components which
     // used in Flux.
     // Simply `mixin: [Flux.mixins.storeListener]` will work.
