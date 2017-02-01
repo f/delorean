@@ -1,4 +1,4 @@
-/*! delorean - v0.9.8 - 2016-05-23 */
+/*! delorean - v0.9.9 - 2017-02-01 */
 (function (DeLorean) {
   'use strict';
 
@@ -630,7 +630,7 @@
       },
 
       getInitialState: function () {
-        var self = this, state, storeName;
+        var self = this, state, storeName, watchStores;
 
         /* The dispatcher should be easy to access and it should use `__findDispatcher`
            method to find the parent dispatchers. */
@@ -649,9 +649,13 @@
         this.stores = this.__dispatcher.stores;
 
         this.__watchStores = {};
-        if (this.watchStores != null) {
-          for (var i = 0; i < this.watchStores.length;  i++) {
-            storeName = this.watchStores[i];
+
+        // Allow watchStores to be passed as a prop
+        watchStores = this.watchStores || this.props.watchStores;
+
+        if (watchStores != null) {
+          for (var i = 0; i < watchStores.length;  i++) {
+            storeName = watchStores[i];
             this.__watchStores[storeName] = this.stores[storeName];
           }
         } else {
@@ -882,8 +886,8 @@ function asap(callback, arg) {
 }
 
 exports.asap = asap;
-}).call(this,require("JkpR2F"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"JkpR2F":12}],4:[function(require,module,exports){
+}).call(this,require("g5I+bs"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"g5I+bs":12}],4:[function(require,module,exports){
 "use strict";
 var config = {
   instrument: false

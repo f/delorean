@@ -629,7 +629,7 @@
       },
 
       getInitialState: function () {
-        var self = this, state, storeName;
+        var self = this, state, storeName, watchStores;
 
         /* The dispatcher should be easy to access and it should use `__findDispatcher`
            method to find the parent dispatchers. */
@@ -648,9 +648,13 @@
         this.stores = this.__dispatcher.stores;
 
         this.__watchStores = {};
-        if (this.watchStores != null) {
-          for (var i = 0; i < this.watchStores.length;  i++) {
-            storeName = this.watchStores[i];
+
+        // Allow watchStores to be passed as a prop
+        watchStores = this.watchStores || this.props.watchStores;
+
+        if (watchStores != null) {
+          for (var i = 0; i < watchStores.length;  i++) {
+            storeName = watchStores[i];
             this.__watchStores[storeName] = this.stores[storeName];
           }
         } else {
