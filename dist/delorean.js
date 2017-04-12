@@ -1,4 +1,4 @@
-/*! delorean - v0.9.9 - 2017-02-01 */
+/*! delorean - v1.0.0 - 2017-04-12 */
 (function (DeLorean) {
   'use strict';
 
@@ -594,10 +594,7 @@
         function __changeHandler(store, storeName) {
           return function () {
             var state, args;
-            /* If the component is mounted, change state. */
-            if (self.isMounted()) {
-              self.setState(self.getStoreStates());
-            }
+            self.setState(self.getStoreStates());
             // When something changes it calls the components `storeDidChanged` method if exists.
             if (self.storeDidChange) {
               args = [storeName].concat(Array.prototype.slice.call(arguments, 0));
@@ -886,8 +883,8 @@ function asap(callback, arg) {
 }
 
 exports.asap = asap;
-}).call(this,require("g5I+bs"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"g5I+bs":12}],4:[function(require,module,exports){
+}).call(this,require("JkpR2F"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"JkpR2F":12}],4:[function(require,module,exports){
 "use strict";
 var config = {
   instrument: false
