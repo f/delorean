@@ -593,10 +593,7 @@
         function __changeHandler(store, storeName) {
           return function () {
             var state, args;
-            /* If the component is mounted, change state. */
-            if (self.isMounted()) {
-              self.setState(self.getStoreStates());
-            }
+            self.setState(self.getStoreStates());
             // When something changes it calls the components `storeDidChanged` method if exists.
             if (self.storeDidChange) {
               args = [storeName].concat(Array.prototype.slice.call(arguments, 0));
